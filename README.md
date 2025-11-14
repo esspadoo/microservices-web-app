@@ -11,7 +11,7 @@ The project's objective is to build a platform for obtaining documents from one 
 - Use different services;
 - (suggested) Use Docker for container deployment;
 - The services must be implemented (mainly) in Java;
-- **Document adpoted patterns: if I need an adapter I develop it and then I have to document it. **Very important part of the project: patterns and architecture.**
+- **Document adpoted patterns**: if I need an adapter I develop it and then I have to document it. **Very important part of the project: patterns and architecture.**
 
 ### About the evaluation criteria
 - Documentation

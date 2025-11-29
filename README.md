@@ -19,9 +19,8 @@ The project's objective is to build a platform for obtaining documents from one 
 - Reproducibility
 - Presentation: professor suggested to prepare a Power Point where **every** member of the group has to speak and partecipate.
 
-
-
-
+# Project structure
+![Project structure](images/Grafico_progetto_SP.png)
 
 
 

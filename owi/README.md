@@ -1,6 +1,6 @@
 # OWI (Open Web Index)
 -**Search application**: application with more complex functionality than traditional search consisting of search queries and results
-![Search Application schema]("images/schemaSearchApplication.jpg")
+![Search Application schema](images/schemaSearchApplication.jpg)
 
 **(Image taken from the Open web index search's presentation at the link https://vimeo.com/1082089186)**
 - **Owilix permits to download index shards from OWI**. Owilix is a command line tool with command structure. Richiede registration, end user license, ethical self-assessment.

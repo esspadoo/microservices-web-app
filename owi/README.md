@@ -1,22 +1,24 @@
 # OWI (Open Web Index)
-**Search application**: application with more complex functionality than traditional search consisting of search queries and results
-![[Screenshot_2025-11-28-16-48-24-441_com.brave.browser-edit.jpg|500]]
-**Owilix permits to download index shards from OWI**. Owilix is a command line tool with command structure. Richiede registration, end user license, ethical self-assessment.
+-**Search application**: application with more complex functionality than traditional search consisting of search queries and results
+![Search Application schema]("images/schemaSearchApplication")
+**(Image taken from the Open web index search's presentation at the link https://vimeo.com/1082089186)**
+- **Owilix permits to download index shards from OWI**. Owilix is a command line tool with command structure. Richiede registration, end user license, ethical self-assessment.
 
 ## Structure of the index (OWI e index shards)
 Index consists of CIFF and parquet files. 
 - **CIFF file** is an inverted index: it contains all the words contained in the web documents with a reference to the document.
-![[Screenshot_2025-11-28-17-00-28-982_com.brave.browser.png|400]]
+![CIFF file composition](images/CIFF_file.png)
 - **Parquet file**: contains all the metadata of each document
-![[Screenshot_2025-11-28-17-00-32-568_com.brave.browser.png|400]]
+![Parquet file composition](images/Parquet_file.png)
 
 ## Mosaic (MOdular Search Application based on Index fraCtions)
 Generic implementation of a vertical search engine (special search engine related to a specific domain or purpose, such as product search). Uses index shards from the OWI.
-![[Screenshot_2025-11-28-17-07-04-046_com.brave.browser.png|400]]
+![Mosaic workflow](images/Mosaic_workflow.png)
+**(Image taken from the Mosaic's web page: https://mosaic.ows.eu/)**
 The Ciff file is imported and then converted to a Lucene index. The parquet key file is imported into a database. When a search happens the search is first performed over the Lucene index, then some further filtering is performed and the result is generated. So using all the additional metadata the result is available via rest API, which can be retrieved in a simple web interface or more complex application. 
 
 # How to create a search application
-![[Screenshot_2025-11-28-17-19-23-723_com.brave.browser-edit.jpg|400]]
+![Generic schema of a search application](images/General_schema_of_a_search_application.png)
 You have to define the use case and the purpose of the application and then you need to define the search domain. Based on the defined search domain you can download an index chart from the open web index, then you can import it into mosaic. After that you have basically an out of the box search engine with a specific index chart. Mosaic is a modular system that allows to include modules and filtering further metadata. For example, searching for certain topics you can create your own simple or not so simple web interface and in order to search in this index chart  you can create a more complex application. So you can use mosaic as a basic search system but then doing something further with the search research. 
 
 ### Data pipelines
@@ -26,7 +28,7 @@ You have to define the use case and the purpose of the application and then you 
 - **Filters out web pages** with no EO (Earth Observation) keywords using **TaxoTagger** (a tagger that takes in input a text and returns a set of top 10 keywords, each one with a score). So if we have X documents, for each one we use the tagger that generates the keywords. If a webpage has at least one keyword that would score greater than a threshold we keep it otherwise we drop it.  
 - **Having this filtered data, we use mosaic that takes CIFF + PARQUET files and it creates a Lucene index (a data structure that enables fast and efficient searching of large volumes of data)**.
 
-# Useful resources
+# Useful resources and references
 - Introductory video released by the Open Web Index on the potential of their project and how to create search applications using the Open Web Index. https://vimeo.com/1082089186
 - OWI's platform to download their datasets: https://openwebindex.eu/owler/our_datasets
 - GitLab like site with owi-cli's project presentation: https://opencode.it4i.eu/openwebsearcheu-public/owi-cli;

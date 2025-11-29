@@ -1,6 +1,7 @@
 # OWI (Open Web Index)
 -**Search application**: application with more complex functionality than traditional search consisting of search queries and results
-![Search Application schema]("images/schemaSearchApplication")
+![Search Application schema]("images/schemaSearchApplication.jpg")
+
 **(Image taken from the Open web index search's presentation at the link https://vimeo.com/1082089186)**
 - **Owilix permits to download index shards from OWI**. Owilix is a command line tool with command structure. Richiede registration, end user license, ethical self-assessment.
 
@@ -15,6 +16,7 @@ Index consists of CIFF and parquet files.
 Generic implementation of a vertical search engine (special search engine related to a specific domain or purpose, such as product search). Uses index shards from the OWI.
 ![Mosaic workflow](images/Mosaic_workflow.png)
 **(Image taken from the Mosaic's web page: https://mosaic.ows.eu/)**
+
 The Ciff file is imported and then converted to a Lucene index. The parquet key file is imported into a database. When a search happens the search is first performed over the Lucene index, then some further filtering is performed and the result is generated. So using all the additional metadata the result is available via rest API, which can be retrieved in a simple web interface or more complex application. 
 
 # How to create a search application

@@ -7,7 +7,7 @@
 
 ## Structure of the index (OWI e index shards)
 Index consists of CIFF and parquet files. 
-- **CIFF file** is an inverted index: it contains all the words contained in the web documents with a reference to the document.
+- **CIFF file** is an inverted index: it contains all the words contained in the web documents with a reference to the document. Its structure is like the following example:
 
 | Term   | (Document, frequency of the term in the document)   |
 |--------|-----------------------------------------------------|
@@ -16,7 +16,7 @@ Index consists of CIFF and parquet files.
 | …      | …                                                   |
 
 
-- **Parquet file**: contains all the metadata of each document
+- **Parquet file**: contains all the metadata of each document. Its structure is like the following example:
 
 | Document | Lang | Full text     | WARC date | Location | Curlie topic |
 |----------|------|---------------|-----------|----------|--------------|

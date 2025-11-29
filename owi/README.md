@@ -8,7 +8,14 @@
 ## Structure of the index (OWI e index shards)
 Index consists of CIFF and parquet files. 
 - **CIFF file** is an inverted index: it contains all the words contained in the web documents with a reference to the document.
-![CIFF file composition](images/CIFF_file.png)
+
+| Term   | (Document, frequency of the term in the document)   |
+|--------|-----------------------------------------------------|
+| Term 1 | (docID A, 1) (docID B, 5)                           |
+| Term 2 | (docID C, 2)                                        |
+| …      | …                                                   |
+
+
 - **Parquet file**: contains all the metadata of each document
 
 | Document | Lang | Full text     | WARC date | Location | Curlie topic |
@@ -17,11 +24,6 @@ Index consists of CIFF and parquet files.
 | docID B  | deu  | … text …      | YY-MM-DD  | …        | …            |
 | …        | …    | … text …      | YY-MM-DD  | …        | …            |
 
-
-prova
-
-
-![Parquet file composition](images/Parquet_file.png)
 
 ## Mosaic (MOdular Search Application based on Index fraCtions)
 Generic implementation of a vertical search engine (special search engine related to a specific domain or purpose, such as product search). Uses index shards from the OWI.

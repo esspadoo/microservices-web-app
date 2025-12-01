@@ -78,10 +78,12 @@ cd owi
 docker build -t owi-container .
 ```
 ### 2. Download the wanted dataset
+Locally datasets are stored in the configured directory (by default `~/.owi` but that can be changed via `OWS_OWI_PATH` environment variable or using `owilix config`).
 ```bash
 # Example of command to download a specified dataset. The downloaded datasets will be stored in the directory (for the root user): /root/.owi/public/main/
 root@dockerContainer:/app/dataset/# owilix remote pull all/internalID=3fad40fc-c68b-11f0-a6f8-f6a03915313d
 ```
 
 OWI's datasets: https://openwebindex.eu/owler/our_datasets
+
 OWIlix commands: https://openwebsearcheu-public.pages.it4i.eu/owi-cli/commands.html#command-overview

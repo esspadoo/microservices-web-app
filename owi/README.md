@@ -48,3 +48,40 @@ You have to define the use case and the purpose of the application and then you 
 - OWI's platform to download their datasets: https://openwebindex.eu/owler/our_datasets
 - GitLab like site with owi-cli's project presentation: https://opencode.it4i.eu/openwebsearcheu-public/owi-cli;
 - Owi-cli's installation documentation (we suggest the number 1 method): https://openwebsearcheu-public.pages.it4i.eu/owi-cli/install
+
+
+# Usage and installation
+A Docker container for OWI (OWilIx) data processing applications with Python 3.11 and required scientific libraries.
+
+## Overview
+This container provides a lightweight environment for running OWI-related data processing tasks. It includes Python 3.11, essential system tools, and the required Python packages for working with OWI and LEXIS systems.
+
+## Features
+- **Base Image**: Python 3.11-slim (Debian Bookworm);
+- **Minimal Footprint**: only essential packages installed;
+- **Pre-configured Environment**: all required Python packages pre-installed;
+- **Dataset Ready**: includes a dedicated dataset directory structure;
+
+## Prerequisites
+- Docker or Docker Desktop installed
+- Git (for cloning the repository)
+- Minimum 2GB RAM recommended
+
+## Quick Start
+### 1. Build the Container
+```bash
+# Clone the repository
+git clone https://gitlab.com/giancarlopadoan-group/softplat-project.git
+cd owi
+
+# Build the Docker image
+docker build -t owi-container .
+```
+### 2. Download the wanted dataset
+```bash
+# Example of command to download a specified dataset
+root@dockerContainer:/app/dataset/# owilix remote pull all/internalID=3fad40fc-c68b-11f0-a6f8-f6a03915313d
+```
+
+OWI's datasets: https://openwebindex.eu/owler/our_datasets
+OWIlix commands: https://openwebsearcheu-public.pages.it4i.eu/owi-cli/commands.html#command-overview

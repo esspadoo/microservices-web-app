@@ -79,7 +79,7 @@ docker build -t owi-container .
 ```
 ### 2. Download the wanted dataset
 ```bash
-# Example of command to download a specified dataset
+# Example of command to download a specified dataset. The downloaded datasets will be stored in the directory (for the root user): /root/.owi/public/main/
 root@dockerContainer:/app/dataset/# owilix remote pull all/internalID=3fad40fc-c68b-11f0-a6f8-f6a03915313d
 ```
 

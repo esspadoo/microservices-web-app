@@ -87,3 +87,5 @@ root@dockerContainer:/app/dataset/# owilix remote pull all/internalID=3fad40fc-c
 OWI's datasets: https://openwebindex.eu/owler/our_datasets
 
 OWIlix commands: https://openwebsearcheu-public.pages.it4i.eu/owi-cli/commands.html#command-overview
+
+Very good guide on open web index search: https://openwebsearcheu-public.pages.it4i.eu/ows-the-book/content/howto/0_first_steps.html

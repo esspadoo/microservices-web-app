@@ -85,16 +85,66 @@ Locally datasets are stored in the configured directory (by default `~/.owi` but
 root@dockerContainer:/app/dataset/# owilix remote pull all/internalID=3fad40fc-c68b-11f0-a6f8-f6a03915313d
 ```
 
+---
 
 ## Mosaic
-### Prerequisites
+### 1. Prerequisites
 - Git (for downloading/cloning MOSAIC; alternatively MOSAIC can also be downloaded as ZIP file);
 - Java JDK v21 (for building and starting MOSAIC)
 - Docker (for building and starting MOSAIC)
 - Maven (3.X suggested)
 
+### 2. Docker container
+All the prerequisites are satisfied in the proposed dockerfile. To use it, once cloned this git repository type the following.
+```bash
+docker buildx build -t mosaic_temurin .
+docker run --name mosaic_temurin -p 8008:8008 -v pathHost:/home/ -it mosaic_temurin /bin/bash
+```
+
+Once in the docker container, Mosaic's git repository is already downloaded and it is in the `/home/` directory. At this point 
+```bash
+cd /home/mosaic/scripts/ 
+./build.sh 
+./start.sh 
+```
+After the execution of ./start.sh the service will be running on port 8008 (depending on the port binding made in the building of the Docker container). To stop the service, press Ctrl-c.
+
+### 3. Test
+To test the REST API and the web interface open a web browser and go to the URL `http://localhost:8008/index-info`. If the installation has been successfull you should see a json-formatted page like that:
+
+```bash
+{
+  "results": [
+    {
+      "simplewiki": {
+        "documentCount": 245501,
+        "languages": [
+          "afr",
+          "aze",
+          "bre",
+          "cat",
+          ...
+          ...
+```
+
+and you should be able to performs query on the default datasets downloaded with Mosaic itself (simplewiki and unis-graz) using the REST API `http://localhost:8008/search?q=<search-term>`
+
+### 4. Adding your own datasets
+You can take an index slice from the `~/.owi` folder that has been dowloaded with **owilix** and adding CIFF and Parquet files to Mosaic:
+
+1. Create a folder in the Mosaic resource directory (/mosaic/resources/[folder-name]) and copy CIFF and Parquet files to this folder;
+2. Stop the service, re-build and restart it
+
+```bash
+<CTRL+C> on the shell with the service running
+cd /home/mosaic/scripts/ 
+./build.sh 
+./start.sh 
+```
 
 
+
+# Usage and reference:
 OWI's datasets: https://openwebindex.eu/owler/our_datasets
 
 OWIlix commands: https://openwebsearcheu-public.pages.it4i.eu/owi-cli/commands.html#command-overview

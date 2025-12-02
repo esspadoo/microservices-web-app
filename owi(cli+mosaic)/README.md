@@ -67,7 +67,8 @@ This container provides a lightweight environment for running OWI-related data p
 - Git (for cloning the repository)
 - Minimum 2GB RAM recommended
 
-## Quick Start
+# Quick Start
+## OWI
 ### 1. Build the Container
 ```bash
 # Clone the repository
@@ -83,6 +84,16 @@ Locally datasets are stored in the configured directory (by default `~/.owi` but
 # Example of command to download a specified dataset. The downloaded datasets will be stored in the directory (for the root user): /root/.owi/public/main/
 root@dockerContainer:/app/dataset/# owilix remote pull all/internalID=3fad40fc-c68b-11f0-a6f8-f6a03915313d
 ```
+
+
+## Mosaic
+### Prerequisites
+- Git (for downloading/cloning MOSAIC; alternatively MOSAIC can also be downloaded as ZIP file);
+- Java JDK v21 (for building and starting MOSAIC)
+- Docker (for building and starting MOSAIC)
+- Maven (3.X suggested)
+
+
 
 OWI's datasets: https://openwebindex.eu/owler/our_datasets
 

@@ -1,0 +1,35 @@
+# To use the container:
+# docker buildx build -t mosaic_temurin .
+# docker run --name mosaic_temurin -p 8008:8008 -v pathHost:/home/ -it mosaic_temurin /bin/bash 
+
+# https://hub.docker.com/_/eclipse-temurin
+FROM eclipse-temurin:21-jdk
+
+# Avoid interactive prompts: install everything without ever asking anything; if a choice is needed, use the default value (for example, during installation with apt).docke
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install Git, Maven, Docker CLI (required by the prerequisites)
+# unzip is useful if someone wants to install mosaic by the zip file and not by cloning the git repository
+# ca-certificates is useful if we plan to work with https urls (like git clone https://...)
+# gzip is useful to unzip specific archive formats (.gz)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \ 
+    maven \
+    docker.io \
+    ca-certificates \
+    curl \
+    unzip \
+    gzip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /home/
+
+# Valuable and informative debugging info
+#RUN git --version && \
+#    mvn -version && \
+#    java -version && \
+#    docker --version
+
+CMD ["/bin/bash"]
+

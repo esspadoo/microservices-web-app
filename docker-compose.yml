@@ -1,20 +1,24 @@
-version: "3.9"
+
 
 services:
-  myapp:              
-    build: 
+
+
+  #-----------------------------------------------------
+  # OWILIX — extracts raw index data into ./dataset/public/main
+  #----------------------------------------------------
+  owilix:
+    build:
       context: .
       dockerfile: ./owi/Dockerfile
     image: my_owilix
     volumes:
-      - ./dataset:/app/dataset  # bind mount for your dataset
+      - ./all_data/raw_data:/app/all_data/.owi
+      - ./all_data:/app/all_data
     working_dir: /app
-    stdin_open: true            
-    tty: true
-    command: bash
     environment:
-      OWILIX_AUTH_METHOD: device
+      HOME: /app/all_data
+      OWI_PATH: /app/all_data/
+      OWI_AUTH_METHOD: device
       PY4LEXYS_AUTH_METHOD: device
       USE_DEVICE_FLOW: "true"
-      OWILIX_DATA_DIR: /app/dataset
-
+    restart: unless-stopped

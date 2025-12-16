@@ -1,2 +1,0 @@
-**Note**: in the container we use elasticsearch 8.15.0, **be sure to use the same version client side when you write code to test the enviroment (e.g. to install in pip in the virtual environment: pip install elasticsearch==8.15.0).** 
-Note that the above command starts the service with **authentication and encryption disabled**, which means that anyone who connects to the service will be given access.

@@ -23,8 +23,8 @@ public class JsonHtmlCleaner {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public static void clean() throws IOException {
-        Path inputPath = Paths.get(System.getProperty("user.dir") + "/src/json_out.json");
-        Path outputPath = Paths.get(System.getProperty("user.dir") + "mallet/src/main/resources/clean_json_out.json");
+        Path inputPath = Paths.get("mallet/src/json_out.json");
+        Path outputPath = Paths.get("mallet/src/main/resources/clean_json_out.json");
 
         try (BufferedReader reader = Files.newBufferedReader(inputPath, StandardCharsets.UTF_8);
              BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {

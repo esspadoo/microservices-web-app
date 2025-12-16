@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package it.unipd.softplat;
 
 import cc.mallet.pipe.*;
@@ -31,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class MalletApp {
 
-    public static InstanceList createInstanceList(InputStream dataInputStream, File stoplist) throws FileNotFoundException, UnsupportedEncodingException {
+    public static InstanceList createInstanceList(InputStream dataInputStream, File stoplist){
 
         // Begin by importing documents from text to feature sequences
         ArrayList<Pipe> pipeList = new ArrayList<>();
@@ -75,43 +58,27 @@ public class MalletApp {
         JsonHtmlCleaner.clean();
 
         // read data from the json_out.json
-        InputStream dataInputStream = Files.newInputStream(Paths.get(System.getProperty("user.dir") + "src/main/resources/clean_json_out.json"));
-
-        // to read the file from the resource folder src/main/java/resources
-        // the stoplist file is from https://github.com/mimno/Mallet/blob/master/stoplists/en.txt
+        InputStream dataInputStream = Files.newInputStream(Paths.get("mallet/src/main/resources/clean_json_out.json"));
         File stoplist = new File(MalletApp.class.getClassLoader().getResource("stoplist.txt").getFile());
+        File inferer = new File("mallet/src/main/resources/inferer.model");
 
         InstanceList instances = createInstanceList(dataInputStream, stoplist);
-
-        System.out.println(String.format("Number of instances (docs): %s", instances.size()));
-
+        System.out.printf("Number of instances (docs): %s%n", instances.size());
         Alphabet alphabet = instances.getDataAlphabet();
-
-        System.out.println(String.format("%s [index] => %s [object]", 0, alphabet.lookupObject(0)));
-        System.out.println(String.format("%s [object] => %s [index]", "chatgpt", alphabet.lookupIndex("chatgpt")));
-        System.out.println(String.format("%s [object] => %s [index]", "ethics", alphabet.lookupIndex("ethics")));
-
         System.out.println("\n...training the topic model");
+
 
         int numTopics = 10;
         int numIterations = 1000;
         int numTopWords = 25;
+        //TRAIN MODEL
         ParallelTopicModel topicModel = trainTopicModel(instances, numTopics, numIterations, numTopWords);
 
-        // get topics top words
-        System.out.println("\nExtracted topics:");
+        System.out.println("\n*************** MODEL TRAINED --> SAVE INFERER ***************\n");
 
-        for (int t = 0; t < numTopics; t++) {
-            List<String> topWords = new ArrayList<>();
-            System.out.print("Topic " + t + ":");
-            for (Object obj : topicModel.getTopWords(numTopWords)[t]) {
-                topWords.add((String) obj);
-                System.out.print(" " + obj);
-            }
-            System.out.println();
-
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(inferer))) {
+                out.writeObject(topicModel);
         }
-
     }
 
 }

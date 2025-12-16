@@ -6,7 +6,16 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/mallet/src/pom.xml" />
+        <option value="$USER_HOME$/Downloads/Inferer/pom.xml" />
+        <option value="$PROJECT_DIR$/trainer/trainer/pom.xml" />
+        <option value="$PROJECT_DIR$/trainer/src/pom.xml" />
+        <option value="$PROJECT_DIR$/Inferer/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/trainer/trainer/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_25" default="true" project-jdk-name="openjdk-25" project-jdk-type="JavaSDK">

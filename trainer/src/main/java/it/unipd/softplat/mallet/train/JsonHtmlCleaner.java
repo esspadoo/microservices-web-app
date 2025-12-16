@@ -1,4 +1,4 @@
-package it.unipd.softplat;
+package it.unipd.softplat.mallet.train;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

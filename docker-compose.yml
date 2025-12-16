@@ -28,7 +28,7 @@ services:
 #-----------------------------------------------------
   mallet:
     build:
-      context: ./mallet
+      context: trainer
       dockerfile: Dockerfile
     image: mallet_jdk
     container_name: mallet

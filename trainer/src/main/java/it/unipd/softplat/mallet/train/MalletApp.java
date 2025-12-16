@@ -1,4 +1,4 @@
-package it.unipd.softplat;
+package it.unipd.softplat.mallet.train;
 
 import cc.mallet.pipe.*;
 import cc.mallet.topics.ParallelTopicModel;
@@ -9,7 +9,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 public class MalletApp {

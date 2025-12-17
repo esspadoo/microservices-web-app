@@ -10,17 +10,23 @@
 <body>
 
 <div class="container">
-    <h1>UniPD &lt;3 science and technology</h1>
+    <h1>We &lt;3 SW platforms!</h1>
     
     <form id="searchForm">
         <div class="form-group">
             <label for="searchInput">Search text:</label>
             <input type="text" id="searchInput" name="searchInput" class="form-control" placeholder="Enter keywords..." required>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Search</button>
+        <button type="submit" id="searchBtn" class="btn btn-primary btn-block">Search</button>
     </form>
+    
+    <div id="results" class="container mt-3"></div>
+
 </div>
 
+
+
+<script src="queryConnection.js"></script>
 </body>
 </html>
 

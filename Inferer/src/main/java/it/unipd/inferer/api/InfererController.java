@@ -5,6 +5,8 @@ import it.unipd.inferer.service.DocService;
 import it.unipd.inferer.service.DocServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/")
 public class InfererController {
@@ -23,5 +25,10 @@ public class InfererController {
     @PostMapping("/infer")
     public Document inferTopics(@RequestBody Document doc) throws Exception {
         return docService.infer(doc);
+    }
+
+    @PostMapping("/infer")
+    public List<Document> inferBatchTopics(@RequestBody List<Document> doc) throws Exception {
+        return docService.inferBatch(doc);
     }
 }

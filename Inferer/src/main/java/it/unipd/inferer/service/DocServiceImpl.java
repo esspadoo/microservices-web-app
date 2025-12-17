@@ -7,6 +7,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,12 +25,24 @@ public class DocServiceImpl implements DocService{
     }
 
     public Document infer(Document doc) throws Exception {
-
         return JsonInferencerService.inferPrevalentTopicJsonl(
                 model.getInferencer(),
                 doc,
                 topicTopWords
         );
+    }
+
+    public List<Document> inferBatch(List<Document> doc) throws Exception {
+        List<Document> results = new ArrayList<>(doc.size());
+
+        for (Document d : doc) {
+            results.add(
+                    JsonInferencerService.inferPrevalentTopicJsonl(
+                            model.getInferencer(), d, topicTopWords
+                    )
+            );
+        }
+        return results;
     }
 
     private ParallelTopicModel loadModel() throws Exception {

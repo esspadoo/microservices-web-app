@@ -27,7 +27,7 @@ public class InfererController {
         return docService.infer(doc);
     }
 
-    @PostMapping("/infer")
+    @PostMapping("/inferBatch")
     public List<Document> inferBatchTopics(@RequestBody List<Document> doc) throws Exception {
         return docService.inferBatch(doc);
     }

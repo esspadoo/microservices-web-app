@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/api/v1/")
 public class InfererController {
 
-    private DocService docService;
+    private final DocService docService;
 
     public InfererController(DocServiceImpl docService){
         this.docService = docService;

@@ -29,26 +29,20 @@ VERDE= (ipoteticamente) finito e funzionante, GIALLO = funzionante ma da integra
 # OWI
 The following command provide a sequencial way to download a dataset using owilix-cli from the owi database and to export the database as a JsonL file.
 
-**A specific dataset denoted with internalID=XX has to be choosen, here two smalls datasets to test (20MB and 274.1KB, both "curlie_full" and "public") are provided**
+**A specific dataset denoted with internalID=XX has to be choosen, here in the example (and for the project too) we chose a dataset that is both "curlie_full" and "public".**
 
 ### Usage
 - **Start container with attached shell** <br />
     `docker compose run --rm -it owilix bash`
     
-- **Pull the raw dataset (first is the miss-labeled one, the second is the correct-labeled one)** <br />
-    `owilix --yes remote pull all/internalID=f79bf6c8-52fe-11f0-a4a5-528c047b29ff num_threads=10` <br />
+- **Pull the raw dataset <br />**
     `owilix --yes remote pull all/internalID=fc4f5c20-ca02-11f0-a6f8-f6a03915313d num_threads=10` 
 
-- **Make a query selecting curlielabels_en IS NOT NULL: MISS-LABELED DATASET**<br />
-    `owilix query less --local all/internalID=f79bf6c8-52fe-11f0-a4a5-528c047b29ff "select=url,curlielabels_en,curlielabels" "where=curlielabels_en is not NULL"`<br />
 
-- **Make a query selecting curlielabels_en IS NOT NULL: CORRECT-LABELED DATASET**<br />
+- **Make a query selecting "curlielabels_en IS NOT NULL"**<br />
     `owilix query less --local all/internalID=fc4f5c20-ca02-11f0-a6f8-f6a03915313d "select=url,curlielabels_en,curlielabels" "where=curlielabels is not NULL"`<br />
 
-- **Make a query selecting topic-related curlielabels (in this case "Computers..."): MISS-LABELED DATASET**<br />
-    `owilix query less --local all/internalID=f79bf6c8-52fe-11f0-a4a5-528c047b29ff "select=url,curlielabels_en, curlielabels" "where=length(list_filter(curlielabels_en, x -> x LIKE 'Computers%')) > 0"`<br />
-
-- **Make a query selecting topic-related curlielabels (in this case "Computers..."): CORRECT-LABELED DATASET)**<br />
+- **Make a query selecting topic-related curlielabels (in this case "Computers..."):**<br />
      `owilix query less --local all/internalID=fc4f5c20-ca02-11f0-a6f8-f6a03915313d "select=url,curlielabels_en, curlielabels" "where=length(list_filter(curlielabels_en, x -> x LIKE 'Computers%')) > 0"`<br />
 
 

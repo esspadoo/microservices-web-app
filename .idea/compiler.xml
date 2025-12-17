@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Mallet" />
         <module name="Inferer" />
+        <module name="Searcher" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -17,6 +18,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Inferer" options="-parameters" />
+      <module name="Searcher" options="-parameters" />
     </option>
   </component>
 </project>

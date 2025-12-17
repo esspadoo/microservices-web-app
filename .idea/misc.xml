@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/trainer/trainer/pom.xml" />
         <option value="$PROJECT_DIR$/trainer/src/pom.xml" />
         <option value="$PROJECT_DIR$/Inferer/pom.xml" />
+        <option value="$PROJECT_DIR$/Searcher/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

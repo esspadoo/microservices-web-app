@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.softplat.SearchApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.376 s -- in com.softplat.SearchApplicationTests

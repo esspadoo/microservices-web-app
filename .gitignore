@@ -1,6 +1,3 @@
-
-
-
 HELP.md
 target/
 *.class
@@ -68,6 +65,7 @@ logs/
 *.iws
 *.iml
 *.ipr
+*.http
 
 ### NetBeans ###
 /nbproject/private/

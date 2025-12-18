@@ -2,7 +2,6 @@ HELP.md
 target/
 *.class
 *.log
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 
 
@@ -50,9 +49,11 @@ target/
 #Spring
 *.jar
 *.war
-*.ear
-!mvnw
 !mvnw.cmd
+!.mvn/
+!.mvn/wrapper/
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
 
 *.dSYM/
 logs/

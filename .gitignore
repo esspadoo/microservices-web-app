@@ -1,5 +1,10 @@
+
+
+
 HELP.md
 target/
+*.class
+*.log
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -12,6 +17,51 @@ target/
 .settings
 .springBeans
 .sts4-cache
+
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+.class
+
+
+*.dSYM/
+logs/
+*.log
+*.aux
+*.out
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.bbl
+*.blg
 
 ### IntelliJ IDEA ###
 .idea

@@ -1,10 +1,10 @@
 services:
 
-  #-----------------------------------------------------
-  # OWILIX — Container used to download and filter OWI-related datasets
-  #-----------------------------------------------------
+#-----------------------------------------------------
+# OWILIX — Container used to download and filter OWI-related datasets
+#-----------------------------------------------------
   owilix:
-    build:
+    build: 
       context: ./owi
       dockerfile: Dockerfile
     container_name: owilix
@@ -24,9 +24,9 @@ services:
     restart: no
 
 
-  #-----------------------------------------------------
-  # MALLET — Topic Modeling Toolkit
-  #-----------------------------------------------------
+#-----------------------------------------------------
+# MALLET — Topic Modeling Toolkit
+#-----------------------------------------------------
   mallet:
     build:
       context: ./mallet
@@ -37,20 +37,41 @@ services:
       - softPlat-network
     volumes:
       - ./mallet_data:/data
-      - ./all_data:/all_data
+      - ./all_data:/all_data  
     working_dir: /opt/mallet
     restart: no
 
 
-  #-----------------------------------------------------
-  # ELASTICSEARCH — Single-node Elasticsearch's instance with disabled security features and persistent storage for indexed data.
-  #-----------------------------------------------------
+#-----------------------------------------------------
+# MONGODB — Database that stores documents in BSON format
+#-----------------------------------------------------
+  mongodb:
+    image: mongo:8.2.2-noble
+    container_name: mongodb
+    networks:
+      - softPlat-network
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-volume:/data/db
+    healthcheck:
+      test: [ "CMD-SHELL", "mongosh --eval 'db.runCommand({ ping: 1 })'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: always
+
+
+#-----------------------------------------------------
+# ELASTICSEARCH — Single-node Elasticsearch's instance with disabled security features and persistent storage for indexed data.
+#-----------------------------------------------------
   elasticsearch:
     container_name: elasticsearch
     image: elastic/elasticsearch:9.1.8
     ports:
       - 9200:9200
-    networks:
+    networks: 
       - softPlat-network
     environment:
       - discovery.type=single-node
@@ -65,9 +86,9 @@ services:
       - elasticsearch-volume:/usr/share/elasticsearch/data
 
 
-  #-----------------------------------------------------
-  # SEARCHER — Spring's project app (REST).
-  #-----------------------------------------------------
+#-----------------------------------------------------
+# SEARCHER — Spring's project app (REST).
+#-----------------------------------------------------
   searcher:
     container_name: searcher
     image: searcher
@@ -82,11 +103,11 @@ services:
     networks:
       - softPlat-network
 
-
-  #-----------------------------------------------------
-  # NGINX — Reverse proxy for UI.
-  #-----------------------------------------------------
-
+ 
+#-----------------------------------------------------
+# NGINX — Reverse proxy for UI.
+#-----------------------------------------------------  
+ 
   nginx:
     container_name: proxy-nginx
     image: nginx:1.29-alpine
@@ -99,9 +120,10 @@ services:
       - searcher
     networks:
       - softPlat-network
-
+      
 
 volumes:
+  mongodb-volume:
   elasticsearch-volume:
 
 networks:

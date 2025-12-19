@@ -10,7 +10,9 @@
     <artifactId>project-root</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-
+    <properties>
+        <java.version>21</java.version>
+    </properties>
     <modules>
         <module>Searcher</module>
         <module>Inferer</module>

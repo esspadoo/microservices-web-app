@@ -27,7 +27,7 @@
         <url/>
     </scm>
     <properties>
-        <java.version>25</java.version>
+        <java.version>21</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -51,6 +51,8 @@
             <version>20250107</version>
         </dependency>
     </dependencies>
+
+    <!--<packaging>jar</packaging>-->
 
     <build>
         <plugins>

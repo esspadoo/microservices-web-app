@@ -36,7 +36,10 @@ The following command provide a sequencial way to download a dataset using owili
     `docker compose run --rm -it owilix bash`
     
 - **Pull the raw dataset <br />**
-    `owilix --yes remote pull all/internalID=fc4f5c20-ca02-11f0-a6f8-f6a03915313d num_threads=10` 
+    `owilix --yes remote pull all/internalID=fc4f5c20-ca02-11f0-a6f8-f6a03915313d num_threads=10 files="**/language=eng/*"` 
+
+- **Manual importing dataset <br />**
+    'owilix local insert file:///data/mydataset access=public collectionName="main" move=False'
 
 
 - **Make a query selecting "curlielabels_en IS NOT NULL"**<br />

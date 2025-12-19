@@ -51,7 +51,7 @@ public class Document {
      * Full textual content of the document.
      */
     @JsonProperty("content")
-    private String content;
+    private String main_content;
 
     /*
     /**
@@ -68,14 +68,14 @@ public class Document {
      * @param id      the unique identifier of the document
      * @param url     the URL associated with the document
      * @param title   the title of the document
-     * @param content the main textual content of the document
+     * @param main_content the main textual main_content of the document
      //* @param topics  the topics or tags related to the document
      */
-    public Document(String id, String url, String title, String content) {
+    public Document(String id, String url, String title, String main_content) {
         this.id = id;
         this.url = url;
         this.title = title;
-        this.content = content;
+        this.main_content = main_content;
         //this.topics = topics;
     }
 
@@ -138,8 +138,8 @@ public class Document {
      *
      * @return the document content
      */
-    public String getContent() {
-        return content;
+    public String getMain_content() {
+        return main_content;
     }
 
     /**
@@ -147,8 +147,8 @@ public class Document {
      *
      * @param newContent the new content to assign
      */
-    public void setContent(String newContent) {
-        this.content = newContent;
+    public void setMain_content(String newContent) {
+        this.main_content = newContent;
     }
 
     /*

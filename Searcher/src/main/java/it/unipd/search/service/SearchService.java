@@ -1,7 +1,7 @@
-package it.unipd.searcher.service;
+package it.unipd.search.service;
 
-import it.unipd.searcher.ElasticsearchClient_Search;
-import it.unipd.searcher.dto.Document;
+import it.unipd.search.ElasticsearchClient_Search;
+import it.unipd.search.dto.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

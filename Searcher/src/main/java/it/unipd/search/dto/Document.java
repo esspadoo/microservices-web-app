@@ -1,7 +1,7 @@
 /**
  * Package containing domain classes for document management.
  */
-package it.unipd.searcher.dto;
+package it.unipd.search.dto;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;

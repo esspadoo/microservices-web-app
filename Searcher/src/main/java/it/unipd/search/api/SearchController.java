@@ -1,7 +1,7 @@
-package it.unipd.searcher.api;
+package it.unipd.search.api;
 
-import it.unipd.searcher.service.SearchService;
-import it.unipd.searcher.dto.Document;
+import it.unipd.search.service.SearchService;
+import it.unipd.search.dto.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +20,17 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
+    @GetMapping("/hello")
+    public String hello(){
+        return "Hello this is a test, service SEARCHER UP!";
+    }
+
     @GetMapping("/searchDocuments")
     public ResponseEntity<?> searchDocuments(@RequestParam(value = "query") String query) {
         try {
             List<Document> results = searchService.searchDocuments(query);
+
+            // from result --> inferer che ritorna qui con i topic che poi gestiamo
             return ResponseEntity.ok(results);
         } catch (Exception e) {
             //ALTERNATIVA:

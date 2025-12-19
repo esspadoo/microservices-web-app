@@ -1,15 +1,13 @@
-package it.unipd.searcher;
+package it.unipd.search;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import co.elastic.clients.elasticsearch.core.search.TotalHits;
-import co.elastic.clients.elasticsearch.core.search.TotalHitsRelation;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
-import it.unipd.searcher.dto.Document;
+import it.unipd.search.dto.Document;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 

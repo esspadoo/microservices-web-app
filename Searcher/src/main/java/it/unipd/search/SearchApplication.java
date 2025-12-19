@@ -1,4 +1,4 @@
-package it.unipd.searcher;
+package it.unipd.search;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

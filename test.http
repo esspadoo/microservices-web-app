@@ -1,0 +1,23 @@
+###
+POST localhost:5050/api/v1/infer
+Content-Type: application/json
+
+{"url": "www.testsite.it", "title": "Title For This Page", "main_content": "Just vjfjfjf some page text  ia ram trump here"}
+
+###
+POST localhost:5050/api/v1/inferBatch
+Content-Type: application/json
+
+[
+  {
+      "url": "https://example.com/1",
+      "title": "Doc 1",
+      "main_content": "content one"
+    },
+    {
+      "url": "https://example.com/2",
+      "title": "Doc 2",
+      "main_content": "content two"
+    }
+]
+

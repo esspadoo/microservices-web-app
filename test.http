@@ -1,4 +1,9 @@
-###
+### test to see if inferer service is up
+GET localhost:5050/api/v1/hello
+
+### test to see if search service is up
+GET localhost:8881/api/v1/searcher/hello
+
 POST localhost:5050/api/v1/infer
 Content-Type: application/json
 

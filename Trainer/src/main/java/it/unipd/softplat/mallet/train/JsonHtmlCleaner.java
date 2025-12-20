@@ -15,13 +15,43 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Utility class for cleaning JSON documents containing HTML content.
+ * <p>
+ * This class reads a JSON file where each line represents a document with
+ * "url", "title", and "main_content" fields. The main content is cleaned
+ * from HTML tags and encoded as plain text. The cleaned documents are then
+ * written to a new JSON file.
+ * </p>
+ *
+ * <p>
+ * The cleaning process handles multiple character encodings and removes
+ * unwanted characters such as quotes and Unicode line separators.
+ * </p>
+ */
 public class JsonHtmlCleaner {
 
+    /**
+     * Default constructor.
+     */
     public JsonHtmlCleaner(){
     }
 
+    /**
+     * Shared ObjectMapper instance for JSON parsing and generation.
+     */
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    /**
+     * Cleans HTML content from JSON documents.
+     * <p>
+     * Reads the input JSON file line by line, converts HTML in the "main_content"
+     * field to plain text using Jsoup, handles different character encodings, and
+     * removes unwanted characters. The cleaned documents are saved into a new JSON file.
+     * </p>
+     *
+     * @throws IOException if there is an error reading or writing the files
+     */
     public static void clean() throws IOException {
         Path inputPath = Paths.get("mallet/src/json_out.json");
         Path outputPath = Paths.get("mallet/src/main/resources/clean_json_out.json");
@@ -32,7 +62,6 @@ public class JsonHtmlCleaner {
             String line;
             while ((line = reader.readLine()) != null) {
                 JsonNode root = MAPPER.readTree(line);
-
 
                 String docId = root.get("url").asText();
                 String title = root.get("title").asText();

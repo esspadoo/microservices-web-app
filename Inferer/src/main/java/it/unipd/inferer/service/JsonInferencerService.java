@@ -18,15 +18,55 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.regex.Pattern;
 
+/**
+ * Utility service providing topic inference and model introspection functions.
+ * <p>
+ * This class contains static helper methods used to perform topic inference
+ * on textual documents using a trained MALLET {@link ParallelTopicModel}.
+ * It also provides functionality to extract human-readable topic descriptions
+ * and manage auxiliary resources such as stopword lists.
+ * </p>
+ *
+ * <p>
+ * The class is designed as a stateless utility component and does not maintain
+ * any internal state. All methods are static and thread-safe assuming that
+ * the underlying model and inferencer are thread-safe.
+ * </p>
+ */
 public class JsonInferencerService {
 
-    public static Document inferPrevalentTopicJsonl(TopicInferencer inferencer, Document doc, Map<Integer, String> topicTopWords) throws Exception {
+    /**
+     * Infers the most prevalent topic for a given document.
+     * <p>
+     * The document text is preprocessed using a pipeline that must match the
+     * preprocessing configuration used during model training. The resulting
+     * topic distribution is computed using Gibbs sampling, and the topic with
+     * the highest probability is selected as the prevalent one.
+     * </p>
+     *
+     * <p>
+     * The returned {@link Document} is enriched with a human-readable
+     * representation of the inferred topic, expressed through its most
+     * representative words.
+     * </p>
+     *
+     * @param inferencer the MALLET topic inferencer derived from a trained model
+     * @param doc the input document to be analyzed
+     * @param topicTopWords a mapping between topic identifiers and their top words
+     * @return a new {@link Document} containing the inference result
+     * @throws Exception if preprocessing, inference, or resource loading fails
+     */
+    public static Document inferPrevalentTopicJsonl(
+            TopicInferencer inferencer,
+            Document doc,
+            Map<Integer, String> topicTopWords
+    ) throws Exception {
 
         File stoplistFile = resourceToTempFile();
 
-        String url = doc.url();
-        String title = doc.title();
-        String text = doc.main_content();
+        String url = doc.getUrl();
+        String title = doc.getTitle();
+        String text = doc.getMain_content();
 
         // Build Pipe (must match training configuration)
         ArrayList<Pipe> pipeList = new ArrayList<>();
@@ -37,7 +77,7 @@ public class JsonInferencerService {
         ));
         pipeList.add(new TokenSequenceRemoveStopwords(
                 stoplistFile,
-                "UTF-8",false,false,false
+                "UTF-8", false, false, false
         ));
         pipeList.add(new TokenSequence2FeatureSequence());
 
@@ -60,9 +100,20 @@ public class JsonInferencerService {
         String prevalentTopicWords = topicTopWords.get(prevalentTopic);
 
         // Build output Document
-        return new Document(url, title, "",prevalentTopicWords);
+        return new Document(url, title, "", prevalentTopicWords);
     }
 
+    /**
+     * Returns the index of the maximum value in a numeric array.
+     * <p>
+     * This utility method is used to identify the most prevalent topic
+     * by selecting the topic with the highest probability in the inferred
+     * topic distribution.
+     * </p>
+     *
+     * @param values an array of double values
+     * @return the index corresponding to the maximum value
+     */
     private static int argMax(double[] values) {
         int maxIndex = 0;
         double maxValue = values[0];
@@ -76,6 +127,17 @@ public class JsonInferencerService {
         return maxIndex;
     }
 
+    /**
+     * Computes the most representative words for each topic in a trained model.
+     * <p>
+     * For each topic, the method extracts the top {@code numWords} terms based
+     * on their weights and builds a human-readable string representation.
+     * </p>
+     *
+     * @param model the trained {@link ParallelTopicModel}
+     * @param numWords the number of top words to extract per topic
+     * @return a map associating each topic index with its representative words
+     */
     public static Map<Integer, String> computeTopicTopWords(
             ParallelTopicModel model,
             int numWords
@@ -105,6 +167,17 @@ public class JsonInferencerService {
         return topicTopWords;
     }
 
+    /**
+     * Copies the stopword list from the application classpath into a temporary file.
+     * <p>
+     * MALLET APIs require a physical file for stopword removal. This method
+     * extracts the stopword resource and makes it available as a temporary file
+     * that is automatically deleted when the JVM terminates.
+     * </p>
+     *
+     * @return a temporary {@link File} containing the stopword list
+     * @throws Exception if the resource cannot be accessed or written
+     */
     private static File resourceToTempFile() throws Exception {
 
         ClassPathResource resource = new ClassPathResource("stoplist.txt");

@@ -16,7 +16,7 @@
     <modules>
         <module>Searcher</module>
         <module>Inferer</module>
-        <!--<module>trainer</module>-->
+        <module>Trainer</module>
     </modules>
 
 </project>

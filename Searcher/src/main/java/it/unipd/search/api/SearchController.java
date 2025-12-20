@@ -38,9 +38,6 @@ public class SearchController {
             // from result --> inferer che ritorna qui con i topic che poi gestiamo
             return ResponseEntity.ok(results);
         } catch (Exception e) {
-            //ALTERNATIVA:
-            //throw new RuntimeException(e);
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }

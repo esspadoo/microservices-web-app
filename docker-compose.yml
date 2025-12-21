@@ -29,7 +29,7 @@ services:
 #-----------------------------------------------------
   mallet:
     build:
-      context: ./mallet
+      context: ./Trainer
       dockerfile: Dockerfile
     image: mallet_jdk
     container_name: mallet
@@ -93,7 +93,7 @@ services:
     container_name: searcher
     image: searcher
     build:
-      context: ./search-application
+      context: ./Searcher
       dockerfile: Dockerfile
     ports:
       - 8881:8881

@@ -114,7 +114,8 @@ public class ElasticsearchClient_Search {
      *
      * must not be {@code null}
      * @param indexName the name of the index to search in
-     * @param fieldToSearch the document field on which the query is executed
+     * @param field1 the document field on which the query is executed with a *3 boost
+     * @param field2 the document field on which the query is executed
      * @param queryText the textual query value
      * {@code "matchPhrase"}, a {@code match_phrase} query
      * is used, otherwise a {@code match} query is executed
@@ -123,13 +124,17 @@ public class ElasticsearchClient_Search {
      * @throws IOException if an error occurs while communicating with
      * Elasticsearch
      */
-    public List<Document> searchDocuments(String indexName, String fieldToSearch, String queryText) throws IOException {
+    public List<Document> searchDocuments(String indexName, String field1, String field2, String queryText) throws IOException {
 
         List<Document> results = new ArrayList<>();
 
         SearchResponse<Document> response = esClient.search(s -> s
                         .index(indexName)
-                        .query(q -> q.matchPhrase(t -> t.field(fieldToSearch).query(queryText))
+                        .query(q -> q
+                                .multiMatch(m -> m
+                                        .fields(field1 + "^3", field2) // primary boosted
+                                        .query(queryText)
+                                )
                         ),
                 Document.class
         );

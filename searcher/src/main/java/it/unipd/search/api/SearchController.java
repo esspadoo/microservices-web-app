@@ -36,7 +36,7 @@ public class SearchController {
             //query to mongodb to check if record is already processed
             //if not i send query to mallet and do inference
             List<Document> results = infererClient.inferBatch(resultsElastic);
-
+            System.out.println("AAAAAA__________AAAAAA: "+ results);
             // from result --> inferer che ritorna qui con i topic che poi gestiamo
             return ResponseEntity.ok(results);
         } catch (Exception e) {

@@ -22,7 +22,7 @@ public class SearchService {
         // PER ORA STATICA
         String indexName = "prova";
 
-        return this.elasticsearchClient_Search.searchDocuments(indexName, "title", query);
+        return this.elasticsearchClient_Search.searchDocuments(indexName, "title", "main_content", query);
     }
 
 }

@@ -1,7 +1,9 @@
 package it.unipd.search;
 
+import it.unipd.search.config.InfererProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
  * Entry point for the Spring Boot search application.
@@ -26,6 +28,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * </p>
  */
 @SpringBootApplication
+@EnableConfigurationProperties(InfererProperties.class)
 public class SearchApplication {
 
     /**

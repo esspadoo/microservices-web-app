@@ -1,5 +1,6 @@
 package it.unipd.search.api;
 
+import it.unipd.search.client.InfererClient;
 import it.unipd.search.service.SearchService;
 import it.unipd.search.dto.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class SearchController {
 
     @Autowired
     private SearchService searchService;
+    @Autowired
+    private InfererClient infererClient;
+
 
     @GetMapping("/hello")
     public String hello(){
@@ -28,13 +32,11 @@ public class SearchController {
     @GetMapping("/searchDocuments")
     public ResponseEntity<?> searchDocuments(@RequestParam(value = "query") String query) {
         try {
-            List<Document> results = searchService.searchDocuments(query);
+            List<Document> resultsElastic = searchService.searchDocuments(query);
             //query to mongodb to check if record is already processed
             //if not i send query to mallet and do inference
-            for (Document doc : results){
-                //query infer
+            List<Document> results = infererClient.inferBatch(resultsElastic);
 
-            }
             // from result --> inferer che ritorna qui con i topic che poi gestiamo
             return ResponseEntity.ok(results);
         } catch (Exception e) {

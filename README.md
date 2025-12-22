@@ -26,6 +26,22 @@ VERDE= (ipoteticamente) finito e funzionante, GIALLO = funzionante ma da integra
 
 # **Components**
 
+# docker-compose.yml
+**Since we have custom images** we don't want to do the default `docker compose up`. <br />
+After we cloned the repository to a seamingless installation of the application we have to do
+```
+cd ~/.../softplat-project-main
+./script/compileProject.sh
+cd ..
+docker compose up --build 
+```
+<br />
+
+- **To start a container with attached shell** <br />
+    `docker compose run --rm -it owilix bash`
+
+
+
 # OWI
 The following command provide a sequencial way to download a dataset using owilix-cli from the owi database and to export the database as a JsonL file.
 
@@ -57,21 +73,6 @@ The following command provide a sequencial way to download a dataset using owili
 - **OWILIX export like a JSONL file** <br />
     `owilix query less --local all/internalID=f79bf6c8-52fe-11f0-a4a5-528c047b29ff as_json=True json_file=$PWD/all_data/json_out.json`<br />
 
-
-    
-# docker-compose.yml
-**Since we have custom images** we don't want to do the default `docker compose up`. <br />
-After we cloned the repository to a seamingless installation of the application we have to do
-```
-cd ~/.../softplat-project-main
-./script/compileProject.sh
-cd ..
-docker compose up --build 
-```
-<br />
-
-- **To start a container with attached shell** <br />
-    `docker compose run --rm -it owilix bash`
 
 # Mallet
 Ready to use right from the first start-up. It is binded to one of the same volumes of owilix's container (./all_data:/all_data) so the sliced dataset is ready to be topic-modelled (????? corretto). <br /> 

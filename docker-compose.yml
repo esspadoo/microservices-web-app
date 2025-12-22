@@ -25,21 +25,18 @@ services:
 
 
 #-----------------------------------------------------
-# MALLET — Topic Modeling Toolkit
+# INFERER — Topic Modeling Toolkit
 #-----------------------------------------------------
-  mallet:
+  inferer:
+    container_name: inferer
+    image: inferer
     build:
-      context: ./Trainer
+      context: ./inferer
       dockerfile: Dockerfile
-    image: mallet_jdk
-    container_name: mallet
+    ports:
+      - 5050:5050
     networks:
       - softPlat-network
-    volumes:
-      - ./mallet_data:/data
-      - ./all_data:/all_data  
-    working_dir: /opt/mallet
-    restart: no
 
 
 #-----------------------------------------------------

@@ -60,7 +60,15 @@ The following command provide a sequencial way to download a dataset using owili
 
     
 # docker-compose.yml
-**Since we have custom images** we don't want to do the default `docker compose up` when after we cloned the repository but we do **`docker compose up --build`** <br />
+**Since we have custom images** we don't want to do the default `docker compose up`. <br />
+After we cloned the repository to a seamingless installation of the application we have to do
+```
+cd ~/.../softplat-project-main
+./script/compileProject.sh
+cd ..
+docker compose up --build 
+```
+<br />
 
 - **To start a container with attached shell** <br />
     `docker compose run --rm -it owilix bash`

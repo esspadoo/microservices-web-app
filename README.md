@@ -22,7 +22,7 @@ The project's objective is to build a platform for obtaining documents from one 
 
 # Project's structure
 VERDE= (ipoteticamente) finito e funzionante, GIALLO = funzionante ma da integrare <br />
-![Project's schema](images/project_schema.png)
+![Project's schema](images/project_structure.svg)
 
 # **Components**
 
@@ -32,6 +32,7 @@ The following command provide a sequencial way to download a dataset using owili
 **A specific dataset denoted with internalID=XX has to be choosen, here in the example (and for the project too) we chose a dataset that is both "curlie_full" and "public".**
 
 ### Usage
+
 - **Start container with attached shell** <br />
     `docker compose run --rm -it owilix bash`
     
@@ -56,6 +57,13 @@ The following command provide a sequencial way to download a dataset using owili
 - **OWILIX export like a JSONL file** <br />
     `owilix query less --local all/internalID=f79bf6c8-52fe-11f0-a4a5-528c047b29ff as_json=True json_file=$PWD/all_data/json_out.json`<br />
 
+
+    
+# docker-compose.yml
+**Since we have custom images** we don't want to do the default `docker compose up` when after we cloned the repository but we do **`docker compose up --build`** <br />
+
+- **To start a container with attached shell** <br />
+    `docker compose run --rm -it owilix bash`
 
 # Mallet
 Ready to use right from the first start-up. It is binded to one of the same volumes of owilix's container (./all_data:/all_data) so the sliced dataset is ready to be topic-modelled (????? corretto). <br /> 

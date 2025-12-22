@@ -30,7 +30,7 @@ public class SearchController {
         try {
             List<Document> results = searchService.searchDocuments(query);
             //query to mongodb to check if record is already processed
-            //if not i send query to mallet and do inference
+            //if not I send query to mallet and do inference
             for (Document doc : results){
                 //query infer
 

@@ -22,7 +22,7 @@ The project's objective is to build a platform for obtaining documents from one 
 
 # Project's structure
 VERDE= (ipoteticamente) finito e funzionante, GIALLO = funzionante ma da integrare <br />
-![Project's schema](images/project_schema.png)
+![Project's schema](images/project_structure.svg)
 
 # **Components**
 

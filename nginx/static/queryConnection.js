@@ -74,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Iterate over the returned documents and render them dynamically
                 data.forEach(doc => {
+
                     const div = document.createElement("div");
 
                     // Assign CSS classes for styling purposes
@@ -83,9 +84,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     // providing fallback text if fields are missing
                     div.innerHTML = `
                         <h5>${doc.title || "(titolo mancante)"}</h5>
-                        <p>${doc.content || "(contenuto mancante)"}</p>
+                        <p>${doc.topic || "(topics mancanti)"}</p>
+                        <p>${doc.url || "(topics mancanti)"}</p>
                     `;
-
+                    //<p>${doc.main_content || "(topics mancanti)"}</p>
                     // Append the generated result element to the results container
                     resultsDiv.appendChild(div);
                 });

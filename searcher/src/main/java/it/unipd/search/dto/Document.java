@@ -3,9 +3,10 @@
  */
 package it.unipd.search.dto;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Objects;
 
 
 /**
@@ -50,14 +51,15 @@ public class Document {
     /**
      * Full textual content of the document.
      */
-    @JsonProperty("content")
+    @JsonProperty("main_content")
     private String main_content;
 
-    /*
     /**
-     * Topics or keywords associated with the document.
-     private String topics;
-*/
+     * Inferred topics related to the document
+     */
+    @JsonProperty("topic")
+    private String topic;
+
 
     public Document() {
     }
@@ -69,14 +71,17 @@ public class Document {
      * @param url     the URL associated with the document
      * @param title   the title of the document
      * @param main_content the main textual main_content of the document
-     //* @param topics  the topics or tags related to the document
+     * @param topic topic string inferred, related to the document
+    //*
      */
-    public Document(String id, String url, String title, String main_content) {
+    public Document(String id, String url, String title, String main_content, String topic) {
         this.id = id;
+        Objects.requireNonNull(url);
         this.url = url;
+        Objects.requireNonNull(title);
         this.title = title;
         this.main_content = main_content;
-        //this.topics = topics;
+        this.topic = topic;
     }
 
     /**
@@ -151,27 +156,15 @@ public class Document {
         this.main_content = newContent;
     }
 
-    /*
+
     /**
      * Returns the topics or keywords associated with the document.
      *
      * @return the document topics
      */
-/*    public String getTopics() {
-        return topics;
+    public String getTopic() {
+        return topic;
     }
-*/
-    /*
-    /**
-     * Sets new topics or keywords for the document.
-     *
-     * @param newTopics the new topics to assign
-     */
-    /*
-    public void setTopics(String newTopics) {
-        this.topics = newTopics;
-    }
-*/
 
     /**
      * Indicates whether this document is equal to another object.
@@ -206,4 +199,8 @@ public class Document {
     public int hashCode() {
         return Objects.hash(id, title);
     }
+
+
+
+
 }

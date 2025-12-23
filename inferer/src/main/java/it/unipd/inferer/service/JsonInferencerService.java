@@ -100,7 +100,7 @@ public class JsonInferencerService {
         String prevalentTopicWords = topicTopWords.get(prevalentTopic);
 
         // Build output Document
-        return new Document(url, title, "", prevalentTopicWords);
+        return new Document("",url, title, "", prevalentTopicWords);
     }
 
     /**

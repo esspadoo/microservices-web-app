@@ -100,6 +100,24 @@ services:
     networks:
       - softPlat-network
 
+
+#-----------------------------------------------------
+# IMPORTER — Spring's project app (REST).
+#-----------------------------------------------------
+  importer:
+    container_name: importer
+    image: importer
+    build:
+      context: ./importer
+      dockerfile: Dockerfile
+    ports:
+      - 8882:8882
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - softPlat-network
+
  
 #-----------------------------------------------------
 # NGINX — Reverse proxy for UI.

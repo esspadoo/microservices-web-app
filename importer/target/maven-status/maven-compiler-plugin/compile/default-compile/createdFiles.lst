@@ -1,0 +1,6 @@
+it/unipd/importer/Document.class
+it/unipd/importer/ImporterController.class
+it/unipd/importer/ImporterService.class
+it/unipd/importer/mongoDB_client.class
+it/unipd/importer/ElasticsearchClient_Importer.class
+it/unipd/importer/ImporterApplication.class

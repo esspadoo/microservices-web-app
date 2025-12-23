@@ -13,10 +13,19 @@
     <properties>
         <java.version>21</java.version>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>4.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
     <modules>
         <module>searcher</module>
         <module>inferer</module>
         <module>trainer</module>
+        <module>importer</module>
     </modules>
 
 </project>

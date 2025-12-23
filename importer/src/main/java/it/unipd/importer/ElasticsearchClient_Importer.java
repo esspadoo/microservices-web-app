@@ -48,7 +48,8 @@ public class ElasticsearchClient_Importer {
         try(BulkIngester<BinaryData> ingester = BulkIngester.of(b -> b
                 .client(esClient)
                 .maxOperations(1000)
-                .flushInterval(1, TimeUnit.SECONDS))) {
+                .flushInterval(1, TimeUnit.SECONDS))
+        ) {
 
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
                 String line;
@@ -61,6 +62,7 @@ public class ElasticsearchClient_Importer {
                                 "Not valid file's format: it mush be a NDJSON (a JSON for each row)"
                         );
                     }
+                    System.out.println(line);
 
                     BinaryData data = BinaryData.of(line.getBytes(StandardCharsets.UTF_8), ContentType.APPLICATION_JSON);
 

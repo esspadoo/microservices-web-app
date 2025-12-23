@@ -14,14 +14,16 @@ public class ImporterController {
         this.importerService = importerService;
     }
 
-
     @GetMapping("/hello")
     public String hello(){
         return "Hello this is a test, service INDEXER UP!";
     }
 
     @PostMapping("/import")
-    public ResponseEntity<String> import_indexFile(@RequestParam("file") MultipartFile file, @RequestParam(value = "indexName") String indexName) throws Exception {
+    public ResponseEntity<String> import_indexFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "indexName") String indexName
+    ) throws Exception {
         this.importerService.indexArticles(file.getInputStream(), indexName);
         return ResponseEntity.ok("Import avviato");
     }

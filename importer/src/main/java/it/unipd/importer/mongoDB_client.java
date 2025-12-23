@@ -50,7 +50,7 @@ public class mongoDB_client {
     /**
      * Name of the default database used by this client.
      */
-    private static final String DEFAULT_DATABASE_NAME = "mongoDB";
+    private static final String DEFAULT_DATABASE_NAME = "documents";
 
     /**
      * The underlying MongoDB client instance used to connect to the server.
@@ -69,7 +69,7 @@ public class mongoDB_client {
     public mongoDB_client() {
         mongoClient = MongoClients.create(
                 MongoClientSettings.builder()
-                        .applyConnectionString(new ConnectionString("mongodb://localhost:27017"))
+                        .applyConnectionString(new ConnectionString("mongodb://mongodb:27017"))
                         .build()
         );
     }

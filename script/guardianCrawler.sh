@@ -14,6 +14,9 @@ type jq > /dev/null 2>&1 || { echo >&2 "Required jq but it's not installed. Abor
 #creating directory if doesn't exists
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
+#clearing file if already exists
+echo "" > "$OUTPUT_FILE"
+
 #performing API request to the guardian api
 echo "Retrieving articles from The Guardian"
 for (( page = 1; page <= PAGES; page++ )); do

@@ -43,3 +43,6 @@ Thumbs.db
 application-local.properties
 application-local.yml
 .env
+
+### Custom
+all_data

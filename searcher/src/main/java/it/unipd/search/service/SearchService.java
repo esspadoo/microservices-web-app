@@ -20,7 +20,7 @@ public class SearchService {
         //String indexName = elasticsearchClient_Search.getIndexName();
 
         // PER ORA STATICA
-        String indexName = "prova";
+        String indexName = "guardian";
 
         return this.elasticsearchClient_Search.searchDocuments(indexName, "title", "main_content", query);
     }

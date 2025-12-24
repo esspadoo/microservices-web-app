@@ -3,6 +3,7 @@ package it.unipd.search.api;
 import it.unipd.search.client.InfererClient;
 import it.unipd.search.service.SearchService;
 import it.unipd.search.dto.Document;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,6 @@ public class SearchController {
     private SearchService searchService;
     @Autowired
     private InfererClient infererClient;
-
 
     @GetMapping("/hello")
     public String hello(){

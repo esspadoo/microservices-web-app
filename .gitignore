@@ -1,0 +1,45 @@
+### Build and Artifacts ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+### Log Files ###
+*.log
+logs/
+
+### IDE - IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+# Exclude the workspace file as it contains personal settings
+.idea/workspace.xml
+
+### IDE - Eclipse ###
+.metadata/
+.classpath
+.project
+.settings/
+*.launch
+bin/
+
+### IDE - VS Code ###
+.vscode/
+
+### Operating System ###
+.DS_Store
+Thumbs.db
+
+### Spring Boot / Application Secrets ###
+# Ignore local overrides for secrets/database credentials
+application-local.properties
+application-local.yml
+.env

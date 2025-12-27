@@ -4,6 +4,7 @@ import it.unipd.search.config.InfererProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /**
  * Entry point for the Spring Boot search application.
@@ -29,6 +30,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @SpringBootApplication
 @EnableConfigurationProperties(InfererProperties.class)
+@EnableMongoRepositories(basePackages = "it.unipd.search.repository")
 public class SearchApplication {
 
     /**
@@ -37,7 +39,6 @@ public class SearchApplication {
      * @param args command-line arguments passed to the application
      */
     public static void main(String[] args) {
-
         SpringApplication.run(SearchApplication.class, args);
 
     }

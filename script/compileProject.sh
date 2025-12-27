@@ -56,7 +56,7 @@ java -version
 SCRIPT_DIR=$(dirname "$0")
 PROJECT_ROOT=$(realpath "$SCRIPT_DIR/..")
 
-for module in inferer searcher; do
+for module in inferer searcher importer; do
     MODULE_DIR="$PROJECT_ROOT/$module"
     MVNW="$MODULE_DIR/mvnw"
 

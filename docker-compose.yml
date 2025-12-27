@@ -97,6 +97,8 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+      mongodb:
+        condition: service_healthy
     networks:
       - softPlat-network
 

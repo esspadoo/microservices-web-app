@@ -5,7 +5,6 @@ package it.unipd.search.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 
 
@@ -199,8 +198,5 @@ public class Document {
     public int hashCode() {
         return Objects.hash(id, title);
     }
-
-
-
 
 }

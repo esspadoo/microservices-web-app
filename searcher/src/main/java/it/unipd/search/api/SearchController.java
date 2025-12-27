@@ -1,6 +1,8 @@
 package it.unipd.search.api;
 
 import it.unipd.search.client.InfererClient;
+import it.unipd.search.dto.CacheDocument;
+import it.unipd.search.service.DocumentService;
 import it.unipd.search.service.SearchService;
 import it.unipd.search.dto.Document;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,12 @@ public class SearchController {
     @Autowired
     private InfererClient infererClient;
 
+    private final DocumentService documentService;
+
+    public SearchController(DocumentService documentService) {
+        this.documentService = documentService;
+    }
+
     @GetMapping("/hello")
     public String hello(){
         return "Hello this is a test, service SEARCHER UP!";
@@ -32,13 +40,21 @@ public class SearchController {
     @GetMapping("/searchDocuments")
     public ResponseEntity<?> searchDocuments(@RequestParam(value = "query") String query) {
         try {
-            List<Document> resultsElastic = searchService.searchDocuments(query);
-            //query to mongodb to check if record is already processed
-            //if not i send query to mallet and do inference
-            List<Document> results = infererClient.inferBatch(resultsElastic);
+            List<CacheDocument> cacheDocument = documentService.getDocumentsByQuery(query);
+            if(cacheDocument.isEmpty()) {
+                List<Document> resultsElastic = searchService.searchDocuments(query);
+                List<Document> results = infererClient.inferBatch(resultsElastic);
+//                documentService.insertDocuments(CacheDocument(
+//                        query = query
+//                ))
+                return ResponseEntity.ok(results);
+            } else {
+                List<Document> documents = cacheDocument.getFirst().getDocuments();
+                List<Document> results = infererClient.inferBatch(documents);
+                return ResponseEntity.ok(results);
+            }
 
             // from result --> inferer che ritorna qui con i topic che poi gestiamo
-            return ResponseEntity.ok(results);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));

@@ -44,9 +44,10 @@ public class SearchController {
             if(cacheDocument.isEmpty()) {
                 List<Document> resultsElastic = searchService.searchDocuments(query);
                 List<Document> results = infererClient.inferBatch(resultsElastic);
-//                documentService.insertDocuments(CacheDocument(
-//                        query = query
-//                ))
+                CacheDocument doc = new CacheDocument();
+                doc.setQuery(query);
+                doc.setDocuments(results);
+                documentService.insertDocuments(doc);
                 return ResponseEntity.ok(results);
             } else {
                 List<Document> documents = cacheDocument.getFirst().getDocuments();

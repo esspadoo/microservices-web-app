@@ -14,14 +14,6 @@ public class CacheDocument {
 
     private List<Document> documents;
 
-    public CacheDocument() {}
-
-    public CacheDocument(String id, String query, List<Document> documents) {
-        this.id = id;
-        this.query = query;
-        this.documents = documents;
-    }
-
     public String getId() {
         return id;
     }
@@ -32,5 +24,13 @@ public class CacheDocument {
 
     public List<Document> getDocuments() {
         return documents;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
     }
 }

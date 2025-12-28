@@ -3,8 +3,8 @@ set -e #exit if any commands exit with non zero status
 
 GUARDIAN_API_URL="https://content.guardianapis.com/search"
 API_KEY="5eaa4909-873b-4eac-b07c-9ef331376ff8"
-PAGES=15
-PAGE_SIZE=10
+PAGES=100
+PAGE_SIZE=50
 OUTPUT_FILE="../all_data/guardian.jsonl"
 
 #check if curl and jq are available

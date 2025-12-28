@@ -28,13 +28,20 @@ VERDE= (ipoteticamente) finito e funzionante, GIALLO = funzionante ma da integra
 
 # docker-compose.yml
 **Since we have custom images** we don't want to do the default `docker compose up`. <br />
-After we cloned the repository to a seamingless installation of the application we have to do
+To get started with a seamingless installation of the application, use the followings commands
 ```
-cd ~/.../softplat-project-main
-./script/compileProject.sh
+git clone https://gitlab.com/giancarlopadoan-group/softplat-project
+cd softplat-project-main/scripts
+chmox +x init.sh && ./init.sh
 cd ..
-docker compose up --build 
+docker compose up -d --build 
 ```
+Now we must feed elasticsearch with some input data
+```
+cd all_data/
+curl -X POST localhost:882/api/v1/importer/import -F "file=@guardian.jsonl" -F "indexName=guardian"
+```
+
 <br />
 
 - **To start a container with attached shell** <br />

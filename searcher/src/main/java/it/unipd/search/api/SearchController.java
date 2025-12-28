@@ -5,7 +5,6 @@ import it.unipd.search.dto.CacheDocument;
 import it.unipd.search.service.DocumentService;
 import it.unipd.search.service.SearchService;
 import it.unipd.search.dto.Document;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +41,7 @@ public class SearchController {
         try {
             List<CacheDocument> cacheDocument = documentService.getDocumentsByQuery(query);
             if(cacheDocument.isEmpty()) {
+		System.out.println("no document found");
                 List<Document> resultsElastic = searchService.searchDocuments(query);
                 List<Document> results = infererClient.inferBatch(resultsElastic);
                 CacheDocument doc = new CacheDocument();
@@ -50,6 +50,7 @@ public class SearchController {
                 documentService.insertDocuments(doc);
                 return ResponseEntity.ok(results);
             } else {
+		System.out.println("Documents founded!");
                 List<Document> documents = cacheDocument.getFirst().getDocuments();
                 List<Document> results = infererClient.inferBatch(documents);
                 return ResponseEntity.ok(results);

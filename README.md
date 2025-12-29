@@ -39,7 +39,7 @@ docker compose up -d --build
 Now we must feed elasticsearch with some input data
 ```
 cd all_data/
-curl -X POST localhost:882/api/v1/importer/import -F "file=@guardian.jsonl" -F "indexName=guardian"
+curl -X POST localhost:8882/api/v1/importer/import -F "file=@guardian.jsonl" -F "indexName=guardian"
 ```
 
 <br />

@@ -47,3 +47,5 @@ application-local.properties
 application-local.yml
 .env
 
+### custom
+all_data/

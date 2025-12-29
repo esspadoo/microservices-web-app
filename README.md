@@ -24,30 +24,51 @@ The project's objective is to build a platform for obtaining documents from one 
 VERDE= (ipoteticamente) finito e funzionante, GIALLO = funzionante ma da integrare <br />
 ![Project's schema](images/project_schema.png)
 
-# **Components**
-
-# docker-compose.yml
-**Since we have custom images** we don't want to do the default `docker compose up`. <br />
+# **GET STARTED**
 To get started with a seamingless installation of the application, use the followings commands
+Download the project with the following command.<br/>
 ```
 git clone https://gitlab.com/giancarlopadoan-group/softplat-project
+```
+
+After this we need some data to work on.
+
+#OpenWebIndex Data
+[This step is not mandatory, needed if you want to work also with OpenWebIndex dataset] <br/>
+Since the OpenWebIndex server, **at the moment of this release**, does not work via the CLI OWI tool provided,<br />
+a manual insertion of the dataset is needed.<br /><br />
+To perform it, proceed as follows:<br/>
+    - Download manually a dataset from the OpenWebIndex dataset repository, https://openwebindex.eu/owler/our_datasets <br />
+    - Unzip the downloaded dataset and place it in the following directory, /softplat-project/all_data/raw_data  
+
+# Start the services
+**Since we have custom images** we don't want to do the default `docker compose up`. <br />
+
+```
 cd softplat-project-main/scripts
 chmox +x init.sh && ./init.sh 
 ```
-Now we must feed elasticsearch with some input data
+
+The previous script, startup all the services, and retrieve some articles via the Guardian API.
+
+Now we must feed the elasticsearch service with the data.
 ```
 cd ../all_data/
 curl -X POST localhost:8882/api/v1/importer/import -F "file=@guardian.jsonl" -F "indexName=guardian"
+curl -X POST localhost:8882/api/v1/importer/import -F "file=@owi_output.jsonl" -F "indexName=owi"
 ```
 
 <br />
 
+
 - **To start a container with attached shell** <br />
     `docker compose run --rm -it owilix bash`
 
+#TO-----FINISSSSSSSSSSSSSSSSSSH_________________TO DOOOOOO
+##COMPONENTS
 
-
-# OWI
+# OWI [NOT RUNNING IN THE DEFAULT CONFIG]
+To startup modify the docker-compose.yml file and remove the comment on the Owi service.
 The following command provide a sequencial way to download a dataset using owilix-cli from the owi database and to export the database as a JsonL file.
 
 **A specific dataset denoted with internalID=XX has to be choosen, here in the example (and for the project too) we chose a dataset that is both "curlie_full" and "public".**
@@ -77,12 +98,6 @@ The following command provide a sequencial way to download a dataset using owili
 
 - **OWILIX export like a JSONL file** <br />
     `owilix query less --local all/internalID=f79bf6c8-52fe-11f0-a4a5-528c047b29ff as_json=True json_file=$PWD/all_data/json_out.json`<br />
-
-
-# Mallet
-Ready to use right from the first start-up. It is binded to one of the same volumes of owilix's container (./all_data:/all_data) so the sliced dataset is ready to be topic-modelled (????? corretto). <br /> 
-- **To create an interactive shell that is auto-destroyed at the exit from the container**: <br /> 
-    `docker compose run --rm -it mallet bash`
 
 
 # MongoDB

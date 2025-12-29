@@ -33,7 +33,7 @@ git clone https://gitlab.com/giancarlopadoan-group/softplat-project
 
 After this we need some data to work on.
 
-#OpenWebIndex Data
+# OpenWebIndex Data <br/>
 [This step is not mandatory, needed if you want to work also with OpenWebIndex dataset] <br/>
 Since the OpenWebIndex server, **at the moment of this release**, does not work via the CLI OWI tool provided,<br />
 a manual insertion of the dataset is needed.<br /><br />
@@ -55,7 +55,7 @@ Now we must feed the elasticsearch service with the data.
 ```
 cd ../all_data/
 curl -X POST localhost:8882/api/v1/importer/import -F "file=@guardian.jsonl" -F "indexName=guardian"
-curl -X POST localhost:8882/api/v1/importer/import -F "file=@owi_output.jsonl" -F "indexName=owi"
+curl -X POST localhost:8882/api/v1/importer/import -F "file=@owi.json" -F "indexName=owi"
 ```
 
 <br />

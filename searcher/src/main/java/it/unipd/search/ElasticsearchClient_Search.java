@@ -124,15 +124,16 @@ public class ElasticsearchClient_Search {
      * @throws IOException if an error occurs while communicating with
      * Elasticsearch
      */
-    public List<Document> searchDocuments(String indexName, String field1, String field2, String queryText) throws IOException {
+    public List<Document> searchDocuments(List<String> indexName, String field1, String field2, String queryText) throws IOException {
 
         List<Document> results = new ArrayList<>();
+        String indexes = String.join(",", indexName);
 
         SearchResponse<Document> response = esClient.search(s -> s
-                        .index(indexName)
+                        .index(indexes)
                         .query(q -> q
                                 .multiMatch(m -> m
-                                        .fields(field1 + "^3", field2) // primary boosted
+                                        .fields(field1 + "^2", field2) // primary boosted
                                         .query(queryText)
                                 )
                         ),

@@ -201,7 +201,7 @@ def stream_parquet_to_json(parquet_files: List[str], output_path: str):
 
 def main():
     DATASET_BASE_PATH = "../all_data/owi_data/"
-    OUTPUT_PATH = "../all_data/owi_output.json"
+    OUTPUT_PATH = "../all_data/owi.json"
 
     if not os.path.exists(DATASET_BASE_PATH):
         logger.error(f"Cartella non trovata: {DATASET_BASE_PATH}")

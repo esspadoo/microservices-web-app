@@ -17,6 +17,17 @@ mkdir -p "$(dirname "$OUTPUT_FILE")"
 #clearing file if already exists
 echo "" > "$OUTPUT_FILE"
 
+#progress bar setup
+if [ -t 1 ]; then
+    TERM_WIDTH=${COLUMNS:-80}
+    RESERVED_WIDTH=35
+    BAR_WIDTH=$(( TERM_WIDTH - RESERVED_WIDTH ))
+    (( BAR_WIDTH < 10 )) && BAR_WIDTH=10
+    (( BAR_WIDTH > 60 )) && BAR_WIDTH=60
+else
+    BAR_WIDTH=0
+fi
+
 #performing API request to the guardian api
 echo "Retrieving articles from The Guardian"
 for (( page = 1; page <= PAGES; page++ )); do
@@ -27,6 +38,21 @@ for (( page = 1; page <= PAGES; page++ )); do
       url: .webUrl,
       main_content: (.fields.bodyText // "")
     }' >> "$OUTPUT_FILE"
+
+    if (( BAR_WIDTH > 0 )); then
+            percent=$(( page * 100 / PAGES ))
+            filled=$(( page * BAR_WIDTH / PAGES ))
+            empty=$(( BAR_WIDTH - filled ))
+
+            bar="$(printf '%*s' "$filled" '' | tr ' ' '#')"
+            bar+=$(printf '%*s' "$empty" '')
+
+            printf "\rProgress: [%s] %3d%% (%d/%d pages)" \
+                "$bar" "$percent" "$page" "$PAGES"
+        fi
 done
+
+# Final newline to avoid prompt overlap
+[ -t 1 ] && echo
 
 echo "Success! Processed full bodies for $(wc -l < "$OUTPUT_FILE") articles."

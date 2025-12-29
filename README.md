@@ -32,13 +32,11 @@ To get started with a seamingless installation of the application, use the follo
 ```
 git clone https://gitlab.com/giancarlopadoan-group/softplat-project
 cd softplat-project-main/scripts
-chmox +x init.sh && ./init.sh
-cd ..
-docker compose up -d --build 
+chmox +x init.sh && ./init.sh 
 ```
 Now we must feed elasticsearch with some input data
 ```
-cd all_data/
+cd ../all_data/
 curl -X POST localhost:8882/api/v1/importer/import -F "file=@guardian.jsonl" -F "indexName=guardian"
 ```
 

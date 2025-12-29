@@ -3,25 +3,25 @@ services:
 #-----------------------------------------------------
 # OWILIX — Container used to download and filter OWI-related datasets
 #-----------------------------------------------------
-  owilix:
-    build: 
-      context: ./owi
-      dockerfile: Dockerfile
-    container_name: owilix
-    image: owilix
-    volumes:
-      - ./all_data/raw_data:/app/all_data/.owi
-      - ./all_data:/app/all_data
-    working_dir: /app
-    environment:
-      HOME: /app/all_data
-      OWI_PATH: /app/all_data/
-      OWI_AUTH_METHOD: device
-      PY4LEXYS_AUTH_METHOD: device
-      USE_DEVICE_FLOW: "true"
-    networks:
-      - softPlat-network
-    restart: no
+#  owilix:
+#    build:
+#      context: ./owi
+#      dockerfile: Dockerfile
+#    container_name: owilix
+#    image: owilix
+    #volumes:
+    #  - ./all_data/raw_data:/app/all_data/.owi
+    #  - ./all_data:/app/all_data
+#    working_dir: /app
+#    environment:
+#      HOME: /app/all_data
+#      OWI_PATH: /app/all_data/
+#      OWI_AUTH_METHOD: device
+#      PY4LEXYS_AUTH_METHOD: device
+#      USE_DEVICE_FLOW: "true"
+#    networks:
+#      - softPlat-network
+#    restart: no
 
 
 #-----------------------------------------------------
@@ -78,7 +78,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 30s
+      start_period: 50s
     volumes:
       - elasticsearch-volume:/usr/share/elasticsearch/data
 

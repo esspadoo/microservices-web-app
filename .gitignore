@@ -1,3 +1,6 @@
+### Custom
+!/all_data/**
+
 ### Build and Artifacts ###
 target/
 pom.xml.tag
@@ -44,5 +47,3 @@ application-local.properties
 application-local.yml
 .env
 
-### Custom
-all_data

@@ -1,0 +1,3 @@
+# Ignore Python virtual environment
+venv/
+owi_import (Copy).py

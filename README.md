@@ -36,7 +36,7 @@ git clone https://gitlab.com/giancarlopadoan-group/softplat-project
 
 ```
 cd softplat-project-main/scripts
-chmox +x init.sh && ./init.sh 
+chmod +x init.sh && ./init.sh 
 ```
 
 The previous script, startup all the services, and retrieve some articles via the Guardian API.

@@ -24,12 +24,22 @@ The project's objective is to build a platform for obtaining documents from one 
 VERDE= (ipoteticamente) finito e funzionante, GIALLO = funzionante ma da integrare <br />
 ![Project's schema](images/project_schema.png)
 
-# **GET STARTED**
+# **GETTING STARTED**
 To get started with a seamingless installation of the application, use the followings commands
 Download the project with the following command.<br/>
 ```
 git clone https://gitlab.com/giancarlopadoan-group/softplat-project
 ```
+
+# Start the services
+**Since we have custom images** we don't want to do the default `docker compose up`. <br />
+
+```
+cd softplat-project-main/scripts
+chmox +x init.sh && ./init.sh 
+```
+
+The previous script, startup all the services, and retrieve some articles via the Guardian API.
 
 After this we need some data to work on.
 
@@ -41,15 +51,6 @@ To perform it, proceed as follows:<br/>
     - Download manually a dataset from the OpenWebIndex dataset repository, https://openwebindex.eu/owler/our_datasets <br />
     - Unzip the downloaded dataset and place it in the following directory, /softplat-project/all_data/raw_data  
 
-# Start the services
-**Since we have custom images** we don't want to do the default `docker compose up`. <br />
-
-```
-cd softplat-project-main/scripts
-chmox +x init.sh && ./init.sh 
-```
-
-The previous script, startup all the services, and retrieve some articles via the Guardian API.
 
 Now we must feed the elasticsearch service with the data.
 ```

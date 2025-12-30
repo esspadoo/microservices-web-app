@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technology's queries</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>We &lt;3 SW platforms!</h1>
+    
+    <form id="searchForm">
+        <div class="form-group">
+            <label for="searchInput">Search text:</label>
+            <input type="text" id="searchInput" name="searchInput" class="form-control" placeholder="Enter keywords..." required>
+        </div>
+        <button type="submit" id="searchBtn" class="btn btn-primary btn-block">Search</button>
+    </form>
+    
+    <div id="results" class="container mt-3"></div>
+
+</div>
+
+
+
+<script src="queryConnection.js"></script>
+</body>
+</html>
+

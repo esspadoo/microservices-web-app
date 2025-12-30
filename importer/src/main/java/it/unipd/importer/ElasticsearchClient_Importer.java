@@ -3,40 +3,28 @@ package it.unipd.importer;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
 
-import co.elastic.clients.json.jackson.JacksonJsonpMapper;
-import co.elastic.clients.transport.ElasticsearchTransport;
-import co.elastic.clients.transport.rest_client.RestClientTransport;
 import co.elastic.clients.util.BinaryData;
 import co.elastic.clients.util.ContentType;
 import jakarta.annotation.PreDestroy;
-import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ElasticsearchClient_Importer {
 
-    private static final String ELASTICSEARCH_SERVICE_URL = "http://elasticsearch:9200";
-
     public final ElasticsearchClient esClient;
     private final RestClient restClient;
 
-    public ElasticsearchClient_Importer() {
-        this.restClient = RestClient.builder(HttpHost.create(ELASTICSEARCH_SERVICE_URL)).build();
-
-        // Create the transport with a Jackson mapper
-        ElasticsearchTransport transport = new RestClientTransport(
-                restClient,
-                new JacksonJsonpMapper()
-        );
-
-        // And create the API client
-        esClient = new ElasticsearchClient(transport);
+    @Autowired
+    public ElasticsearchClient_Importer(ElasticsearchClient esClient, RestClient restClient) {
+        this.esClient = esClient;
+        this.restClient = restClient;
     }
 
 

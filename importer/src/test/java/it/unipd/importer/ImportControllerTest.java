@@ -1,5 +1,7 @@
 package it.unipd.importer;
 
+import it.unipd.importer.api.ImporterController;
+import it.unipd.importer.service.ImporterService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;

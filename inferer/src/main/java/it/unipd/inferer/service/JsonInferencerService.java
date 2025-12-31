@@ -178,7 +178,7 @@ public class JsonInferencerService {
      * @return a temporary {@link File} containing the stopword list
      * @throws Exception if the resource cannot be accessed or written
      */
-    private static File resourceToTempFile() throws Exception {
+    static File resourceToTempFile() throws Exception {
 
         ClassPathResource resource = new ClassPathResource("stoplist.txt");
 

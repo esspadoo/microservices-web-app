@@ -58,7 +58,7 @@ public class Document {
      * Inferred topics related to the document
      */
     @JsonProperty("topic")
-    private String topic;
+    private String topics;
 
 
     public Document() {
@@ -81,7 +81,7 @@ public class Document {
         Objects.requireNonNull(title);
         this.title = title;
         this.main_content = main_content;
-        this.topic = topic;
+        this.topics = topic;
     }
 
     /**
@@ -162,21 +162,21 @@ public class Document {
      *
      * @return the document topics
      */
-/*    public String getTopics() {
+    public String getTopic() {
         return topics;
     }
-*/
+
     /*
     /**
      * Sets new topics or keywords for the document.
      *
      * @param newTopics the new topics to assign
      */
-    /*
-    public void setTopics(String newTopics) {
+
+    public void setTopic(String newTopics) {
         this.topics = newTopics;
     }
-*/
+
 
     /**
      * Indicates whether this document is equal to another object.

@@ -1,4 +1,4 @@
-package it.unipd.importer;
+package it.unipd.importer.config;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;

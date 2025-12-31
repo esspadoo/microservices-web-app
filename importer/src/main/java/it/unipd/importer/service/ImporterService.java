@@ -1,5 +1,6 @@
-package it.unipd.importer;
+package it.unipd.importer.service;
 
+import it.unipd.importer.ElasticsearchClient_Importer;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 

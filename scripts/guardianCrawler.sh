@@ -1,11 +1,27 @@
 #!/bin/bash
 set -e #exit if any commands exit with non zero status
 
-GUARDIAN_API_URL="https://content.guardianapis.com/search"
+GUARDIAN_API_URL="https://content.guardianapis.com/search?tag="
 API_KEY="5eaa4909-873b-4eac-b07c-9ef331376ff8"
 PAGES=100
 PAGE_SIZE=50
 OUTPUT_FILE="../all_data/guardian.jsonl"
+
+GUARDIAN_TAGS=(
+    "science/science"
+    "technology/technology"
+    "advertising/research"
+    "technology/computing"
+    "technology/artificialintelligence"
+    "technology/software"
+    "technology/games"
+    "technology/internet"
+    "technology/data-security"
+    "technology/hacking"
+    "technology/data-protection"
+    "artanddesign/graphic-design"
+    "artanddesign/digital-art"
+)
 
 #check if curl and jq are available
 type curl >/dev/null 2>&1 || { echo >&2 "Required curl but it's not installed. Aborting."; exit 1; }
@@ -28,10 +44,14 @@ else
     BAR_WIDTH=0
 fi
 
+#adding tags
+JOINED_TAGS=$(IFS="|"; echo "${GUARDIAN_TAGS[*]}")
+TAGS_URL="${GUARDIAN_API_URL}${JOINED_TAGS}"
+
 #performing API request to the guardian api
 echo "Retrieving articles from The Guardian"
 for (( page = 1; page <= PAGES; page++ )); do
-    curl -s "$GUARDIAN_API_URL?page-size=$PAGE_SIZE&api-key=$API_KEY&show-fields=bodyText&page=$page" | \
+    curl -s "$TAGS_URL&page-size=$PAGE_SIZE&api-key=$API_KEY&show-fields=bodyText&page=$page" | \
     jq -c '.response.results[] | {
       id: .id,
       title: .webTitle,

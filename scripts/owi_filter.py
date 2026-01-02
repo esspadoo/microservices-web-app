@@ -1,45 +1,68 @@
 #!/usr/bin/env python3
 
 import os
-import shutil
+import pandas as pd
 
-def copy_language_eng_folders(base_dir, dest_dir):
+def filter_parquet_by_category(src_dir, dest_dir, category="Computers"):
     """
-    For each immediate subdirectory in base_dir, recursively find the first folder
-    named 'language=eng' (case-insensitive) and copy it to dest_dir.
+    Filter all .parquet files in src_dir to keep only rows with curlielabels_en
+    containing the given category, and save them in dest_dir preserving structure.
     """
-    if not os.path.exists(dest_dir):
-        os.makedirs(dest_dir)
+    any_file_saved = False
 
-    # Iterate over immediate subdirectories
+    for root, _, files in os.walk(src_dir):
+        for file in files:
+            if file.endswith(".parquet"):
+                src_file = os.path.join(root, file)
+                try:
+                    df = pd.read_parquet(src_file, engine='auto')
+                    if 'curlielabels_en' in df.columns:
+                        # Mantains just the rows with the selected categories
+                        mask = df['curlielabels_en'].apply(
+                            lambda x: any(category in str(label) for label in x) if isinstance(x, (list, tuple, pd.Series)) else category in str(x)
+                        )
+                        filtered_df = df[mask]
+                        if not filtered_df.empty:
+                            rel_path = os.path.relpath(root, src_dir)
+                            dest_subdir = os.path.join(dest_dir, rel_path)
+                            os.makedirs(dest_subdir, exist_ok=True)
+                            dest_file = os.path.join(dest_subdir, file)
+                            filtered_df.to_parquet(dest_file)
+                            any_file_saved = True
+                except Exception as e:
+                    print(f"Warning: Could not process {src_file}: {e}")
+    return any_file_saved
+
+def copy_and_filter_language_eng(base_dir, dest_dir, category="Computers"):
+    """
+    For each immediate subfolder of base_dir, find the first folder “language=eng”
+    and filter all .parquet files for the category.
+    """
     for src_name in os.listdir(base_dir):
         src_path = os.path.join(base_dir, src_name)
         if os.path.isdir(src_path):
-            # Recursively scan this src_dir
-            for root, dirs, files in os.walk(src_path):
+            for root, dirs, _ in os.walk(src_path):
                 for dir_name in dirs:
                     if dir_name.lower() == "language=eng":
                         found_path = os.path.join(root, dir_name)
-                        # Copy the folder to destination
                         dest_path = os.path.join(dest_dir, f"{src_name}_language_eng")
-
-                        if os.path.exists(dest_path):
-                            print(f"Skipping {src_name}, already copied.")
+                        saved = filter_parquet_by_category(found_path, dest_path, category)
+                        if saved:
+                            print(f"Saved filtered files from {found_path} to {dest_path}")
                         else:
-                            shutil.copytree(found_path, dest_path)
-                            print(f"Copied {found_path} to {dest_path}")
-                        # Stop scanning this src_dir after first match
-                        break
+                            print(f"No '{category}' pages found in {found_path}, skipping.")
+                        break  # Stop after the first language=eng (there is just one for dataset)
                 else:
-                    # Continue walking if inner loop didn't break
                     continue
                 break
 
 def main():
     base_directory = "../all_data/raw_data"
     destination_directory = "../all_data/owi_data"
+    category = "Computers"  # Macro-categoria desired
 
-    copy_language_eng_folders(base_directory, destination_directory)
+    copy_and_filter_language_eng(base_directory, destination_directory, category)
 
 if __name__ == "__main__":
     main()
+

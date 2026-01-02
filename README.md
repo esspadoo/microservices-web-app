@@ -41,16 +41,16 @@ chmod +x init.sh && ./init.sh
 
 The previous script, startup all the services, and retrieve some articles via the Guardian API.
 
-After this we need some data to work on.
-
 # OpenWebIndex Data <br/>
 [This step is not mandatory, needed if you want to work also with OpenWebIndex dataset] <br/>
 Since the OpenWebIndex server, **at the moment of this release**, does not work via the CLI OWI tool provided,<br />
 a manual insertion of the dataset is needed.<br /><br />
 To perform it, proceed as follows:<br/>
     - Download manually a dataset from the OpenWebIndex dataset repository, https://openwebindex.eu/owler/our_datasets <br />
-    - Unzip the downloaded dataset and place it in the following directory, /softplat-project/all_data/raw_data  
+    - Unzip the downloaded dataset and place it in the following directory, *.../softplat-project/all_data/raw_data*  
+    - Go to the directory *.../softplat-project-main/scripts* and run `./py_init.sh` (to check first if it has the execute's permission) to filter the owi's dataset to contain only "Computer" related topics (the other will be discarded). This filtered-folder will be saved in *.../softplat-project-main/all_data/owi_data*, there will be also available a json-formatted file in the *.../softplat-project-main/all_data/* directory called **owi.json** with the filtered pages of the filtered-dataset.
 
+Go to *.../softplat-project-main* and check in the *docker-compose.yml* file if there are some conflicts with the ports chosen for the project (5050, 27017, 8881, 8882, 9200, 8080). You can finally run `sudo docker compose up -d --build`.
 
 Now we must feed the elasticsearch service with the data.
 ```
@@ -58,8 +58,9 @@ cd ../all_data/
 curl -X POST localhost:8882/api/v1/importer/import -F "file=@guardian.jsonl" -F "indexName=guardian"
 curl -X POST localhost:8882/api/v1/importer/import -F "file=@owi.json" -F "indexName=owi"
 ```
-
 <br />
+
+
 
 
 - **To start a container with attached shell** <br />

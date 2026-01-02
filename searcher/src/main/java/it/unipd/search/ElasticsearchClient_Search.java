@@ -140,27 +140,12 @@ public class ElasticsearchClient_Search {
                 Document.class
         );
 
-        /*
-        TotalHits total = response.hits().total();
-
-        assert total != null;
-        boolean isExactResult = total.relation() == TotalHitsRelation.Eq;
-
-        if (isExactResult) {
-            System.out.println("Number of results: " + total.value());
-        } else {
-            System.out.println("There are more than " + total.value() + " results");
-        }*/
-
         List<Hit<Document>> hits = response.hits().hits();
         for (Hit<Document> hit : hits) {
-//            Document doc = hit.source();
 
             if (hit.source() != null) {
                 results.add(hit.source());
             }
-  //          results.add(doc);
-  //          System.out.println("Found document " + doc.getId() + ", score " + hit.score());
         }
 
         return results;

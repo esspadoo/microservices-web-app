@@ -59,7 +59,9 @@ public class Document {
     @JsonProperty("topic")
     private String topic;
 
-
+    /**
+     * Default constructor required for deserialization.
+     */
     public Document() {
     }
 

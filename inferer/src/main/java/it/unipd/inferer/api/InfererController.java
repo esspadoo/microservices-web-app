@@ -19,6 +19,11 @@ import java.util.List;
  * The controller is mapped under the base path <code>/api/v1/</code> and
  * follows RESTful design principles using Spring Boot annotations.
  * </p>
+ *
+ * <p>
+ * The controller delegates all business logic to the service layer,
+ * ensuring a clear separation of concerns.
+ * </p>
  */
 @RestController
 @RequestMapping("/api/v1/")

@@ -10,21 +10,21 @@ import java.util.Objects;
 
 
 /**
- * Represents a document with identifying information, metadata, and textual content.
+ * Data Transfer Object (DTO) representing a textual document.
+ *
  * <p>
- * A {@code documents} instance encapsulates:
- * <ul>
- *   <li>a unique identifier</li>
- *   <li>a source URL</li>
- *   <li>a title</li>
- *   <li>the main textual content</li>
- *   <li>associated topics or tags</li>
- * </ul>
+ * A {@code Document} encapsulates identifying information, metadata,
+ * textual content, and inferred topic information.
  * </p>
+ *
  * <p>
- * Equality and hash code are defined based on the {@code id} and {@code title}
- * fields, allowing consistent behavior when instances are used in collections
- * such as {@link java.util.HashSet} or as keys in {@link java.util.HashMap}.
+ * This class is used both as input and output for REST API operations
+ * and is compatible with JSON serialization/deserialization via Jackson.
+ * </p>
+ *
+ * <p>
+ * Equality and hash code are defined based on the document identifier
+ * and title to ensure consistent behavior in collections.
  * </p>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

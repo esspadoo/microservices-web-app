@@ -2,7 +2,6 @@ package it.unipd.search.service;
 
 import it.unipd.search.ElasticsearchClient_Search;
 import it.unipd.search.dto.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -21,8 +20,17 @@ public class SearchService {
     /**
      * Elasticsearch client wrapper used to execute search queries.
      */
-    @Autowired
-    private ElasticsearchClient_Search elasticsearchClient_Search;
+    private final ElasticsearchClient_Search elasticsearchClient_Search;
+
+    /**
+     * Constructs a {@code SearchService} with the required Elasticsearch client.
+     *
+     * @param elasticsearchClient_Search client wrapper used to perform
+     *                                   search operations on Elasticsearch
+     */
+    public SearchService(ElasticsearchClient_Search elasticsearchClient_Search) {
+        this.elasticsearchClient_Search = elasticsearchClient_Search;
+    }
 
     /**
      * Executes a search query against predefined Elasticsearch indices.

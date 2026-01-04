@@ -5,7 +5,6 @@ import it.unipd.search.dto.CacheDocument;
 import it.unipd.search.service.DocumentService;
 import it.unipd.search.service.SearchService;
 import it.unipd.search.dto.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,24 +26,34 @@ import java.util.Map;
 public class SearchController {
 
     /** Service responsible for search execution. */
-    @Autowired
-    private SearchService searchService;
+    private final SearchService searchService;
 
     /** Service responsible for inference enrichment. */
-    @Autowired
-    private InfererClient infererClient;
+    private final InfererClient infererClient;
 
     /** Service responsible for caching search results. */
     private final DocumentService documentService;
 
+
     /**
-     * Constructs a {@code SearchController}.
+     * Constructs a {@code SearchController} with all required dependencies.
      *
-     * @param documentService document cache service
+     * <p>Dependencies are injected via constructor injection to ensure
+     * immutability, explicitness, and improved testability.</p>
+     *
+     * @param searchService   service responsible for executing search queries
+     *                        against the search backend (e.g. Elasticsearch)
+     * @param infererClient   client responsible for enriching search results
+     *                        through inference processing
+     * @param documentService service responsible for caching and retrieving
+     *                        search results
      */
-    public SearchController(DocumentService documentService) {
+    public SearchController(SearchService searchService, InfererClient infererClient, DocumentService documentService) {
+        this.searchService = searchService;
+        this.infererClient = infererClient;
         this.documentService = documentService;
     }
+
 
     /**
      * Health-check endpoint used to verify service availability.

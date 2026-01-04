@@ -2,7 +2,6 @@ package it.unipd.search.service;
 
 import it.unipd.search.dto.CacheDocument;
 import it.unipd.search.repository.DocumentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +25,6 @@ public class DocumentService {
      *
      * @param documentRepository MongoDB repository for cached documents
      */
-    @Autowired
     public DocumentService(DocumentRepository documentRepository) {
         this.documentRepository = documentRepository;
     }

@@ -36,7 +36,6 @@ public class ElasticsearchClient_Importer {
      * @param esClient   high-level Elasticsearch client
      * @param restClient low-level REST client
      */
-    @Autowired
     public ElasticsearchClient_Importer(ElasticsearchClient esClient, RestClient restClient) {
         this.esClient = esClient;
         this.restClient = restClient;

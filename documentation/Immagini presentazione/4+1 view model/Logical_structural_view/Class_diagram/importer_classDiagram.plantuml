@@ -1,0 +1,38 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class ElasticConfig {
+  + ElasticConfig(): 
+  + elasticsearchClient(RestClient): ElasticsearchClient
+  + restClient(): RestClient
+}
+class ElasticsearchClient_Importer {
+  + ElasticsearchClient_Importer(ElasticsearchClient, RestClient): 
+  - restClient: RestClient
+  + esClient: ElasticsearchClient
+  + bulkIndexWithContext(InputStream, String): void
+  + close(): void
+}
+class ImporterApplication {
+  + ImporterApplication(): 
+  + main(String[]): void
+}
+class ImporterController {
+  + ImporterController(ImporterService): 
+  - importerService: ImporterService
+  + hello(): String
+  + import_indexFile(MultipartFile, String): ResponseEntity<String>
+}
+class ImporterService {
+  + ImporterService(ElasticsearchClient_Importer): 
+  - elasticsearchClientIndexer: ElasticsearchClient_Importer
+  + indexArticles(InputStream, String): void
+}
+
+ImporterController           "1" *-[#595959,plain]-> "importerService\n1" ImporterService              
+ImporterService              "1" *-[#595959,plain]-> "elasticsearchClientIndexer\n1" ElasticsearchClient_Importer 
+@enduml

@@ -7,34 +7,34 @@ skinparam classAttributeIconSize 0
 
 class CacheDocument {
   + CacheDocument(): 
-  - id: String
-  - query: String
   - documents: List<Document>
-  + setDocuments(List<Document>): void
-  + getDocuments(): List<Document>
-  + setQuery(String): void
+  - query: String
+  - id: String
   + getQuery(): String
+  + getDocuments(): List<Document>
+  + setDocuments(List<Document>): void
   + getId(): String
+  + setQuery(String): void
 }
 class Document {
-  + Document(): 
   + Document(String, String, String, String, String): 
-  - id: String
-  - main_content: String
-  - topic: String
+  + Document(): 
   - url: String
+  - topic: String
   - title: String
-  + setUrl(String): void
-  + getMain_content(): String
-  + equals(Object): boolean
-  + hashCode(): int
-  + setId(String): void
-  + getUrl(): String
-  + getTitle(): String
-  + setMain_content(String): void
+  - main_content: String
+  - id: String
   + getTopic(): String
+  + hashCode(): int
+  + getMain_content(): String
+  + getTitle(): String
+  + getUrl(): String
   + getId(): String
+  + setMain_content(String): void
+  + setId(String): void
   + setTitle(String): void
+  + setUrl(String): void
+  + equals(Object): boolean
 }
 interface DocumentRepository << interface >> {
   + findByQuery(String): List<CacheDocument>
@@ -53,9 +53,9 @@ class ElasticsearchClient_Search {
 }
 class InfererClient {
   + InfererClient(RestTemplate, InfererProperties): 
+  - restTemplate: RestTemplate
   - infererProperties: InfererProperties
   - log: Logger
-  - restTemplate: RestTemplate
   + inferBatch(List<Document>): List<Document>
 }
 class InfererProperties {
@@ -73,7 +73,7 @@ class SearchApplication {
   + main(String[]): void
 }
 class SearchController {
-  + SearchController(DocumentService): 
+  + SearchController(SearchService, InfererClient, DocumentService): 
   - searchService: SearchService
   - documentService: DocumentService
   - infererClient: InfererClient
@@ -81,7 +81,7 @@ class SearchController {
   + searchDocuments(String): ResponseEntity<?>
 }
 class SearchService {
-  + SearchService(): 
+  + SearchService(ElasticsearchClient_Search): 
   - elasticsearchClient_Search: ElasticsearchClient_Search
   + searchDocuments(String): List<Document>
 }

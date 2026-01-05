@@ -24,14 +24,22 @@ The project's objective is to build a platform for obtaining documents from one 
 VERDE= (ipoteticamente) finito e funzionante, GIALLO = funzionante ma da integrare <br />
 ![Project's schema](images/project_schema.png)
 
-# **GET STARTED**
+# **GETTING STARTED**
 To get started with a seamingless installation of the application, use the followings commands
 Download the project with the following command.<br/>
 ```
 git clone https://gitlab.com/giancarlopadoan-group/softplat-project
 ```
 
-After this we need some data to work on.
+# Start the services
+**Since we have custom images** we don't want to do the default `docker compose up`. <br />
+
+```
+cd softplat-project-main/scripts
+chmod +x init.sh && ./init.sh 
+```
+
+The previous script, startup all the services, and retrieve some articles via the Guardian API.
 
 # OpenWebIndex Data <br/>
 [This step is not mandatory, needed if you want to work also with OpenWebIndex dataset] <br/>
@@ -39,17 +47,10 @@ Since the OpenWebIndex server, **at the moment of this release**, does not work 
 a manual insertion of the dataset is needed.<br /><br />
 To perform it, proceed as follows:<br/>
     - Download manually a dataset from the OpenWebIndex dataset repository, https://openwebindex.eu/owler/our_datasets <br />
-    - Unzip the downloaded dataset and place it in the following directory, /softplat-project/all_data/raw_data  
+    - Unzip the downloaded dataset and place it in the following directory, *.../softplat-project/all_data/raw_data*  
+    - Go to the directory *.../softplat-project-main/scripts* and run `./py_init.sh` (to check first if it has the execute's permission) to filter the owi's dataset to contain only "Computer" related topics (the other will be discarded). This filtered-folder will be saved in *.../softplat-project-main/all_data/owi_data*, there will be also available a json-formatted file in the *.../softplat-project-main/all_data/* directory called **owi.json** with the filtered pages of the filtered-dataset.
 
-# Start the services
-**Since we have custom images** we don't want to do the default `docker compose up`. <br />
-
-```
-cd softplat-project-main/scripts
-chmox +x init.sh && ./init.sh 
-```
-
-The previous script, startup all the services, and retrieve some articles via the Guardian API.
+Go to *.../softplat-project-main* and check in the *docker-compose.yml* file if there are some conflicts with the ports chosen for the project (5050, 27017, 8881, 8882, 9200, 8080). You can finally run `sudo docker compose up -d --build`.
 
 Now we must feed the elasticsearch service with the data.
 ```
@@ -57,8 +58,9 @@ cd ../all_data/
 curl -X POST localhost:8882/api/v1/importer/import -F "file=@guardian.jsonl" -F "indexName=guardian"
 curl -X POST localhost:8882/api/v1/importer/import -F "file=@owi.json" -F "indexName=owi"
 ```
-
 <br />
+
+
 
 
 - **To start a container with attached shell** <br />
@@ -70,6 +72,8 @@ curl -X POST localhost:8882/api/v1/importer/import -F "file=@owi.json" -F "index
 # OWI [NOT RUNNING IN THE DEFAULT CONFIG]
 To startup modify the docker-compose.yml file and remove the comment on the Owi service.
 The following command provide a sequencial way to download a dataset using owilix-cli from the owi database and to export the database as a JsonL file.
+
+**DATASET SCARICATO: owilix remote pull all/internalID=9e8b85a0-d5d3-11f0-a4ba-f6a03915313d**
 
 **A specific dataset denoted with internalID=XX has to be choosen, here in the example (and for the project too) we chose a dataset that is both "curlie_full" and "public".**
 
@@ -106,15 +110,3 @@ Ready to use from the first start-up, the container has already installed the ma
 
 # Nginx
 The static HTML site is mapped at the port 4321 to avoid conflicts with other services mapped at the default port (80) on the host machine. To view it, simply connect to the URL `http://localhost:4321/`. It remains up and running once the command ‘docker compose up’ has been executed.
-
-
-
-
-
-
-
-
-
-
-
-

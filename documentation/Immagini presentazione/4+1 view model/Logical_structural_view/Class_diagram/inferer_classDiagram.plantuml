@@ -1,0 +1,64 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+interface DocService << interface >> {
+  + inferBatch(List<Document>): List<Document>
+  + infer(Document): Document
+}
+class DocServiceImpl {
+  + DocServiceImpl(): 
+  - topicTopWords: Map<Integer, String>
+  - model: ParallelTopicModel
+  + inferBatch(List<Document>): List<Document>
+  + infer(Document): Document
+  - loadModel(): ParallelTopicModel
+  + init(): void
+}
+class Document {
+  + Document(String, String, String, String, String): 
+  + Document(): 
+  - url: String
+  - title: String
+  - topics: String
+  - id: String
+  - main_content: String
+  + setMain_content(String): void
+  + setTitle(String): void
+  + setUrl(String): void
+  + hashCode(): int
+  + setTopic(String): void
+  + getTopic(): String
+  + getUrl(): String
+  + getId(): String
+  + getTitle(): String
+  + equals(Object): boolean
+  + setId(String): void
+  + getMain_content(): String
+}
+class InfererApplication {
+  + InfererApplication(): 
+  + main(String[]): void
+}
+class InfererController {
+  + InfererController(DocServiceImpl): 
+  - docService: DocService
+  + hello(): String
+  + inferTopics(Document): Document
+  + inferBatchTopics(List<Document>): List<Document>
+}
+class JsonInferencerService {
+  + JsonInferencerService(): 
+  + inferPrevalentTopicJsonl(TopicInferencer, Document, Map<Integer, String>): Document
+  - argMax(double[]): int
+  ~ resourceToTempFile(): File
+  + computeTopicTopWords(ParallelTopicModel, int): Map<Integer, String>
+}
+
+DocServiceImpl         -[#008200,dashed]-^  DocService            
+InfererController     "1" *-[#595959,plain]-> "docService\n1" DocService            
+JsonInferencerService  -[#595959,dashed]->  Document              : "«create»"
+@enduml

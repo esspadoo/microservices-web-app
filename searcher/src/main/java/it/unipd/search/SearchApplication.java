@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  * <p>
  * This class is annotated with {@link SpringBootApplication}, which indicates that it is the
  * primary configuration class for the Spring Boot application. It enables component scanning,
- * auto-configuration, and configuration properties scanning.
+ * auto-configuration and configuration properties scanning.
  * </p>
  * <p>
  * The {@link #main(String[])} method launches the application by invoking

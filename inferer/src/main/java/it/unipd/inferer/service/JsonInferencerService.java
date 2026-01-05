@@ -19,18 +19,30 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Utility service providing topic inference and model introspection functions.
+ * Utility service for topic inference and topic model introspection using MALLET.
+ *
  * <p>
- * This class contains static helper methods used to perform topic inference
- * on textual documents using a trained MALLET {@link ParallelTopicModel}.
- * It also provides functionality to extract human-readable topic descriptions
- * and manage auxiliary resources such as stopword lists.
+ * This class provides a collection of static helper methods to perform topic
+ * inference on textual documents using a pre-trained
+ * {@link cc.mallet.topics.ParallelTopicModel}.
+ * It is responsible for:
+ * </p>
+ *
+ * <ul>
+ *   <li>Preprocessing raw text using a MALLET-compatible pipeline</li>
+ *   <li>Inferring topic distributions for unseen documents</li>
+ *   <li>Identifying the most prevalent topic for a document</li>
+ *   <li>Extracting human-readable topic representations</li>
+ * </ul>
+ *
+ * <p>
+ * The class is stateless and thread-safe, assuming the underlying MALLET
+ * {@link cc.mallet.topics.TopicInferencer} is thread-safe.
  * </p>
  *
  * <p>
- * The class is designed as a stateless utility component and does not maintain
- * any internal state. All methods are static and thread-safe assuming that
- * the underlying model and inferencer are thread-safe.
+ * This service is intentionally designed as a utility class and is not managed
+ * directly by the Spring container.
  * </p>
  */
 public class JsonInferencerService {
@@ -40,7 +52,7 @@ public class JsonInferencerService {
      * <p>
      * The document text is preprocessed using a pipeline that must match the
      * preprocessing configuration used during model training. The resulting
-     * topic distribution is computed using Gibbs sampling, and the topic with
+     * topic distribution is computed using Gibbs sampling and the topic with
      * the highest probability is selected as the prevalent one.
      * </p>
      *
@@ -128,10 +140,12 @@ public class JsonInferencerService {
     }
 
     /**
-     * Computes the most representative words for each topic in a trained model.
+     * Computes a human-readable representation of topics by extracting
+     * the most representative words for each topic.
+     *
      * <p>
-     * For each topic, the method extracts the top {@code numWords} terms based
-     * on their weights and builds a human-readable string representation.
+     * For each topic in the model, the method retrieves the top {@code numWords}
+     * terms ranked by their weight and concatenates them into a single string.
      * </p>
      *
      * @param model the trained {@link ParallelTopicModel}
@@ -178,7 +192,7 @@ public class JsonInferencerService {
      * @return a temporary {@link File} containing the stopword list
      * @throws Exception if the resource cannot be accessed or written
      */
-    private static File resourceToTempFile() throws Exception {
+    static File resourceToTempFile() throws Exception {
 
         ClassPathResource resource = new ClassPathResource("stoplist.txt");
 

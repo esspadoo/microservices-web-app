@@ -13,13 +13,30 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Client component responsible for communicating with the external
+ * inference service.
+ *
+ * <p>The service enriches documents with inferred metadata
+ * such as topics or classifications.</p>
+ */
 @Service
 public class InfererClient {
 
+    /** REST client used to communicate with the inference service. */
     private final RestTemplate restTemplate;
+
+    /** Configuration properties for the inference service. */
     private final InfererProperties infererProperties;
+
     private static final Logger log = LoggerFactory.getLogger(InfererClient.class);
 
+    /**
+     * Constructs an {@code InfererClient}.
+     *
+     * @param restTemplate REST client
+     * @param infererProperties inference service configuration
+     */
     public InfererClient(
             RestTemplate restTemplate,
             InfererProperties infererProperties) {
@@ -27,6 +44,14 @@ public class InfererClient {
         this.infererProperties = infererProperties;
     }
 
+    /**
+     * Sends a batch of documents to the inference service and
+     * returns enriched results.
+     *
+     * @param requests list of documents to process
+     * @return list of inferred documents
+     * @throws IllegalStateException if the service URL is invalid
+     */
     public List<Document> inferBatch(List<Document> requests) {
 
         String baseUrl = infererProperties.getBaseUrl();

@@ -3,43 +3,55 @@ package it.unipd.importer;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
 
-import co.elastic.clients.json.jackson.JacksonJsonpMapper;
-import co.elastic.clients.transport.ElasticsearchTransport;
-import co.elastic.clients.transport.rest_client.RestClientTransport;
 import co.elastic.clients.util.BinaryData;
 import co.elastic.clients.util.ContentType;
 import jakarta.annotation.PreDestroy;
-import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Component responsible for interacting with Elasticsearch for bulk indexing operations.
+ *
+ * <p>This class reads NDJSON data from an input stream and indexes each JSON document
+ * into a specified Elasticsearch index using bulk operations for efficiency.
+ */
 @Component
 public class ElasticsearchClient_Importer {
 
-    private static final String ELASTICSEARCH_SERVICE_URL = "http://elasticsearch:9200";
-
+    /** High-level Elasticsearch client */
     public final ElasticsearchClient esClient;
+
+    /** Low-level REST client */
     private final RestClient restClient;
 
-    public ElasticsearchClient_Importer() {
-        this.restClient = RestClient.builder(HttpHost.create(ELASTICSEARCH_SERVICE_URL)).build();
-
-        // Create the transport with a Jackson mapper
-        ElasticsearchTransport transport = new RestClientTransport(
-                restClient,
-                new JacksonJsonpMapper()
-        );
-
-        // And create the API client
-        esClient = new ElasticsearchClient(transport);
+    /**
+     * Constructs an ElasticsearchClient_Importer with the required clients.
+     *
+     * @param esClient   high-level Elasticsearch client
+     * @param restClient low-level REST client
+     */
+    public ElasticsearchClient_Importer(ElasticsearchClient esClient, RestClient restClient) {
+        this.esClient = esClient;
+        this.restClient = restClient;
     }
 
-
+    /**
+     * Performs bulk indexing of documents read from an NDJSON input stream.
+     *
+     * <p>If the specified index does not exist, it is created automatically.
+     * Each non-empty line of the input stream must be a valid JSON object.
+     *
+     * @param inputStream input stream containing NDJSON data
+     * @param indexName   name of the Elasticsearch index
+     * @throws Exception if the index operation fails or the input format is invalid
+     * @throws IllegalArgumentException if the file format is not valid NDJSON
+     */
     public void bulkIndexWithContext(InputStream inputStream, String indexName) throws Exception {
         if (!esClient.indices().exists(b -> b.index(indexName)).value()) {
             esClient.indices().create(c -> c.index(indexName));
@@ -77,6 +89,11 @@ public class ElasticsearchClient_Importer {
         }
     }
 
+    /**
+     * Closes the Elasticsearch REST client when the application shuts down.
+     *
+     * @throws IOException if an error occurs while closing the client
+     */
     @PreDestroy
     public void close() throws IOException {
         restClient.close();

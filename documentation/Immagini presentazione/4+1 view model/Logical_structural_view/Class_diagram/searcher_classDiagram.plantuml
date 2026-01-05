@@ -1,0 +1,97 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class CacheDocument {
+  + CacheDocument(): 
+  - documents: List<Document>
+  - query: String
+  - id: String
+  + getQuery(): String
+  + getDocuments(): List<Document>
+  + setDocuments(List<Document>): void
+  + getId(): String
+  + setQuery(String): void
+}
+class Document {
+  + Document(String, String, String, String, String): 
+  + Document(): 
+  - url: String
+  - topic: String
+  - title: String
+  - main_content: String
+  - id: String
+  + getTopic(): String
+  + hashCode(): int
+  + getMain_content(): String
+  + getTitle(): String
+  + getUrl(): String
+  + getId(): String
+  + setMain_content(String): void
+  + setId(String): void
+  + setTitle(String): void
+  + setUrl(String): void
+  + equals(Object): boolean
+}
+interface DocumentRepository << interface >> {
+  + findByQuery(String): List<CacheDocument>
+}
+class DocumentService {
+  + DocumentService(DocumentRepository): 
+  - documentRepository: DocumentRepository
+  + insertDocuments(CacheDocument): CacheDocument
+  + getDocumentsByQuery(String): List<CacheDocument>
+}
+class ElasticsearchClient_Search {
+  # ElasticsearchClient_Search(): 
+  - esClient: ElasticsearchClient
+  - SERVER_URL: String
+  + searchDocuments(List<String>, String, String, String): List<Document>
+}
+class InfererClient {
+  + InfererClient(RestTemplate, InfererProperties): 
+  - restTemplate: RestTemplate
+  - infererProperties: InfererProperties
+  - log: Logger
+  + inferBatch(List<Document>): List<Document>
+}
+class InfererProperties {
+  + InfererProperties(): 
+  - baseUrl: String
+  + getBaseUrl(): String
+  + setBaseUrl(String): void
+}
+class RestClientConfig {
+  + RestClientConfig(): 
+  + restTemplate(): RestTemplate
+}
+class SearchApplication {
+  + SearchApplication(): 
+  + main(String[]): void
+}
+class SearchController {
+  + SearchController(SearchService, InfererClient, DocumentService): 
+  - searchService: SearchService
+  - documentService: DocumentService
+  - infererClient: InfererClient
+  + hello(): String
+  + searchDocuments(String): ResponseEntity<?>
+}
+class SearchService {
+  + SearchService(ElasticsearchClient_Search): 
+  - elasticsearchClient_Search: ElasticsearchClient_Search
+  + searchDocuments(String): List<Document>
+}
+
+CacheDocument              "1" *-[#595959,plain]-> "documents\n*" Document                   
+DocumentService            "1" *-[#595959,plain]-> "documentRepository\n1" DocumentRepository         
+InfererClient              "1" *-[#595959,plain]-> "infererProperties\n1" InfererProperties          
+SearchController            -[#595959,dashed]->  CacheDocument              : "«create»"
+SearchController           "1" *-[#595959,plain]-> "documentService\n1" DocumentService            
+SearchController           "1" *-[#595959,plain]-> "infererClient\n1" InfererClient              
+SearchController           "1" *-[#595959,plain]-> "searchService\n1" SearchService              
+SearchService              "1" *-[#595959,plain]-> "elasticsearchClient_Search\n1" ElasticsearchClient_Search 
+@enduml

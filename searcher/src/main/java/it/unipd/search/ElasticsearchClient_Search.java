@@ -19,33 +19,36 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 /**
- * Provides a simple search-oriented wrapper around the official Elasticsearch
- * Java API client.
- * <p>
- * This class is responsible for creating and holding an
- * {@link ElasticsearchClient} connected to a local Elasticsearch node and
- * exposing a utility method for performing text-based search queries on a
- * given index.
- * </p>
- * <p>
- * The client connects by default to {@code https://localhost:9200}. Connection
- * details (authentication, SSL configuration, timeouts) are assumed to be
- * handled externally or via default settings.
- * </p>
+ * Spring-managed component providing a high-level abstraction over the
+ * official Elasticsearch Java API client.
  *
- * <h2>Responsibilities</h2>
+ * <p>
+ * This class is responsible for:
+ * </p>
  * <ul>
- * <li>Initialize an {@link ElasticsearchClient} using the REST transport.</li>
- * <li>Execute {@code match} or {@code match_phrase} search queries.</li>
- * <li>Collect and return matching documents.</li>
+ *   <li>Initializing and configuring a connection to an Elasticsearch cluster</li>
+ *   <li>Executing full-text search queries over one or more indices</li>
+ *   <li>Mapping Elasticsearch search hits to application-level {@link Document} objects</li>
  * </ul>
  *
- * <h2>Thread safety</h2>
  * <p>
- * {@link ElasticsearchClient} instances are thread-safe. This class can be
- * shared across threads provided that lifecycle management of the underlying
- * REST client is handled appropriately.
+ * The client connects to an Elasticsearch node using the REST transport layer
+ * and the Jackson JSON mapper. The connection endpoint is currently configured
+ * to target a containerized Elasticsearch instance.
  * </p>
+ *
+ * <p>
+ * The search logic uses a {@code multi_match} query, boosting relevance for a
+ * primary field (e.g. document title) while also searching a secondary field
+ * (e.g. main content).
+ * </p>
+ *
+ * <p>
+ * This component is thread-safe and can be safely shared across concurrent
+ * requests, as the underlying {@link ElasticsearchClient} is designed to be
+ * thread-safe.
+ * </p>
+ *
  */
 @Component
 public class ElasticsearchClient_Search {
@@ -71,15 +74,12 @@ public class ElasticsearchClient_Search {
      * finally creates the high-level API client.
      * </p>
      * <p>
-     * The constructor is {@code protected} to restrict instantiation to the
-     * same package or subclasses, suggesting controlled lifecycle or factory
-     * usage.
+     * The constructor is {@code protected} to restrict uncontrolled instantiation to the
+     * same package or subclasses.
      * </p>
      *
      */
-
     protected ElasticsearchClient_Search() {
-    //public ElasticsearchClient_Search() {
         RestClient restClient = RestClient.builder(HttpHost.create(SERVER_URL)).build();
 
         // Create the transport with a Jackson mapper
@@ -88,7 +88,7 @@ public class ElasticsearchClient_Search {
                 new JacksonJsonpMapper()
         );
 
-        // And create the API client
+        //Creation of the API client
         esClient = new ElasticsearchClient(transport);
     }
 
@@ -96,15 +96,10 @@ public class ElasticsearchClient_Search {
     /**
      * Executes a search query on the specified Elasticsearch index and returns
      * the matching documents.
+     * <p>The query uses a {@code multi_match} strategy, assigning a higher boost
+     * to the primary field (the document title) than the main_content.</p>
      * <p>
-     * Depending on the value of {@code type}, the method performs either:
-     * </p>
-     * <ul>
-     * <li>a {@code match_phrase} query (if {@code type.equals("matchPhrase")} ), or</li>
-     * <li>a standard {@code match} query (for any other value of {@code type}).</li>
-     * </ul>
-     * <p>
-     * The search is executed against a single field and the textual query is
+     * The search is executed against two fields and the textual query is
      * provided verbatim to Elasticsearch.
      * </p>
      * <p>
@@ -117,8 +112,6 @@ public class ElasticsearchClient_Search {
      * @param field1 the document field on which the query is executed with a *3 boost
      * @param field2 the document field on which the query is executed
      * @param queryText the textual query value
-     * {@code "matchPhrase"}, a {@code match_phrase} query
-     * is used, otherwise a {@code match} query is executed
      * @return a {@link List} of {@link Document} instances representing the
      * sources of the matching Elasticsearch documents
      * @throws IOException if an error occurs while communicating with
@@ -140,32 +133,15 @@ public class ElasticsearchClient_Search {
                 Document.class
         );
 
-        /*
-        TotalHits total = response.hits().total();
-
-        assert total != null;
-        boolean isExactResult = total.relation() == TotalHitsRelation.Eq;
-
-        if (isExactResult) {
-            System.out.println("Number of results: " + total.value());
-        } else {
-            System.out.println("There are more than " + total.value() + " results");
-        }*/
-
         List<Hit<Document>> hits = response.hits().hits();
         for (Hit<Document> hit : hits) {
-//            Document doc = hit.source();
 
             if (hit.source() != null) {
                 results.add(hit.source());
             }
-  //          results.add(doc);
-  //          System.out.println("Found document " + doc.getId() + ", score " + hit.score());
         }
-
         return results;
     }
-
 
 
 }

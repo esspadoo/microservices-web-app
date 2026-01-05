@@ -10,21 +10,21 @@ import java.util.Objects;
 
 
 /**
- * Represents a document with identifying information, metadata, and textual content.
+ * Data Transfer Object (DTO) representing a textual document.
+ *
  * <p>
- * A {@code documents} instance encapsulates:
- * <ul>
- *   <li>a unique identifier</li>
- *   <li>a source URL</li>
- *   <li>a title</li>
- *   <li>the main textual content</li>
- *   <li>associated topics or tags</li>
- * </ul>
+ * A {@code Document} encapsulates identifying information, metadata,
+ * textual content, and inferred topic information.
  * </p>
+ *
  * <p>
- * Equality and hash code are defined based on the {@code id} and {@code title}
- * fields, allowing consistent behavior when instances are used in collections
- * such as {@link java.util.HashSet} or as keys in {@link java.util.HashMap}.
+ * This class is used both as input and output for REST API operations
+ * and is compatible with JSON serialization/deserialization via Jackson.
+ * </p>
+ *
+ * <p>
+ * Equality and hash code are defined based on the document identifier
+ * and title to ensure consistent behavior in collections.
  * </p>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -58,7 +58,7 @@ public class Document {
      * Inferred topics related to the document
      */
     @JsonProperty("topic")
-    private String topic;
+    private String topics;
 
 
     public Document() {
@@ -81,7 +81,7 @@ public class Document {
         Objects.requireNonNull(title);
         this.title = title;
         this.main_content = main_content;
-        this.topic = topic;
+        this.topics = topic;
     }
 
     /**
@@ -162,21 +162,21 @@ public class Document {
      *
      * @return the document topics
      */
-/*    public String getTopics() {
+    public String getTopic() {
         return topics;
     }
-*/
+
     /*
     /**
      * Sets new topics or keywords for the document.
      *
      * @param newTopics the new topics to assign
      */
-    /*
-    public void setTopics(String newTopics) {
+
+    public void setTopic(String newTopics) {
         this.topics = newTopics;
     }
-*/
+
 
     /**
      * Indicates whether this document is equal to another object.

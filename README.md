@@ -73,6 +73,8 @@ curl -X POST localhost:8882/api/v1/importer/import -F "file=@owi.json" -F "index
 To startup modify the docker-compose.yml file and remove the comment on the Owi service.
 The following command provide a sequencial way to download a dataset using owilix-cli from the owi database and to export the database as a JsonL file.
 
+**DATASET SCARICATO: owilix remote pull all/internalID=9e8b85a0-d5d3-11f0-a4ba-f6a03915313d**
+
 **A specific dataset denoted with internalID=XX has to be choosen, here in the example (and for the project too) we chose a dataset that is both "curlie_full" and "public".**
 
 ### Usage

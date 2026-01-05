@@ -11,6 +11,8 @@ import os
 import logging
 from pathlib import Path
 from typing import List
+import shutil
+
 
 import pyarrow.parquet as pq
 import pyarrow as pa

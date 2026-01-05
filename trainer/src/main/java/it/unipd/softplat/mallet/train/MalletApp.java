@@ -99,13 +99,14 @@ public class MalletApp {
      */
     public static void main(String[] args) throws Exception {
 
+        System.out.println("\n...START CLEANING");
         // Clean the JSON from HTML tags
         JsonHtmlCleaner.clean();
-
+        System.out.println("\n...CLEANED JSONL");
         // Read data from the cleaned JSON file
-        InputStream dataInputStream = Files.newInputStream(Paths.get("mallet/src/main/resources/clean_json_out.json"));
+        InputStream dataInputStream = Files.newInputStream(Paths.get("trainer/src/main/resources/clean_json_out.json"));
         File stoplist = new File(MalletApp.class.getClassLoader().getResource("stoplist.txt").getFile());
-        File inferer = new File("mallet/src/main/resources/inferer.model");
+        File inferer = new File("trainer/src/main/resources/inferer.model");
 
         // Create InstanceList from input documents
         InstanceList instances = createInstanceList(dataInputStream, stoplist);

@@ -45,7 +45,7 @@ The previous script, startup all the services, and retrieve some articles via th
 **[This step is not mandatory]**<br/>
 If you want to work also with OpenWebIndex dataset follow **INSTEAD** this manual procedure.<br/>
 
-1. Start the owilix service:<br/>`docker compose -f owi-docker-compose.yml run --rm -it owilix bash`
+1. From the project root directory start the owilix service:<br/>`sudo docker compose -f owi-docker-compose.yml run --rm -it owilix bash`
    - **!IMPORTANT**: if you already have other images of owilix make sure to delete them and re-build following the above procedure otherwise the service will not work properly  
 2. After the service boot up, download a preferred dataset:<br/>`owilix --yes remote pull all/internalID=PASTE-YOUR-DATASET-ID --threads=10 --language=eng` and follow the instruction prompted.<br/>
    - You can choose your dataset between the ones provided here: [OWI Datasets](https://openwebindex.eu/owler/our_datasets)<br/>

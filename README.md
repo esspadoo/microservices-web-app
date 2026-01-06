@@ -56,7 +56,11 @@ If you want to work also with OpenWebIndex dataset follow **INSTEAD** this manua
    cd ./scripts
    sudo chmod +x init.sh && ./init.sh
 ```
-
+- If you want to refresh the crawl of THE GUARDIAN data just replace the command with 
+```
+   cd ./scripts
+   sudo chmod +x init.sh && ./init.sh --guardian-force
+```
 Go to *.../softplat-project-main* and check in the *docker-compose.yml* file if there are some conflicts with the ports chosen for the project (5050, 27017, 8881, 8882, 9200, 8080). You can finally run `sudo docker compose up -d --build`.
 
 #TO-----FINISSSSSSSSSSSSSSSSSSH_________________TO DOOOOOO

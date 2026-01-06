@@ -13,12 +13,3 @@ WORKDIR /app
 # Install the required Python packages
 RUN pip install py4lexis --index-url https://opencode.it4i.eu/api/v4/projects/107/packages/pypi/simple && \
     pip install owilix --index-url https://opencode.it4i.eu/api/v4/projects/92/packages/pypi/simple
-    
-# Create dataset directory
-RUN mkdir -p /app/all_data
-
-WORKDIR ./all_data
-    
-RUN mkdir -p ./raw_data
-
-

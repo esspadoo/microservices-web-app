@@ -1,7 +1,27 @@
 #!/bin/bash
+set -euo pipefail
+
+FORCE_GUARDIAN=false
+
+for arg in "$@"; do
+  case "$arg" in
+    --guardian-force)
+      FORCE_GUARDIAN=true
+      ;;
+  esac
+done
 
 source "compileProject.sh"
-source "guardianCrawler.sh"
+
+GUARDIAN_FILE="all_data/guardian.jsonl"
+
+if [ "$FORCE_GUARDIAN" = true ]; then
+  source "guardianCrawler.sh"
+else
+  if [ ! -f "$GUARDIAN_FILE" ]; then
+    source "guardianCrawler.sh"
+  fi
+fi
 cd ..
 sudo docker compose up -d --build
 echo "Service running..."

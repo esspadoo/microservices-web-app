@@ -1,6 +1,8 @@
 #!/bin/bash
-set -euo pipefail
 
+source "compileProject.sh"
+
+set -euo pipefail
 FORCE_GUARDIAN=false
 
 for arg in "$@"; do
@@ -10,8 +12,6 @@ for arg in "$@"; do
       ;;
   esac
 done
-
-source "compileProject.sh"
 
 GUARDIAN_FILE="all_data/guardian.jsonl"
 

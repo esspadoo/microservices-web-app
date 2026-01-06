@@ -25,30 +25,37 @@ VERDE= (ipoteticamente) finito e funzionante, GIALLO = funzionante ma da integra
 ![Project's schema](images/project_schema.png)
 
 # **GETTING STARTED**
-To get started with a seamingless installation of the application, use the followings commands
+To get started with a seamingless installation of the application, use the followings commands.<br/>
 Download the project with the following command.<br/>
 ```
 git clone https://gitlab.com/giancarlopadoan-group/softplat-project
 ```
 
-# Start the services
-**Since we have custom images** we don't want to do the default `docker compose up`. <br />
+# Compile & Start the services
+**Since we have custom images** we need to build and start them all using the following command<br />
 
 ```
 cd softplat-project-main/scripts
 chmod +x init.sh && ./init.sh 
 ```
 
-The previous script, startup all the services, and retrieve some articles via the Guardian API.
+The previous script, startup all the services, and retrieve some articles via the Guardian API.<br/><br/>
 
-# OpenWebIndex Data <br/>
-[This step is not mandatory, needed if you want to work also with OpenWebIndex dataset] <br/>
-Since the OpenWebIndex server, **at the moment of this release**, does not work via the CLI OWI tool provided,<br />
-a manual insertion of the dataset is needed.<br /><br />
-To perform it, proceed as follows:<br/>
-    - Download manually a dataset from the OpenWebIndex dataset repository, https://openwebindex.eu/owler/our_datasets <br />
-    - Unzip the downloaded dataset and place it in the following directory, *.../softplat-project/all_data/raw_data*  
-    - Go to the directory *.../softplat-project-main/scripts* and run `./py_init.sh` (to check first if it has the execute's permission) to filter the owi's dataset to contain only "Computer" related topics (the other will be discarded). This filtered-folder will be saved in *.../softplat-project-main/all_data/owi_data*, there will be also available a json-formatted file in the *.../softplat-project-main/all_data/* directory called **owi.json** with the filtered pages of the filtered-dataset.
+### OpenWebIndex Data
+**[This step is not mandatory]**<br/>
+If you want to work also with OpenWebIndex dataset follow **INSTEAD** this manual procedure.<br/>
+
+1. From the project root folder open the **docker-compose.yml** and uncomment all the lines concerning the **owilix** service. (`from line 6 to line 24`).<br/><br/>
+2. Start the owilix service: `docker compose -f owi-docker-compose.yml run --rm -it owilix bash`
+   - **!IMPORTANT**: if you already have other images of owilix make sure to delete them and re-build following the above procedure otherwise the service will not work properly  
+3. After the service boot up, download a preferred dataset:  `owilix --yes remote pull all/internalID=PASTE-YOUR-DATASET-ID --threads=10 --language=eng` and follow the instruction prompted.
+4.
+
+
+
+
+4. Unzip the downloaded dataset and place it in the following directory, *.../softplat-project/all_data/raw_data*  
+- Go to the directory *.../softplat-project-main/scripts* and run `./py_init.sh` (to check first if it has the execute's permission) to filter the owi's dataset to contain only "Computer" related topics (the other will be discarded). This filtered-folder will be saved in *.../softplat-project-main/all_data/owi_data*, there will be also available a json-formatted file in the *.../softplat-project-main/all_data/* directory called **owi.json** with the filtered pages of the filtered-dataset.
 
 Go to *.../softplat-project-main* and check in the *docker-compose.yml* file if there are some conflicts with the ports chosen for the project (5050, 27017, 8881, 8882, 9200, 8080). You can finally run `sudo docker compose up -d --build`.
 

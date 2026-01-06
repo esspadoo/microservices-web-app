@@ -30,7 +30,7 @@ echo "..."
 echo "Starting to import data"
 cd ./all_data/
 echo "Waiting for importer service..."
-until curl -s http://localhost:8882/hello | grep -q "INDEXER UP"; do
+until curl -s http://localhost:8882/api/v1/importer/hello | grep -q "INDEXER UP"; do
   sleep 2
 done
 echo "Importer service is ready."

@@ -8,6 +8,7 @@ echo "Service running..."
 echo "..."
 echo "..."
 echo "Starting to import data"
+cd ../all_data/
 echo "Importing... THE GUARDIAN"
 curl -X POST http://localhost:8882/api/v1/importer/import \
   -F "file=@guardian.jsonl" \

@@ -57,7 +57,7 @@ public class JsonInferencerServiceTest {
      * <p><b>Expected Results:</b> For {@code {1.0, 5.0, 2.0}}, expects 1. For {@code {-1.0, -5.0, -2.0}}, expects 0. For an empty array, it should handle it gracefully (though the current implementation would throw an exception, which is acceptable for a private helper).
      */
     @Test
-    void testArgMax() throws Exception {
+    void testArgMax() {
         double[] values1 = {1.0, 5.0, 2.0, 4.0};
         int result1 = invokeMethod(JsonInferencerService.class, "argMax", (Object) values1);
         assertEquals(1, result1);
@@ -104,6 +104,7 @@ public class JsonInferencerServiceTest {
      * <p><b>Pre-Condition:</b> The {@code TopicInferencer} is mocked to return a specific topic distribution. The {@code topicTopWords} map is provided. The file system access is mocked.
      * <p><b>Post-Condition:</b> A new {@link Document} object is returned, enriched with the inferred topic string.
      * <p><b>Expected Results:</b> The returned document's topic field should be "topic words for topic 1", corresponding to the topic with the highest probability in the mocked distribution.
+     * @throws Exception if any error occurs during the file creation or the topic inference
      */
     @Test
     void testInferPrevalentTopicJsonl() throws Exception {

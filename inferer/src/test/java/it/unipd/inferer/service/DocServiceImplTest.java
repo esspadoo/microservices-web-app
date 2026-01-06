@@ -84,6 +84,7 @@ public class DocServiceImplTest {
      * <p><b>Pre-Condition:</b> The {@code DocServiceImpl} is initialized with a mocked {@code ParallelTopicModel}. The {@code JsonInferencerService} is mocked to return a document with an inferred topic.
      * <p><b>Post-Condition:</b> The method returns the exact document object provided by the mocked static method.
      * <p><b>Expected Results:</b> The returned document's topic field should match the value set by the mocked service ("inferred_topic").
+     * @throws Exception if any error occurs during the inference
      */
     @Test
     void testInfer() throws Exception {
@@ -112,6 +113,7 @@ public class DocServiceImplTest {
      * <p><b>Pre-Condition:</b> The {@code DocServiceImpl} is initialized with a mocked {@code ParallelTopicModel}. The {@code JsonInferencerService} is mocked to return a document with an inferred topic for each input document.
      * <p><b>Post-Condition:</b> The method returns a list of processed documents.
      * <p><b>Expected Results:</b> The returned list should contain one document, and its topic field should be "inferred_topic".
+     * @throws Exception if any error occurs during the batch inference
      */
     @Test
     void testInferBatch() throws Exception {

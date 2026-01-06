@@ -49,6 +49,7 @@ public class ImportControllerTest {
      * <p><b>Pre-Condition:</b> The REST endpoint is active and the ImporterService is mocked.</p>
      * <p><b>Post-Condition:</b> The request is successfully handed off to the service layer.</p>
      * <p><b>Expected Results:</b> The controller returns a 200 OK status and the body text "Import avviato".</p>
+     * @throws Exception if any error occurs during MockMvc execution
      */
     @Test
     void shouldReturnImportAvviato() throws Exception {
@@ -80,6 +81,7 @@ public class ImportControllerTest {
      * <p><b>Pre-Condition:</b> Controller is loaded.</p>
      * <p><b>Post-Condition:</b> No system state change; request is blocked.</p>
      * <p><b>Expected Results:</b> System returns 405 Method Not Allowed or 400 Bad Request.</p>
+     * @throws Exception if any error occurs during MockMvc execution
      */
     @Test
     void shouldReturn405() throws Exception {

@@ -42,6 +42,7 @@ class ImporterServiceTest {
      * - **Criteria**: The client's bulkIndexWithContext method must be called exactly once.</p>
      * <p><b>Pre-Condition:</b> Mocks are initialized.</p>
      * <p><b>Expected Results:</b> The client receives the identical InputStream and indexName.</p>
+     * @throws Exception if any error occurs during article indexing or during the bulk indexing
      */
     @Test
     void shouldCallClientWithCorrectParameters() throws Exception {

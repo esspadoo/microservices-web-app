@@ -57,6 +57,7 @@ public class InfererControllerTest {
      * <p><b>Pre-Condition:</b> The application is running, and the controller is up.
      * <p><b>Post-Condition:</b> The endpoint returns a 200 OK status and the correct string.
      * <p><b>Expected Results:</b> The response body should be "Hello this is a test, service INFERER UP!".
+     * @throws Exception if any error occurs during MockMvc execution
      */
     @Test
     public void testHello() throws Exception {
@@ -72,6 +73,7 @@ public class InfererControllerTest {
      * <p><b>Pre-Condition:</b> The DocService is mocked to return a specific Document when its infer method is called.
      * <p><b>Post-Condition:</b> The endpoint returns a 200 OK status and the JSON representation of the processed document.
      * <p><b>Expected Results:</b> The response body should be the JSON of the document returned by the mocked service.
+     * @throws Exception if any error occurs during MockMvc execution or JSON processing.
      */
     @Test
     public void testInferTopics() throws Exception {
@@ -94,6 +96,7 @@ public class InfererControllerTest {
      * <p><b>Pre-Condition:</b> The DocService is mocked to return a specific list of Documents when its inferBatch method is called.
      * <p><b>Post-Condition:</b> The endpoint returns a 200 OK status and the JSON representation of the list of processed documents.
      * <p><b>Expected Results:</b> The response body should be the JSON of the list of documents returned by the mocked service.
+     * @throws Exception if any error occurs during MockMvc execution or JSON processing.
      */
     @Test
     public void testInferBatchTopics() throws Exception {

@@ -45,33 +45,19 @@ The previous script, startup all the services, and retrieve some articles via th
 **[This step is not mandatory]**<br/>
 If you want to work also with OpenWebIndex dataset follow **INSTEAD** this manual procedure.<br/>
 
-1. From the project root folder open the **docker-compose.yml** and uncomment all the lines concerning the **owilix** service. (`from line 6 to line 24`).<br/><br/>
-2. Start the owilix service: `docker compose -f owi-docker-compose.yml run --rm -it owilix bash`
+1. Start the owilix service:<br/>`docker compose -f owi-docker-compose.yml run --rm -it owilix bash`
    - **!IMPORTANT**: if you already have other images of owilix make sure to delete them and re-build following the above procedure otherwise the service will not work properly  
-3. After the service boot up, download a preferred dataset:  `owilix --yes remote pull all/internalID=PASTE-YOUR-DATASET-ID --threads=10 --language=eng` and follow the instruction prompted.
-4.
-
-
-
-
-4. Unzip the downloaded dataset and place it in the following directory, *.../softplat-project/all_data/raw_data*  
-- Go to the directory *.../softplat-project-main/scripts* and run `./py_init.sh` (to check first if it has the execute's permission) to filter the owi's dataset to contain only "Computer" related topics (the other will be discarded). This filtered-folder will be saved in *.../softplat-project-main/all_data/owi_data*, there will be also available a json-formatted file in the *.../softplat-project-main/all_data/* directory called **owi.json** with the filtered pages of the filtered-dataset.
+2. After the service boot up, download a preferred dataset:<br/>`owilix --yes remote pull all/internalID=PASTE-YOUR-DATASET-ID --threads=10 --language=eng` and follow the instruction prompted.<br/>
+   - You can choose your dataset between the ones provided here: [OWI Datasets](https://openwebindex.eu/owler/our_datasets)<br/>
+    Make sure to select the **curlie_full** ones. 
+3. When the download is complete the container/service can be closed.
+4. Now from the project root folder run the following command: <br/>
+```
+   cd ./scripts
+   sudo chmod +x init.sh && ./init.sh
+```
 
 Go to *.../softplat-project-main* and check in the *docker-compose.yml* file if there are some conflicts with the ports chosen for the project (5050, 27017, 8881, 8882, 9200, 8080). You can finally run `sudo docker compose up -d --build`.
-
-Now we must feed the elasticsearch service with the data.
-```
-cd ../all_data/
-curl -X POST localhost:8882/api/v1/importer/import -F "file=@guardian.jsonl" -F "indexName=guardian"
-curl -X POST localhost:8882/api/v1/importer/import -F "file=@owi.json" -F "indexName=owi"
-```
-<br />
-
-
-
-
-- **To start a container with attached shell** <br />
-    `docker compose run --rm -it owilix bash`
 
 #TO-----FINISSSSSSSSSSSSSSSSSSH_________________TO DOOOOOO
 ##COMPONENTS

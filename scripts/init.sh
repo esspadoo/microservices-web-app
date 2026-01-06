@@ -2,15 +2,20 @@
 
 source "compileProject.sh"
 source "guardianCrawler.sh"
-
-if [ ! -d "../all_data" ]; then
-  mkdir "../all_data"
-fi
-
-if [ ! -d "../all_data/raw_data" ]; then
-  mkdir "../all_data/raw_data"
-fi
-
-if [ ! -d "../all_data/owi_data" ]; then
-  mkdir "../all_data/owi_data"
-fi
+cd ..
+sudo docker compose up -d --build
+echo "Service running..."
+echo "..."
+echo "..."
+echo "Starting to import data"
+echo "Importing... THE GUARDIAN"
+curl -X POST http://localhost:8882/api/v1/importer/import \
+  -F "file=@guardian.jsonl" \
+  -F "indexName=guardian"
+echo "Importing... OWI"
+source "py_init.sh"
+curl -X POST http://localhost:8882/api/v1/importer/import \
+  -F "file=@owi.json" \
+  -F "indexName=owi"
+echo "The search app is now running..."
+echo "Connect to http://localhost:8080/ to use it"

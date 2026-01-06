@@ -13,7 +13,7 @@ for arg in "$@"; do
   esac
 done
 
-GUARDIAN_FILE="all_data/guardian.jsonl"
+GUARDIAN_FILE="../all_data/guardian.jsonl"
 
 if [ "$FORCE_GUARDIAN" = true ]; then
   source "guardianCrawler.sh"

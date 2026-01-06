@@ -89,15 +89,12 @@ public class SearchControllerTest {
      */
     @Test
     void shouldReturnDocumentsFromCache() throws Exception {
-        Document doc = new Document("1", "http://test.com", "Title", "Content", null);
+        Document doc = new Document("1", "http://test.com", "Title", "Content", "Topic");
         CacheDocument cacheDoc = new CacheDocument();
         cacheDoc.setQuery("test");
         cacheDoc.setDocuments(List.of(doc));
 
-        Document enrichedDoc = new Document("1", "http://test.com", "Title", "Content", "Topic");
-
         when(documentService.getDocumentsByQuery("test")).thenReturn(List.of(cacheDoc));
-        when(infererClient.inferBatch(anyList())).thenReturn(List.of(enrichedDoc));
 
         mockMvc.perform(get("/api/v1/searcher/searchDocuments").param("query", "test"))
                 .andExpect(status().isOk())

@@ -85,7 +85,6 @@ public class SearchController {
         try {
             List<CacheDocument> cacheDocument = documentService.getDocumentsByQuery(query);
             if(cacheDocument.isEmpty()) {
-		System.out.println("no document found");
                 List<Document> resultsElastic = searchService.searchDocuments(query);
                 List<Document> results = infererClient.inferBatch(resultsElastic);
                 CacheDocument doc = new CacheDocument();
@@ -94,13 +93,9 @@ public class SearchController {
                 documentService.insertDocuments(doc);
                 return ResponseEntity.ok(results);
             } else {
-		System.out.println("Documents founded!");
                 List<Document> documents = cacheDocument.getFirst().getDocuments();
-                List<Document> results = infererClient.inferBatch(documents);
-                return ResponseEntity.ok(results);
+                return ResponseEntity.ok(documents);
             }
-
-            // from result --> inferer that return the topics that we extracted
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));

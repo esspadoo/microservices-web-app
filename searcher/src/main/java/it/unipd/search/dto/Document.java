@@ -201,4 +201,8 @@ public class Document {
         return Objects.hash(id, title);
     }
 
+    @Override
+    public String toString() {
+        return "Document: id " + this.id + " title " + this.title + " url " + this.url + " topic " + this.topic + "\n";
+    }
 }

@@ -29,6 +29,11 @@ echo "..."
 echo "..."
 echo "Starting to import data"
 cd ./all_data/
+echo "Waiting for importer service..."
+until nc -z localhost 8882; do
+  sleep 2
+done
+echo "Importer service is ready."
 echo "Importing... THE GUARDIAN"
 curl -X POST http://localhost:8882/api/v1/importer/import \
   -F "file=@guardian.jsonl" \

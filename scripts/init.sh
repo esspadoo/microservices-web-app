@@ -5,7 +5,8 @@ echo "Downloading model ..."
 curl -L \
   https://huggingface.co/giancarlopadoan/inferer/resolve/main/inferer.model \
   -o ../inferer/src/main/resources/inferer/inferer.model.tmp && \
-mv ../inferer/src/main/resources/inferer/inferer.model
+mv ../inferer/src/main/resources/inferer/inferer.model.tmp \
+   ../inferer/src/main/resources/inferer/inferer.model
 
 source "compileProject.sh"
 

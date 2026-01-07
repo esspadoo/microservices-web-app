@@ -1,5 +1,12 @@
 #!/bin/bash
 
+echo "Downloading model ..."
+
+curl -L \
+  https://huggingface.co/username/repo/resolve/main/model.model \
+  -o ../inferer/src/main/resources/inferer/inferer.model.tmp && \
+mv ../inferer/src/main/resources/inferer/inferer.model
+
 source "compileProject.sh"
 
 set -euo pipefail

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Downloading model ... REMOVED FOR DEBUG ONLY"
+echo "Downloading model ..."
 
 curl -L \
   https://huggingface.co/giancarlopadoan/inferer/resolve/main/inferer.model \

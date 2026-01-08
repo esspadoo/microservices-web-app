@@ -22,7 +22,14 @@ fi
 JAVA21_HOME=""
 
 if [ "$OS" = "Darwin" ]; then
-    JAVA21_HOME=$(/usr/libexec/java_home -v 21 2>/dev/null || true)
+    JAVA21_HOME=$(/usr/libexec/java_home -V 2>&1 | awk '/21\./ {print $NF}' | head -n 1)
+
+    if [ -z "$JAVA21_HOME" ]; then
+		echo "Java 21 is not installed"
+	else
+		echo "Java 21 installed at: $JAVA21_HOME"
+		"$JAVA21_HOME/bin/java" -version
+	fi
 elif [ "$OS" = "Linux" ]; then
     # check if any installed java is version 21
     if command -v java >/dev/null 2>&1; then

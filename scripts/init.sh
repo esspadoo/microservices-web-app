@@ -65,6 +65,8 @@ echo ""
 curl -X POST http://localhost:8882/api/v1/importer/import \
   -F "file=@owi.json" \
   -F "indexName=owi"
-sleep 15
+sleep 5
+echo "Wait for finishing import..."
+sleep 20
 echo "The search app is now running..."
 echo "Connect to http://localhost:8080/ to use it"

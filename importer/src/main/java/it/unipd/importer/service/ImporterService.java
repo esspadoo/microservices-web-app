@@ -4,8 +4,11 @@ import it.unipd.importer.ElasticsearchClient_Importer;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Service layer responsible for coordinating the import and indexing process.
@@ -17,6 +20,7 @@ import java.io.InputStream;
 public class ImporterService {
 
     private final ElasticsearchClient_Importer elasticsearchClientIndexer;
+    private final Map<String, String> jobStatus = new ConcurrentHashMap<>();
 
     /**
      * Constructs the ImporterService.
@@ -28,17 +32,38 @@ public class ImporterService {
     }
 
     /**
-     * Starts the indexing of articles from the given input stream into Elasticsearch.
+     * Starts the indexing of articles from the given file into Elasticsearch, handles the job status accordingly.
      *
      * <p>The method is executed asynchronously, allowing the HTTP request to
      * return immediately while the indexing continues in background.
+     * The file is deleted after processing.
      *
-     * @param file      input stream of the NDJSON file
+     * @param file      the NDJSON file to process
      * @param indexName name of the Elasticsearch index
-     * @throws Exception if an error occurs during indexing
+     * @param jobId     unique identifier for the import job
      */
     @Async
-    public void indexArticles(InputStream file, String indexName) throws Exception {
-        this.elasticsearchClientIndexer.bulkIndexWithContext(file, indexName);
+    public void indexArticles(File file, String indexName, String jobId) {
+        jobStatus.put(jobId, "IN_PROGRESS");
+        try (InputStream inputStream = new FileInputStream(file)) {
+            this.elasticsearchClientIndexer.bulkIndexWithContext(inputStream, indexName);
+            jobStatus.put(jobId, "COMPLETED");
+        } catch (Exception e) {
+            jobStatus.put(jobId, "FAILED: " + e.getMessage());
+        } finally {
+            if (file != null && file.exists()) {
+                file.delete();
+            }
+        }
+    }
+
+    /**
+     * Retrieves the status of an import job.
+     *
+     * @param jobId the unique identifier of the job
+     * @return the current status of the job, or "UNKNOWN" if not found
+     */
+    public String getJobStatus(String jobId) {
+        return jobStatus.getOrDefault(jobId, "UNKNOWN");
     }
 }

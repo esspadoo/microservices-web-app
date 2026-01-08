@@ -41,7 +41,7 @@ chmod +x init.sh && ./init.sh
 
 The previous script, startup all the services, and retrieve some articles via the Guardian API.<br/><br/>
 
-### OpenWebIndex Data
+## OpenWebIndex Data
 **[This step is not mandatory]**<br/>
 If you want to work also with OpenWebIndex dataset follow **INSTEAD** this manual procedure.<br/>
 
@@ -61,7 +61,27 @@ If you want to work also with OpenWebIndex dataset follow **INSTEAD** this manua
    cd ./scripts
    sudo chmod +x init.sh && ./init.sh --guardian-force
 ```
-Go to *.../softplat-project-main* and check in the *docker-compose.yml* file if there are some conflicts with the ports chosen for the project (5050, 27017, 8881, 8882, 9200, 8080). You can finally run `sudo docker compose up -d --build`.
+
+- If you want to force the update/download of the inferer model just use the flag **--model-update** like this:
+```
+   cd ./scripts
+   sudo chmod +x init.sh && ./init.sh --model-update
+```
+
+## RE-START THE APPLICATION
+If you have already initialised the setup and the app in a previou scenario and you need only to start the application just run:
+```
+sudo docker compose up -d --build
+```
+
+## CLOSE THE APPLICATION
+To effectively close the application and all its services run the following command:
+```
+sudo docker compose down
+```
+
+#PORTS USED - AVOID CONFLICTS
+Go to *.../softplat-project-main* and check in the *docker-compose.yml* file if there are some conflicts with the ports chosen for the application (5050, 27017, 8881, 8882, 9200, 8080).
 
 #TO-----FINISSSSSSSSSSSSSSSSSSH_________________TO DOOOOOO
 ##COMPONENTS

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-echo "Downloading model ..."
+echo "Downloading model ... REMOVED FOR DEBUG ONLY"
 
-curl -L \
+echo "curl -L \
   https://huggingface.co/giancarlopadoan/inferer/resolve/main/inferer.model \
   -o ../inferer/src/main/resources/inferer/inferer.model.tmp && \
 mv ../inferer/src/main/resources/inferer/inferer.model.tmp \
-   ../inferer/src/main/resources/inferer/inferer.model
+   ../inferer/src/main/resources/inferer/inferer.model"
 
 source "compileProject.sh"
 

@@ -21,15 +21,17 @@ for arg in "$@"; do
   esac
 done
 
-GUARDIAN_FILE="../all_data/guardian.jsonl"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+GUARDIAN_FILE="$SCRIPT_DIR/../all_data/guardian.jsonl"
 
-if [ "$FORCE_GUARDIAN" = true ]; then
-  source "guardianCrawler.sh"
+if [ "$FORCE_GUARDIAN" = true ] || [ ! -f "$GUARDIAN_FILE" ]; then
+  echo "Running guardianCrawler ..."
+  source "$SCRIPT_DIR/guardianCrawler.sh"
 else
-  if [ ! -f "$GUARDIAN_FILE" ]; then
-    source "guardianCrawler.sh"
-  fi
+  echo "Skipping guardianCrawler.sh"
 fi
+
+
 #------------------------
 source "py_init.sh"
 #-------------------

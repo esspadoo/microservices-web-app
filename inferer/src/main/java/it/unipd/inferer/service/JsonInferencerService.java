@@ -12,12 +12,14 @@ import it.unipd.inferer.dto.Document;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
+
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
-import java.util.regex.Pattern;
-
+//changed loading of the pipe instead of hardcoded
+//added method load pipe, make tempfile method private(not used), removed tmp stoplist file.
 /**
  * Utility service for topic inference and topic model introspection using MALLET.
  *
@@ -74,26 +76,16 @@ public class JsonInferencerService {
             Map<Integer, String> topicTopWords
     ) throws Exception {
 
-        File stoplistFile = resourceToTempFile();
+
 
         String url = doc.getUrl();
         String title = doc.getTitle();
         String text = doc.getMain_content();
 
         // Build Pipe (must match training configuration)
-        ArrayList<Pipe> pipeList = new ArrayList<>();
+        Pipe pipe = loadPipe();
+        InstanceList instances = new InstanceList(pipe);
 
-        pipeList.add(new CharSequenceLowercase());
-        pipeList.add(new CharSequence2TokenSequence(
-                Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")
-        ));
-        pipeList.add(new TokenSequenceRemoveStopwords(
-                stoplistFile,
-                "UTF-8", false, false, false
-        ));
-        pipeList.add(new TokenSequence2FeatureSequence());
-
-        InstanceList instances = new InstanceList(new SerialPipes(pipeList));
 
         // Create single-instance input
         Instance instance = new Instance(text, null, "doc", null);
@@ -114,6 +106,15 @@ public class JsonInferencerService {
         // Build output Document
         return new Document("",url, title, "", prevalentTopicWords);
     }
+
+
+    private static Pipe loadPipe() throws Exception {
+        ClassPathResource resource = new ClassPathResource("inferer/model.pipe");
+        try (ObjectInputStream in = new ObjectInputStream(resource.getInputStream())) {
+            return (Pipe) in.readObject();
+        }
+    }
+
 
     /**
      * Returns the index of the maximum value in a numeric array.
@@ -192,7 +193,7 @@ public class JsonInferencerService {
      * @return a temporary {@link File} containing the stopword list
      * @throws Exception if the resource cannot be accessed or written
      */
-    static File resourceToTempFile() throws Exception {
+    private static File resourceToTempFile() throws Exception {
 
         ClassPathResource resource = new ClassPathResource("stoplist.txt");
 

@@ -56,7 +56,7 @@ If you want to work also with OpenWebIndex dataset follow **INSTEAD** this manua
    cd ./scripts
    sudo chmod +x init.sh && ./init.sh
 ```
-- If you want to refresh the crawl of THE GUARDIAN data just replace the command with 
+- If you want to force the crawl of THE GUARDIAN data just use the flag **--guardian-force** like this: 
 ```
    cd ./scripts
    sudo chmod +x init.sh && ./init.sh --guardian-force
@@ -80,7 +80,7 @@ To effectively close the application and all its services run the following comm
 sudo docker compose down
 ```
 
-#PORTS USED - AVOID CONFLICTS
+# PORTS USED - AVOID CONFLICTS
 Go to *.../softplat-project-main* and check in the *docker-compose.yml* file if there are some conflicts with the ports chosen for the application (5050, 27017, 8881, 8882, 9200, 8080).
 
 #TO-----FINISSSSSSSSSSSSSSSSSSH_________________TO DOOOOOO

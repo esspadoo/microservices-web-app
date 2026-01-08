@@ -1,25 +1,36 @@
 #!/bin/bash
 
-echo "Downloading model ..."
-
-curl -L \
-  https://huggingface.co/giancarlopadoan/inferer/resolve/main/inferer.model \
-  -o ../inferer/src/main/resources/inferer/inferer.model.tmp && \
-mv ../inferer/src/main/resources/inferer/inferer.model.tmp \
-   ../inferer/src/main/resources/inferer/inferer.model
-
-source "compileProject.sh"
-
 set -euo pipefail
 FORCE_GUARDIAN=false
+MODEL_UPDATE=false
 
 for arg in "$@"; do
   case "$arg" in
     --guardian-force)
       FORCE_GUARDIAN=true
       ;;
+    --model-update)
+      MODEL_UPDATE=true
+      ;;
   esac
 done
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MODEL_FILE="$SCRIPT_DIR/../inferer/src/main/resources/inferer/inferer.model"
+
+if [ "$MODEL_UPDATE" = true ] || [ ! -f "$MODEL_FILE" ]; then
+  echo "Downloading model ..."
+  curl -L \
+    https://huggingface.co/giancarlopadoan/inferer/resolve/main/inferer.model \
+    -o ../inferer/src/main/resources/inferer/inferer.model.tmp && \
+  mv ../inferer/src/main/resources/inferer/inferer.model.tmp \
+     ../inferer/src/main/resources/inferer/inferer.model
+else
+  echo "Model already present"
+fi
+
+source "compileProject.sh"
+
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GUARDIAN_FILE="$SCRIPT_DIR/../all_data/guardian.jsonl"
@@ -30,7 +41,6 @@ if [ "$FORCE_GUARDIAN" = true ] || [ ! -f "$GUARDIAN_FILE" ]; then
 else
   echo "Skipping guardianCrawler.sh"
 fi
-
 
 #------------------------
 source "py_init.sh"

@@ -1,35 +1,47 @@
 #!/bin/bash
 
-echo "Downloading model ..."
-
-curl -L \
-  https://huggingface.co/giancarlopadoan/inferer/resolve/main/inferer.model \
-  -o ../inferer/src/main/resources/inferer/inferer.model.tmp && \
-mv ../inferer/src/main/resources/inferer/inferer.model.tmp \
-   ../inferer/src/main/resources/inferer/inferer.model
-
-source "compileProject.sh"
-
 set -euo pipefail
 FORCE_GUARDIAN=false
+MODEL_UPDATE=false
 
 for arg in "$@"; do
   case "$arg" in
     --guardian-force)
       FORCE_GUARDIAN=true
       ;;
+    --model-update)
+      MODEL_UPDATE=true
+      ;;
   esac
 done
 
-GUARDIAN_FILE="../all_data/guardian.jsonl"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MODEL_FILE="$SCRIPT_DIR/../inferer/src/main/resources/inferer/inferer.model"
 
-if [ "$FORCE_GUARDIAN" = true ]; then
-  source "guardianCrawler.sh"
+if [ "$MODEL_UPDATE" = true ] || [ ! -f "$MODEL_FILE" ]; then
+  echo "Downloading model ..."
+  curl -L \
+    https://huggingface.co/giancarlopadoan/inferer/resolve/main/inferer.model \
+    -o ../inferer/src/main/resources/inferer/inferer.model.tmp && \
+  mv ../inferer/src/main/resources/inferer/inferer.model.tmp \
+     ../inferer/src/main/resources/inferer/inferer.model
 else
-  if [ ! -f "$GUARDIAN_FILE" ]; then
-    source "guardianCrawler.sh"
-  fi
+  echo "Model already present"
 fi
+
+source "compileProject.sh"
+
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+GUARDIAN_FILE="$SCRIPT_DIR/../all_data/guardian.jsonl"
+
+if [ "$FORCE_GUARDIAN" = true ] || [ ! -f "$GUARDIAN_FILE" ]; then
+  echo "Running guardianCrawler ..."
+  source "$SCRIPT_DIR/guardianCrawler.sh"
+else
+  echo "Skipping guardianCrawler.sh"
+fi
+
 #------------------------
 source "py_init.sh"
 #-------------------
@@ -65,6 +77,8 @@ echo ""
 curl -X POST http://localhost:8882/api/v1/importer/import \
   -F "file=@owi.json" \
   -F "indexName=owi"
-sleep 15
+sleep 5
+echo "Wait for finishing import..."
+sleep 20
 echo "The search app is now running..."
 echo "Connect to http://localhost:8080/ to use it"

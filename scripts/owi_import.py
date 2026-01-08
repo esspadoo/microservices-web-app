@@ -11,6 +11,7 @@ import os
 import logging
 from pathlib import Path
 from typing import List
+from typing import Optional
 import shutil
 
 
@@ -121,7 +122,7 @@ def process_parquet_file(parquet_path: str, output_dir: str, worker_id: int) -> 
 def stream_parquet_to_json_parallel(
     parquet_files: List[str],
     output_path: str,
-    workers: int | None = None
+    workers: Optional[int] = None
 ):
     if workers is None:
         workers = max(1, mp.cpu_count() - 1)

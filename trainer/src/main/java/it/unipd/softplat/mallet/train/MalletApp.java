@@ -2,15 +2,14 @@ package it.unipd.softplat.mallet.train;
 
 import cc.mallet.pipe.*;
 import cc.mallet.topics.ParallelTopicModel;
-import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
 
+//use malletpipefactory for serialize the pipeline
+//write pipe file in out on the main
 /**
  * Utility class for MALLET topic modeling operations.
  * <p>
@@ -38,16 +37,9 @@ public class MalletApp {
      */
     public static InstanceList createInstanceList(InputStream dataInputStream, File stoplist){
 
-        // Begin by importing documents from text to feature sequences
-        ArrayList<Pipe> pipeList = new ArrayList<>();
+        Pipe pipe = MalletPipeFactory.build(stoplist);
+        InstanceList instances = new InstanceList(pipe);
 
-        // Pipes: lowercase, tokenize, remove stopwords, map to features
-        pipeList.add(new CharSequenceLowercase());
-        pipeList.add(new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")));
-        pipeList.add(new TokenSequenceRemoveStopwords(stoplist, "UTF-8", false, false, false));
-        pipeList.add(new TokenSequence2FeatureSequence());
-
-        InstanceList instances = new InstanceList(new SerialPipes(pipeList));
 
         // Add documents from the iterator to the InstanceList
         instances.addThruPipe(new DocumentIterator(dataInputStream));
@@ -76,9 +68,13 @@ public class MalletApp {
 
         topicModel.addInstances(instances);
 
-        // Use two parallel samplers, which each look at one half the corpus and combine
+        // Use parallel samplers, which each look at the corpus and combine
         // statistics after every iteration.
-        topicModel.setNumThreads(2);
+        int numThreads = Math.min(
+                Runtime.getRuntime().availableProcessors(),
+                instances.size()
+        );
+        topicModel.setNumThreads(numThreads);
 
         // Train the model for <numIterations> iterations and stop
         topicModel.setNumIterations(numIterations);
@@ -103,6 +99,7 @@ public class MalletApp {
         // Clean the JSON from HTML tags
         JsonHtmlCleaner.clean();
         System.out.println("\n...CLEANED JSONL");
+
         // Read data from the cleaned JSON file
         InputStream dataInputStream = Files.newInputStream(Paths.get("trainer/src/main/resources/clean_json_out.json"));
         File stoplist = new File(MalletApp.class.getClassLoader().getResource("stoplist.txt").getFile());
@@ -111,11 +108,18 @@ public class MalletApp {
         // Create InstanceList from input documents
         InstanceList instances = createInstanceList(dataInputStream, stoplist);
         System.out.printf("Number of instances (docs): %s%n", instances.size());
-        Alphabet alphabet = instances.getDataAlphabet();
+
+        // Save the pipeline
+        File pipeFile = new File("trainer/src/main/resources/model.pipe");
+        try (ObjectOutputStream out =
+                     new ObjectOutputStream(new FileOutputStream(pipeFile))) {
+            out.writeObject(instances.getPipe());
+        }
+
         System.out.println("\n...training the topic model");
 
         // Configure training parameters
-        int numTopics = 10;
+        int numTopics = 20;
         int numIterations = 1000;
         int numTopWords = 25;
 

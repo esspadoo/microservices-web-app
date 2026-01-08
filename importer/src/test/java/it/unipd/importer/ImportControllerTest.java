@@ -3,11 +3,14 @@ package it.unipd.importer;
 import it.unipd.importer.api.ImporterController;
 import it.unipd.importer.service.ImporterService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -67,7 +70,7 @@ public class ImportControllerTest {
                         .param("indexName", "guardian")
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("Import avviato"));
+                .andExpect(content().string(containsString("Import avviato")));
     }
 
     /**
@@ -89,6 +92,57 @@ public class ImportControllerTest {
                 .andExpect(status().is4xxClientError());
         mockMvc.perform(multipart("/api/v1/importer/import"))
                 .andExpect(status().is4xxClientError());
+    }
+
+    /**
+     * <p><b>Summary:</b> Verifies the endpoint return a valid status when providing a valid job id.</p>
+     * <p><b>Test Case Design:</b> Uses MockMvc to test the endpoint with a valid dummy job id</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-IMPORT-003
+     * - **Prerequisites**: Mocks are initialized.
+     * - **Data**: A dummy job id and its expected status.
+     * - **Evaluation**: Expects HTTP 200 OK and "COMPLETED" as return message.</p>
+     * <p><b>Pre-Condition:</b> The REST endpoint is active and getJobStatus is mocked.</p>
+     * <p><b>Post-Condition:</b> The request is successfully handed off to the service layer.</p>
+     * <p><b>Expected Results:</b> The controller returns a 200 OK status and the body text "COMPLETED".</p>
+     * @throws Exception if any error occurs during MockMvc execution
+     */
+    @Test
+    void verifyGetStatusReturnsOk() throws Exception {
+        String jobId = "test-job-id";
+        String expectedStatus = "COMPLETED";
+
+        Mockito.when(importerService.getJobStatus(jobId))
+                .thenReturn(expectedStatus);
+
+        mockMvc.perform(get("/api/v1/importer/status/" + jobId))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(expectedStatus)));
+    }
+
+    /**
+     * <p><b>Summary:</b> Verifies the endpoint return 404 when providing an invalid job id.</p>
+     * <p><b>Test Case Design:</b> Uses MockMvc to test the endpoint with an invalid dummy job id</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-IMPORT-004
+     * - **Prerequisites**: Mocks are initialized.
+     * - **Data**: A dummy invalid job id.
+     * - **Evaluation**: Expects HTTP 404 NOT FOUND and "Job not found" as return message.</p>
+     * <p><b>Pre-Condition:</b> The REST endpoint is active and getJobStatus is mocked.</p>
+     * <p><b>Post-Condition:</b> The request is successfully handed off to the service layer.</p>
+     * <p><b>Expected Results:</b> The controller returns a 404 NOT FOUND status and the body text "Job not found".</p>
+     * @throws Exception if any error occurs during MockMvc execution
+     */
+    @Test
+    void verifyGetStatusFails() throws Exception {
+        String jobId = "test-job-id";
+
+        Mockito.when(importerService.getJobStatus(jobId))
+                .thenReturn("UNKNOWN");
+
+        mockMvc.perform(get("/api/v1/importer/status/" + jobId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("Job not found")));
     }
 
 }

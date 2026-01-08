@@ -19,7 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 //changed loading of the pipe instead of hardcoded
-//added method load pipe, make tempfile method private(not used), removed tmp stoplist file.
+//added method load pipe, tempfile method (not used), removed tmp stoplist file.
 /**
  * Utility service for topic inference and topic model introspection using MALLET.
  *
@@ -193,7 +193,7 @@ public class JsonInferencerService {
      * @return a temporary {@link File} containing the stopword list
      * @throws Exception if the resource cannot be accessed or written
      */
-    private static File resourceToTempFile() throws Exception {
+    public static File resourceToTempFile() throws Exception {
 
         ClassPathResource resource = new ClassPathResource("stoplist.txt");
 

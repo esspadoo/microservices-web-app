@@ -1,0 +1,102 @@
+@startuml
+
+skinparam sequenceParticipant underline 
+skinparam {
+  ' Overall style
+  FontSize 14
+
+  ' Colors
+  ArrowColor #000000
+  ArrowFontColor #000000
+  BackgroundColor #FFFFFF
+  BorderColor #DEDEDE
+  FontColor #333333
+
+  ' Participant styling
+  Participant {
+    BorderColor #0077B6
+    BackgroundColor #F0F8FF
+    FontColor #005691
+  }
+
+  ' Actor styling
+  Actor {
+    BorderColor #6A057F
+    BackgroundColor #F5EEF8
+    FontColor #510363
+  }
+
+  ' Sequence specific
+  Sequence {
+    ArrowThickness 2
+    LifeLineBorderColor #444444
+    LifeLineBackgroundColor #F7F7F7
+    BoxBorderColor #AAAAAA
+    BoxBackgroundColor #FFFFFF
+    BoxFontColor #333333
+  }
+}
+
+title Searcher's module - Sequence Diagram
+
+actor Client
+
+participant "SearchController" as SC
+participant "DocumentService" as DS
+participant "DocumentRepository" as DR
+database "MongoDB\n(cacheDocument)" as MDB
+
+participant "SearchService" as SS
+participant "ElasticsearchClient_Search" as ESC
+database "Elasticsearch" as ES
+
+participant "InfererClient" as IC
+participant "Inferer Service" as INF
+
+== Search request ==
+
+Client -> SC : GET /api/v1/searcher/searchDocuments?query=q
+
+SC -> DS : getDocumentsByQuery(q)
+DS -> DR : findByQuery(q)
+DR -> MDB : find { query = q }
+MDB --> DR : List<CacheDocument>
+DR --> DS : List<CacheDocument>
+DS --> SC : List<CacheDocument>
+
+alt Cache miss (no documents found)
+
+    SC -> SS : searchDocuments(q)
+    SS -> ESC : searchDocuments(indexes, fields, q)
+    ESC -> ES : multi_match query
+    ES --> ESC : SearchResponse
+    ESC --> SS : List<Document>
+    SS --> SC : List<Document>
+
+    SC -> IC : inferBatch(documents)
+    IC -> INF : POST /api/v1/inferBatch
+    INF --> IC : List<Document>
+    IC --> SC : List<Document>
+
+    SC -> DS : insertDocuments(CacheDocument)
+    DS -> DR : insert(CacheDocument)
+    DR -> MDB : insert document
+    MDB --> DR : ack
+    DR --> DS : CacheDocument
+    DS --> SC : CacheDocument
+
+    SC --> Client : HTTP 200 OK\nJSON List<Document>
+
+else Cache hit (documents found)
+
+    SC --> Client : HTTP 200 OK\nJSON List<Document>
+
+end
+
+== Error handling ==
+
+opt Exception
+    SC --> Client : HTTP 500\n{ "error": message }
+end
+
+@enduml

@@ -42,3 +42,17 @@ As an expert user,
 I want the system to return clear error responses when failures occur,
 so that I can handle errors correctly.
 
+## User story 9 - Components are up and running
+As a developer,
+I want to verify that the search service is up and running
+so that I can confirm the system is operational.
+
+## User story 10 - Not exact match
+As an expert user,
+I want to search for documents with a query that may not have an exact match
+so that I can get relevant, approximate results.
+
+## User story 11 - Independent services
+As a DevOps engineer,
+I want to deploy the search service and inferer service independently
+so that I can update or scale them separately.

@@ -74,22 +74,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Iterate over the returned documents and render them dynamically
                 data.forEach(doc => {
+                    const card = document.createElement("div");
+                    card.className = "document-result card mb-2 p-2";
 
-                    const div = document.createElement("div");
+                    const title = document.createElement("h5");
+                    title.textContent = doc.title ?? "(titolo mancante)";
 
-                    // Assign CSS classes for styling purposes
-                    div.className = "document-result card mb-2 p-2";
+                    const topic = document.createElement("p");
+                    topic.textContent = doc.topic ?? "(argomento mancante)";
 
-                    // Populate the result card with document data,
-                    // providing fallback text if fields are missing
-                    div.innerHTML = `
-                        <h5>${doc.title || "(titolo mancante)"}</h5>
-                        <p>${doc.topic || "(topics mancanti)"}</p>
-                        <p>${doc.url || "(topics mancanti)"}</p>
-                    `;
-                    //<p>${doc.main_content || "(topics mancanti)"}</p>
-                    // Append the generated result element to the results container
-                    resultsDiv.appendChild(div);
+                    card.appendChild(title);
+                    card.appendChild(topic);
+
+                    if (doc.url) {
+                        const link = document.createElement("a");
+                        link.href = doc.url;
+                        link.textContent = doc.url;
+                        link.target = "_blank";
+                        link.rel = "noopener noreferrer";
+                        card.appendChild(link);
+                    }
+
+                    resultsDiv.appendChild(card);
                 });
             })
             .catch(error => {

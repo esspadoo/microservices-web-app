@@ -34,9 +34,9 @@ services:
       context: ./inferer
       dockerfile: Dockerfile
     ports:
-      - 5050:5050
+      - "5050"
     networks:
-      - softPlat-network
+      - internal
 
 
 #-----------------------------------------------------
@@ -46,9 +46,7 @@ services:
     image: mongo:8.2.2-noble
     container_name: mongodb
     networks:
-      - softPlat-network
-    ports:
-      - 27017:27017
+      - internal
     volumes:
       - mongodb-volume:/data/db
     healthcheck:
@@ -67,9 +65,9 @@ services:
     container_name: elasticsearch
     image: elastic/elasticsearch:9.1.8
     ports:
-      - 9200:9200
+      - "9200"
     networks: 
-      - softPlat-network
+      - internal
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -93,7 +91,7 @@ services:
       context: ./searcher
       dockerfile: Dockerfile
     ports:
-      - 8881:8881
+      - "8881"
     environment:
       - SPRING_MONGODB_URI=mongodb://mongodb:27017/documents
     depends_on:
@@ -102,7 +100,7 @@ services:
       mongodb:
         condition: service_healthy
     networks:
-      - softPlat-network
+      - internal
 
 
 #-----------------------------------------------------
@@ -115,12 +113,12 @@ services:
       context: ./importer
       dockerfile: Dockerfile
     ports:
-      - 8882:8882
+      - "8882"
     depends_on:
       elasticsearch:
         condition: service_healthy
     networks:
-      - softPlat-network
+      - internal
 
  
 #-----------------------------------------------------
@@ -138,7 +136,8 @@ services:
     depends_on:
       - searcher
     networks:
-      - softPlat-network
+      - public
+      - internal
       
 
 volumes:
@@ -146,4 +145,10 @@ volumes:
   elasticsearch-volume:
 
 networks:
-  softPlat-network:
+  public:
+    driver: bridge
+
+  internal:
+    driver: bridge
+    internal: true
+

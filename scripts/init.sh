@@ -55,26 +55,26 @@ cd ./all_data/
 
 
 echo "Waiting for importer service..."
-until curl -s http://localhost:8882/api/v1/importer/hello | grep -q "INDEXER UP"; do
+until curl -s http://localhost:8880/api/v1/importer/hello | grep -q "INDEXER UP"; do
   sleep 2
 done
 echo "Importer service is ready."
 
 
 echo "Importing... THE GUARDIAN"
-curl -X POST http://localhost:8882/api/v1/importer/import \
+curl -X POST http://localhost:8080/api/v1/importer/import \
   -F "file=@guardian.jsonl" \
   -F "indexName=guardian"
   
 sleep 5
-until curl -s http://localhost:8882/api/v1/importer/hello | grep -q "INDEXER UP"; do
+until curl -s http://localhost:8080/api/v1/importer/hello | grep -q "INDEXER UP"; do
   sleep 2
 done
 
 echo ""
 echo "Importing... OWI"
 echo ""
-curl -X POST http://localhost:8882/api/v1/importer/import \
+curl -X POST http://localhost:8880/api/v1/importer/import \
   -F "file=@owi.json" \
   -F "indexName=owi"
 sleep 5

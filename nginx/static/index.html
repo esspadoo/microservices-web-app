@@ -1,32 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technology's queries</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="img/favicon-96x96.png" sizes="96x96" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/293abf4b96.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+  <title>SW Plat Project</title>
 </head>
+
 <body>
+  <div class="container">
 
-<div class="container">
-    <h1>We &lt;3 SW platforms!</h1>
-    
-    <form id="searchForm">
-        <div class="form-group">
-            <label for="searchInput">Search text:</label>
-            <input type="text" id="searchInput" name="searchInput" class="form-control" placeholder="Enter keywords..." required>
-        </div>
-        <button type="submit" id="searchBtn" class="btn btn-primary btn-block">Search</button>
-    </form>
-    
-    <div id="results" class="container mt-3"></div>
-
-</div>
+    <section class="search-area">
+      <img src="dei_logo.png" alt="dei logo" class="dei-logo-img">
 
 
+      <form class="search-form" id="searchForm">
+        <button class="icon-btn" type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
 
-<script src="queryConnection.js"></script>
+        <input
+          type="text"
+          class="search-input"
+          id="searchInput"
+          placeholder="Search documents..."
+        >
+      </form>
+    </section>
+
+    <!-- CONTENITORE RISULTATI-->
+    <div id="results"></div>
+
+  </div>
+
+  <footer>
+  <div class="footer-menus-container">
+    <img src="trophy.png" class="footer-leaf">
+    <a class="footer-link">Making possible to get a 30 cum laude</a>
+  </div>
+</footer>
+
+
+  <!-- JS -->
+  <script src="queryConnection.js"></script>
 </body>
+
 </html>
 

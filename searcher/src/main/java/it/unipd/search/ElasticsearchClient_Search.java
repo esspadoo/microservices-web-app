@@ -2,7 +2,7 @@ package it.unipd.search;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-
+import it.unipd.search.config.ElasticsearchProperties;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
@@ -54,12 +54,6 @@ import org.springframework.stereotype.Component;
 public class ElasticsearchClient_Search {
 
     /**
-     * URL of the Elasticsearch server this client connects to.
-     */
-    private static final String SERVER_URL = "http://elasticsearch:9200";
-
-
-    /**
      * The underlying Elasticsearch API client used to execute search requests.
      */
     private final ElasticsearchClient esClient;
@@ -79,8 +73,11 @@ public class ElasticsearchClient_Search {
      * </p>
      *
      */
-    protected ElasticsearchClient_Search() {
-        RestClient restClient = RestClient.builder(HttpHost.create(SERVER_URL)).build();
+    protected ElasticsearchClient_Search(ElasticsearchProperties properties) {
+
+        RestClient restClient = RestClient.builder(
+                HttpHost.create(properties.getUrl())
+        ).build();
 
         // Create the transport with a Jackson mapper
         ElasticsearchTransport transport = new RestClientTransport(

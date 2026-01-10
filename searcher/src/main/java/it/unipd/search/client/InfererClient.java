@@ -60,18 +60,16 @@ public class InfererClient {
 
         if (baseUrl == null || baseUrl.isBlank() || !baseUrl.startsWith("http")) {
             throw new IllegalStateException(
-                    "Invalid inferer.base-url: '" + baseUrl +
-                            "'. Expected something like http://inferer:5050"
+                    "Invalid inferer.base-baseUrl1: '" + baseUrl +
+                            "'. Expected something like http://inferer:5050 (in the default configuration)"
             );
         }
 
-        String url = baseUrl + "/api/v1/inferBatch";
-
-        log.info("Calling Inferer endpoint: {}", url);
+        log.info("Calling Inferer endpoint: {}", baseUrl);
 
         ResponseEntity<List<Document>> response =
                 restTemplate.exchange(
-                        url,
+                        baseUrl,
                         HttpMethod.POST,
                         new HttpEntity<>(requests),
                         new ParameterizedTypeReference<>() {

@@ -1,5 +1,6 @@
 package it.unipd.search;
 
+import it.unipd.search.config.ElasticsearchProperties;
 import it.unipd.search.config.InfererProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,7 +30,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  * </p>
  */
 @SpringBootApplication
-@EnableConfigurationProperties(InfererProperties.class)
+@EnableConfigurationProperties({InfererProperties.class, ElasticsearchProperties.class})
 @EnableMongoRepositories(basePackages = "it.unipd.search.repository")
 public class SearchApplication {
 

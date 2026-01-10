@@ -109,7 +109,6 @@ public class JsonHtmlCleaner {
                 }catch (Exception e) {
                     System.err.println("Skipping invalid JSONL line:");
                     System.err.println(line);
-                    continue;
                 }
             }
         }

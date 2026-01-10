@@ -73,23 +73,9 @@ public class ElasticsearchClient_Search {
      * </p>
      *
      */
-    protected ElasticsearchClient_Search(ElasticsearchProperties properties) {
-
-        RestClient restClient = RestClient.builder(
-                HttpHost.create(properties.getUrl())
-        ).build();
-
-        // Create the transport with a Jackson mapper
-        ElasticsearchTransport transport = new RestClientTransport(
-                restClient,
-                new JacksonJsonpMapper()
-        );
-
-        //Creation of the API client
-        esClient = new ElasticsearchClient(transport);
+    public ElasticsearchClient_Search(ElasticsearchClient esClient) {
+        this.esClient = esClient;
     }
-
-
 
     /**
      * Executes a search query on the specified Elasticsearch index and returns

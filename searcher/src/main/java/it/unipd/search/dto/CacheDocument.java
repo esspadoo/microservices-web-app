@@ -1,6 +1,7 @@
 package it.unipd.search.dto;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class CacheDocument {
     /**
      * Search query associated with this cache entry.
      */
+    @Indexed(unique = true)
     private String query;
 
     /**

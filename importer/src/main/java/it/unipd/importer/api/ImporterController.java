@@ -20,7 +20,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "api/v1/importer", produces = "application/json")
 public class ImporterController {
-
     private final ImporterService importerService;
 
     /**

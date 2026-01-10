@@ -92,7 +92,6 @@ public class DocServiceImplTest {
         Document expectedDoc = new Document("id1", "url1", "title1", "main_content1", "inferred_topic");
         Map<Integer, String> topicTopWords = (Map<Integer, String>) ReflectionTestUtils.getField(docService, "topicTopWords");
 
-
         jsonInferencerServiceMock.when(() -> JsonInferencerService.inferPrevalentTopicJsonl(
                 eq(topicInferencer),
                 any(Document.class),

@@ -98,6 +98,36 @@ public class JsonInferencerServiceTest {
     }
 
     /**
+     * <p><b>Summary:</b> Tests edge cases for {@code computeTopicTopWords}.
+     * <p><b>Test Case Design:</b> Mocks the model to return a single word for a topic. Calls the method with numWords greater than available, and numWords equal to 0.
+     * <p><b>Test Description:</b> Verifies that the method handles requesting more words than available (returns all available) and requesting 0 words (returns empty string).
+     * <p><b>Pre-Condition:</b> Model mocked with 1 topic and 1 word.
+     * <p><b>Post-Condition:</b> Returns correct strings.
+     * <p><b>Expected Results:</b> "word1" for numWords=5, "" for numWords=0.
+     */
+    @Test
+    void testComputeTopicTopWordsEdgeCases() {
+        when(model.getNumTopics()).thenReturn(1);
+        when(model.getAlphabet()).thenReturn(alphabet);
+
+        TreeSet<IDSorter> sortedWords = new TreeSet<>();
+        sortedWords.add(new IDSorter(0, 10.0));
+        ArrayList<TreeSet<IDSorter>> sortedWordsList = new ArrayList<>();
+        sortedWordsList.add(sortedWords);
+
+        when(model.getSortedWords()).thenReturn(sortedWordsList);
+        when(alphabet.lookupObject(0)).thenReturn("word1");
+
+        // Case 1: numWords > available words
+        Map<Integer, String> topicTopWords = JsonInferencerService.computeTopicTopWords(model, 5);
+        assertEquals("word1", topicTopWords.get(0));
+
+        // Case 2: numWords = 0
+        Map<Integer, String> topicTopWordsZero = JsonInferencerService.computeTopicTopWords(model, 0);
+        assertEquals("", topicTopWordsZero.get(0));
+    }
+
+    /**
      * <p><b>Summary:</b> Tests the inference of the prevalent topic for a single document.
      * <p><b>Test Case Design:</b> The {@code inferPrevalentTopicJsonl} method is tested with a mocked {@link TopicInferencer}. The static {@code resourceToTempFile} method is also mocked to prevent file system access.
      * <p><b>Test Description:</b> This test verifies that the service method correctly processes an input document, uses the inferencer to get a topic distribution, finds the prevalent topic, and constructs the output document with the correct topic words.
@@ -137,6 +167,24 @@ public class JsonInferencerServiceTest {
             if (tempStoplist != null && tempStoplist.exists()) {
                 tempStoplist.delete();
             }
+        }
+    }
+
+    /**
+     * <p><b>Summary:</b> Tests the {@code resourceToTempFile} utility method.
+     * <p><b>Test Case Design:</b> The package-private static method {@code resourceToTempFile} is tested by invoking it directly.
+     * <p><b>Test Description:</b> This test verifies that the method correctly creates a temporary file from a classpath resource.
+     * <p><b>Pre-Condition:</b> The "stoplist.txt" resource must exist in the classpath (src/main/resources).
+     * <p><b>Post-Condition:</b> A temporary file is created and returned.
+     * <p><b>Expected Results:</b> The returned file should not be null and should exist.
+     * @throws Exception if any error occurs during file creation
+     */
+    @Test
+    void testResourceToTempFile() throws Exception {
+        File tempFile = JsonInferencerService.resourceToTempFile();
+        assertNotNull(tempFile);
+        if (tempFile.exists()) {
+            tempFile.delete();
         }
     }
 }

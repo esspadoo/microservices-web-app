@@ -6,6 +6,7 @@ import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +17,22 @@ import org.springframework.context.annotation.Configuration;
  * an Elasticsearch cluster using the official Elasticsearch Java API Client.
  */
 @Configuration
+@ConfigurationProperties(prefix = "elasticsearch.server")
 public class ElasticConfig {
+
+        /**
+         * URL del nodo Elasticsearch
+         */
+        private String url;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
 
     /**
      * Creates a low-level {@link RestClient} for communicating with Elasticsearch.
@@ -28,7 +44,7 @@ public class ElasticConfig {
      */
     @Bean
     public RestClient restClient() {
-        return RestClient.builder(HttpHost.create("http://elasticsearch:9200")).build();
+        return RestClient.builder(HttpHost.create(url)).build();
     }
 
 

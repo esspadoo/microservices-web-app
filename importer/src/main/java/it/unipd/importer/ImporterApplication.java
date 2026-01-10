@@ -1,7 +1,9 @@
 package it.unipd.importer;
 
+import it.unipd.importer.config.ElasticConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
@@ -15,6 +17,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * threads without blocking HTTP requests.
  */
 @SpringBootApplication
+@EnableConfigurationProperties(ElasticConfig.class)
 @EnableAsync
 public class ImporterApplication {
 

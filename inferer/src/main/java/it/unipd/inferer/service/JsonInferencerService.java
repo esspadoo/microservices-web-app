@@ -11,12 +11,7 @@ import cc.mallet.types.IDSorter;
 import it.unipd.inferer.dto.Document;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.File;
-
-import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 //changed loading of the pipe instead of hardcoded
 //added method load pipe, tempfile method (not used), removed tmp stoplist file.
@@ -182,29 +177,5 @@ public class JsonInferencerService {
         return topicTopWords;
     }
 
-    /**
-     * Copies the stopword list from the application classpath into a temporary file.
-     * <p>
-     * MALLET APIs require a physical file for stopword removal. This method
-     * extracts the stopword resource and makes it available as a temporary file
-     * that is automatically deleted when the JVM terminates.
-     * </p>
-     *
-     * @return a temporary {@link File} containing the stopword list
-     * @throws Exception if the resource cannot be accessed or written
-     */
-    static File resourceToTempFile() throws Exception {
-
-        ClassPathResource resource = new ClassPathResource("stoplist.txt");
-
-        File tempFile = File.createTempFile("mallet-stoplist", ".txt");
-        tempFile.deleteOnExit();
-
-        try (InputStream in = resource.getInputStream()) {
-            Files.copy(in, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        return tempFile;
-    }
 }
 

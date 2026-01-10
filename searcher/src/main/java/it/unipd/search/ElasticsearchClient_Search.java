@@ -90,6 +90,7 @@ public class ElasticsearchClient_Search {
     }
 
 
+
     /**
      * Executes a search query on the specified Elasticsearch index and returns
      * the matching documents.
@@ -126,7 +127,8 @@ public class ElasticsearchClient_Search {
                                         .fields(field1 + "^2", field2) // primary boosted
                                         .query(queryText)
                                 )
-                        ),
+                        )
+                        .collapse(c -> c.field("url")),
                 Document.class
         );
 

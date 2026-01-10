@@ -18,7 +18,6 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +45,6 @@ public class JsonHtmlCleanerTest {
 
     private StringWriter outputStringWriter;
     private Path mockInputPath;
-    private Path mockOutputPath;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -56,7 +54,7 @@ public class JsonHtmlCleanerTest {
         mockedFiles = Mockito.mockStatic(Files.class);
 
         mockInputPath = Mockito.mock(Path.class);
-        mockOutputPath = Mockito.mock(Path.class);
+        Path mockOutputPath = Mockito.mock(Path.class);
 
         // Stub Paths.get to return our mock paths
         mockedPaths.when(() -> Paths.get("trainer/src/json_out.json")).thenReturn(mockInputPath);

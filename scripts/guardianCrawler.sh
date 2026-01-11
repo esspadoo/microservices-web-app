@@ -23,9 +23,50 @@ GUARDIAN_TAGS=(
     "artanddesign/digital-art"
 )
 
+check_installed() {
+    local PACKAGE=$1
+
+    if command -v "$PACKAGE" >/dev/null 2>&1; then
+        echo "$PACKAGE is already installed."
+    else
+        echo "$PACKAGE not found. Attempting to install..."
+        install_package "$PACKAGE"
+    fi
+}
+
+# Helper function to handle the OS-specific logic
+install_package() {
+    local PKG=$1
+
+    case "$OSTYPE" in
+        darwin*)
+            if command -v brew >/dev/null 2>&1; then
+                brew install "$PKG"
+            else
+                echo "❌ Homebrew not found. Install it at https://brew.sh/"
+                return 1
+            fi
+            ;;
+        linux-gnu*)
+            if [ -f /etc/debian_version ]; then
+                sudo apt-get update && sudo apt-get install -y "$PKG"
+            elif [ -f /etc/arch-release ]; then
+                sudo pacman -Syu --noconfirm "$PKG"
+            else
+                echo "Unsupported Linux distro."
+                return 1
+            fi
+            ;;
+        *)
+            echo "OS $OSTYPE not supported."
+            return 1
+            ;;
+    esac
+}
+
 #check if curl and jq are available
-type curl >/dev/null 2>&1 || { echo >&2 "Required curl but it's not installed. Aborting."; exit 1; }
-type jq > /dev/null 2>&1 || { echo >&2 "Required jq but it's not installed. Aborting."; exit 1; }
+check_installed "curl"
+check_installed "jq"
 
 #creating directory if doesn't exists
 mkdir -p "$(dirname "$OUTPUT_FILE")"

@@ -37,8 +37,7 @@ skinparam {
   }
 }
 
-
-title Inferer Module - Sequence Diagram (Hyper-rigorous)
+title Inferer Module - Sequence Diagram
 
 actor "Searcher Service" as SEARCHER
 
@@ -50,19 +49,29 @@ participant "Mallet TopicInferencer\n(ParallelTopicModel)" as MALLET
 == Batch topic inference ==
 
 SEARCHER -> IC : POST /api/v1/inferBatch\nList<Document>
+activate IC
 
 IC -> DSI : inferBatch(documents)
+activate DSI
 
 loop for each Document
     DSI -> JIS : inferPrevalentTopicJsonl(document)
+    activate JIS
+
     JIS -> MALLET : getSampledDistribution(instance)
+    activate MALLET
     MALLET --> JIS : topic distribution
+    deactivate MALLET
+
     JIS --> DSI : Document (with inferred topic)
+    deactivate JIS
 end
 
 DSI --> IC : List<Document>
+deactivate DSI
 
 IC --> SEARCHER : HTTP 200 OK\nJSON List<Document>
+deactivate IC
 
 == Exception propagation ==
 
@@ -71,3 +80,4 @@ opt RuntimeException / IOException
 end
 
 @enduml
+

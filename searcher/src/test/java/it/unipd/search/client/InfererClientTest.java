@@ -68,7 +68,7 @@ public class InfererClientTest {
 
         when(infererProperties.getBaseUrl()).thenReturn("http://inferer:5050");
         when(restTemplate.exchange(
-                eq("http://inferer:5050/api/v1/inferBatch"),
+                eq("http://inferer:5050"),
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
                 any(ParameterizedTypeReference.class)

@@ -1,8 +1,9 @@
-package it.unipd.importer;
+package it.unipd.importer.client;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.indices.ElasticsearchIndicesClient;
 import co.elastic.clients.transport.ElasticsearchTransport;
+import it.unipd.importer.ElasticsearchClient_Importer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

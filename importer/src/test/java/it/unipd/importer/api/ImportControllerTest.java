@@ -1,6 +1,5 @@
-package it.unipd.importer;
+package it.unipd.importer.api;
 
-import it.unipd.importer.api.ImporterController;
 import it.unipd.importer.service.ImporterService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -55,7 +54,7 @@ public class ImportControllerTest {
      * @throws Exception if any error occurs during MockMvc execution
      */
     @Test
-    void shouldReturnImportAvviato() throws Exception {
+    void shouldReturnImportStarted() throws Exception {
         String fileContent =
                 "{{\"id\":\"id1\",\"title\":\"Title1\",\"url\":\"https://www.google.com\",\"main_content\":\"Main content 1\"}" +
                 "{{\"id\":\"id2\",\"title\":\"Title2\",\"url\":\"https://www.google.com\",\"main_content\":\"Main content 2\"}";
@@ -70,7 +69,7 @@ public class ImportControllerTest {
                         .param("indexName", "guardian")
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Import avviato")));
+                .andExpect(content().string(containsString("Import started. Job ID: ")));
     }
 
     /**

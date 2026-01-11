@@ -1,6 +1,6 @@
-package it.unipd.importer;
+package it.unipd.importer.service;
 
-import it.unipd.importer.service.ImporterService;
+import it.unipd.importer.ElasticsearchClient_Importer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

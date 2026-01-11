@@ -145,17 +145,18 @@ services:
   swagger-ui:
     image: swaggerapi/swagger-ui
     container_name: swagger-docs
+    ports:
+      - 8081:8080
     environment:
-      # This builds the dropdown menu.
-      # Note: The URLs point to the paths Nginx will handle in the next step.
+      #BASE_URL: /docs
       URLS: "[ 
           { url: '/docs/api-docs/searcher', name: 'Searcher API' },
           { url: '/docs/api-docs/importer', name: 'Importer API' },
-          { url: '/docs/api-docs/inferer', name: 'Inferer API' } 
-        ]"
+          { url: '/docs/api-docs/inferer', name: 'Inferer API' }  
+        ]" 
     networks:
       - public
-      - internal
+      #- internal
 
 
 volumes:

@@ -1,0 +1,64 @@
+@startuml
+
+package "it.unipd.search" {
+    class SearchApplication
+    class ElasticsearchClient_Search
+}
+
+package "it.unipd.search.api" {
+    class SearchController
+}
+
+package "it.unipd.search.service" {
+    class SearchService
+    class DocumentService
+}
+
+package "it.unipd.search.client" {
+    class InfererClient
+}
+
+package "it.unipd.search.repository" {
+    interface DocumentRepository
+}
+
+package "it.unipd.search.dto" {
+    class Document
+    class CacheDocument
+}
+
+package "it.unipd.search.config" {
+    class ElasticsearchProperties
+    class InfererProperties
+    class ElasticsearchBeansConf
+    class ElasticsearchIndexInitializer
+    class RestClientConfig
+}
+
+' --- Dependencies between packages ---
+
+SearchController --> SearchService
+SearchController --> DocumentService
+SearchController --> InfererClient
+SearchController --> Document
+
+SearchService --> ElasticsearchClient_Search
+SearchService --> Document
+
+DocumentService --> DocumentRepository
+DocumentService --> CacheDocument
+
+InfererClient --> Document
+InfererClient --> InfererProperties
+
+ElasticsearchClient_Search --> Document
+
+ElasticsearchBeansConf --> ElasticsearchProperties
+ElasticsearchIndexInitializer --> ElasticsearchClient_Search
+
+SearchApplication --> ElasticsearchProperties
+SearchApplication --> InfererProperties
+SearchApplication --> DocumentRepository
+
+@enduml
+

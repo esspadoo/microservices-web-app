@@ -14,43 +14,55 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * Client component responsible for communicating with the external
- * inference service.
+ * Client component responsible for communicating with an external
+ * inference service via HTTP.
  *
- * <p>The service enriches documents with inferred metadata
- * such as topics or classifications.</p>
+ * <p>This client sends batches of documents to the inference service,
+ * which enriches them with inferred metadata (e.g. topics, categories
+ * or classifications) and returns the enriched documents.</p>
  */
 @Service
 public class InfererClient {
 
-    /** REST client used to communicate with the inference service. */
+    /** REST client used to perform HTTP calls to the inference service. */
     private final RestTemplate restTemplate;
 
-    /** Configuration properties for the inference service. */
+    /** Configuration properties containing the inference service endpoint. */
     private final InfererProperties infererProperties;
 
+    /** Logger used for tracing inference service interactions. */
     private static final Logger log = LoggerFactory.getLogger(InfererClient.class);
 
     /**
-     * Constructs an {@code InfererClient}.
+     * Constructs an {@code InfererClient} with the required dependencies.
      *
-     * @param restTemplate REST client
-     * @param infererProperties inference service configuration
+     * <p>Dependencies are injected via constructor injection to promote
+     * immutability and ease of testing.</p>
+     *
+     * @param restTemplate      REST client used for HTTP communication
+     * @param infererProperties configuration properties of the inference service
      */
-    public InfererClient(
-            RestTemplate restTemplate,
-            InfererProperties infererProperties) {
+    public InfererClient(RestTemplate restTemplate, InfererProperties infererProperties) {
         this.restTemplate = restTemplate;
         this.infererProperties = infererProperties;
     }
 
     /**
-     * Sends a batch of documents to the inference service and
-     * returns enriched results.
+     * Sends a batch of documents to the inference service and returns
+     * the enriched documents.
      *
-     * @param requests list of documents to process
-     * @return list of inferred documents
-     * @throws IllegalStateException if the service URL is invalid
+     * <p>The method performs the following steps:</p>
+     * <ol>
+     *   <li>Retrieve the inference service base URL from configuration</li>
+     *   <li>Validate the URL format</li>
+     *   <li>Send an HTTP POST request containing the documents</li>
+     *   <li>Deserialize and return the enriched documents</li>
+     * </ol>
+     *
+     * @param requests list of documents to be processed by the inference service
+     * @return list of documents enriched with inferred metadata
+     * @throws IllegalStateException if the inference service URL is missing,
+     *                               blank, or not a valid HTTP URL
      */
     public List<Document> inferBatch(List<Document> requests) {
 

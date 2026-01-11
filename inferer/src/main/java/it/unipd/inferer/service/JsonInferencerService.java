@@ -11,40 +11,33 @@ import cc.mallet.types.IDSorter;
 import it.unipd.inferer.dto.Document;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.File;
-
-import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
-//changed loading of the pipe instead of hardcoded
-//added method load pipe, tempfile method (not used), removed tmp stoplist file.
+
 /**
- * Utility service for topic inference and topic model introspection using MALLET.
+ * Utility service for topic inference and model introspection using MALLET.
  *
  * <p>
- * This class provides a collection of static helper methods to perform topic
- * inference on textual documents using a pre-trained
- * {@link cc.mallet.topics.ParallelTopicModel}.
- * It is responsible for:
+ * This class provides a set of static helper methods to perform topic inference
+ * on textual documents using a pre-trained {@link ParallelTopicModel}.
+ * It handles:
  * </p>
  *
  * <ul>
  *   <li>Preprocessing raw text using a MALLET-compatible pipeline</li>
  *   <li>Inferring topic distributions for unseen documents</li>
- *   <li>Identifying the most prevalent topic for a document</li>
+ *   <li>Determining the most prevalent topic for a document</li>
  *   <li>Extracting human-readable topic representations</li>
  * </ul>
  *
  * <p>
- * The class is stateless and thread-safe, assuming the underlying MALLET
- * {@link cc.mallet.topics.TopicInferencer} is thread-safe.
+ * The class is stateless and thread-safe, assuming the underlying
+ * {@link TopicInferencer} is thread-safe.
  * </p>
  *
  * <p>
- * This service is intentionally designed as a utility class and is not managed
- * directly by the Spring container.
+ * This service is designed as a utility class and is not managed
+ * by the Spring container.
  * </p>
  */
 public class JsonInferencerService {
@@ -52,21 +45,19 @@ public class JsonInferencerService {
     /**
      * Infers the most prevalent topic for a given document.
      * <p>
-     * The document text is preprocessed using a pipeline that must match the
-     * preprocessing configuration used during model training. The resulting
-     * topic distribution is computed using Gibbs sampling and the topic with
-     * the highest probability is selected as the prevalent one.
+     * The document text is preprocessed using a pipeline matching the configuration
+     * used during model training. The topic distribution is computed using Gibbs
+     * sampling, and the topic with the highest probability is selected.
      * </p>
      *
      * <p>
-     * The returned {@link Document} is enriched with a human-readable
-     * representation of the inferred topic, expressed through its most
-     * representative words.
+     * The returned {@link Document} is enriched with a human-readable representation
+     * of the inferred topic, expressed by its most representative words.
      * </p>
      *
      * @param inferencer the MALLET topic inferencer derived from a trained model
-     * @param doc the input document to be analyzed
-     * @param topicTopWords a mapping between topic identifiers and their top words
+     * @param doc the input document to analyze
+     * @param topicTopWords a mapping of topic identifiers to their top words
      * @return a new {@link Document} containing the inference result
      * @throws Exception if preprocessing, inference, or resource loading fails
      */
@@ -100,10 +91,27 @@ public class JsonInferencerService {
         String prevalentTopicWords = topicTopWords.get(prevalentTopic);
 
         // Build output Document
-        return new Document("",url, title, "", prevalentTopicWords);
+        return new Document("", url, title, "", prevalentTopicWords);
     }
 
-
+    /**
+     * Loads a pre-configured MALLET {@link Pipe} from the classpath.
+     *
+     * <p>
+     * This method reads the serialized pipeline object from the resource
+     * file <code>inferer/model.pipe</code> and deserializes it into a {@link Pipe}
+     * instance. The returned pipeline must match the configuration used during
+     * the training of the topic model.
+     * </p>
+     *
+     * <p>
+     * The method uses a try-with-resources block to safely handle the input stream
+     * and ensure it is closed after reading the object.
+     * </p>
+     *
+     * @return a deserialized {@link Pipe} object ready for preprocessing documents
+     * @throws Exception if the resource cannot be found, read, or deserialized
+     */
     private static Pipe loadPipe() throws Exception {
         ClassPathResource resource = new ClassPathResource("inferer/model.pipe");
         try (ObjectInputStream in = new ObjectInputStream(resource.getInputStream())) {
@@ -115,13 +123,12 @@ public class JsonInferencerService {
     /**
      * Returns the index of the maximum value in a numeric array.
      * <p>
-     * This utility method is used to identify the most prevalent topic
-     * by selecting the topic with the highest probability in the inferred
-     * topic distribution.
+     * This utility is used to identify the most prevalent topic by selecting
+     * the topic with the highest probability in the inferred distribution.
      * </p>
      *
      * @param values an array of double values
-     * @return the index corresponding to the maximum value
+     * @return the index of the maximum value
      */
     private static int argMax(double[] values) {
         int maxIndex = 0;
@@ -142,7 +149,7 @@ public class JsonInferencerService {
      *
      * <p>
      * For each topic in the model, the method retrieves the top {@code numWords}
-     * terms ranked by their weight and concatenates them into a single string.
+     * terms ranked by weight and concatenates them into a single string.
      * </p>
      *
      * @param model the trained {@link ParallelTopicModel}
@@ -176,28 +183,4 @@ public class JsonInferencerService {
         return topicTopWords;
     }
 
-    /**
-     * Copies the stopword list from the application classpath into a temporary file.
-     * <p>
-     * MALLET APIs require a physical file for stopword removal. This method
-     * extracts the stopword resource and makes it available as a temporary file
-     * that is automatically deleted when the JVM terminates.
-     * </p>
-     *
-     * @return a temporary {@link File} containing the stopword list
-     * @throws Exception if the resource cannot be accessed or written
-     */
-    static File resourceToTempFile() throws Exception {
-        ClassPathResource resource = new ClassPathResource("stoplist.txt");
-
-        File tempFile = File.createTempFile("mallet-stoplist", ".txt");
-        tempFile.deleteOnExit();
-
-        try (InputStream in = resource.getInputStream()) {
-            Files.copy(in, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        return tempFile;
-    }
 }
-

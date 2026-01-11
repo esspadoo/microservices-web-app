@@ -18,35 +18,33 @@ import java.util.Map;
 /**
  * REST controller exposing search-related endpoints.
  *
- * <p>This controller orchestrates search execution, caching,
- * and inference enrichment.</p>
+ * <p>This controller handles the execution of search queries, the enrichment
+ * of results through an inference service, and the caching of results to
+ * improve performance on repeated queries.</p>
  */
 @RestController
 @RequestMapping(value = "api/v1/searcher", produces = "application/json")
 public class SearchController {
 
-    /** Service responsible for search execution. */
+    /** Service responsible for executing search queries against the search backend. */
     private final SearchService searchService;
 
-    /** Service responsible for inference enrichment. */
+    /** Client responsible for enriching documents using an inference service. */
     private final InfererClient infererClient;
 
-    /** Service responsible for caching search results. */
+    /** Service responsible for caching and retrieving search results. */
     private final DocumentService documentService;
-
 
     /**
      * Constructs a {@code SearchController} with all required dependencies.
      *
-     * <p>Dependencies are injected via constructor injection to ensure
-     * immutability, explicitness, and improved testability.</p>
+     * <p>Constructor-based dependency injection is used to ensure immutability,
+     * clarity of dependencies, and easier unit testing.</p>
      *
-     * @param searchService   service responsible for executing search queries
-     *                        against the search backend (e.g. Elasticsearch)
-     * @param infererClient   client responsible for enriching search results
-     *                        through inference processing
-     * @param documentService service responsible for caching and retrieving
-     *                        search results
+     * @param searchService   service responsible for performing search operations
+     * @param infererClient   client used to enrich search results via inference
+     * @param documentService service responsible for persisting and retrieving
+     *                        cached search results
      */
     public SearchController(SearchService searchService, InfererClient infererClient, DocumentService documentService) {
         this.searchService = searchService;
@@ -54,43 +52,52 @@ public class SearchController {
         this.documentService = documentService;
     }
 
-
     /**
-     * Health-check endpoint used to verify service availability.
+     * Simple health-check endpoint.
      *
-     * @return static greeting message
+     * <p>This endpoint can be used to verify that the SEARCHER service is up
+     * and reachable.</p>
+     *
+     * @return a static confirmation message
      */
     @GetMapping("/hello")
-    public String hello(){
+    public String hello() {
         return "Hello this is a test, service SEARCHER UP!";
     }
 
     /**
-     * Executes a search query and returns enriched documents.
+     * Executes a search query and returns a list of enriched documents.
      *
-     * <p>The method follows this workflow:</p>
+     * <p>The execution flow is as follows:</p>
      * <ol>
-     *   <li>Check MongoDB cache</li>
-     *   <li>If absent, query Elasticsearch</li>
-     *   <li>Send results to inference service</li>
-     *   <li>Cache results</li>
-     *   <li>Return response</li>
+     *   <li>Check if results for the given query are present in the cache</li>
+     *   <li>If cached results are found, return them immediately</li>
+     *   <li>If not cached, execute the search against the search backend</li>
+     *   <li>Send retrieved documents to the inference service for enrichment</li>
+     *   <li>Store the enriched results in the cache</li>
+     *   <li>Return the enriched documents to the client</li>
      * </ol>
      *
-     * @param query user-provided search query
-     * @return HTTP response containing a list of documents
+     * <p>In case of unexpected errors, an HTTP 500 response is returned
+     * containing a simple error message.</p>
+     *
+     * @param query the user-provided search query string
+     * @return an HTTP response containing a list of documents or an error message
      */
     @GetMapping("/searchDocuments")
     public ResponseEntity<?> searchDocuments(@RequestParam(value = "query") String query) {
         try {
             List<CacheDocument> cacheDocument = documentService.getDocumentsByQuery(query);
-            if(cacheDocument.isEmpty()) {
+
+            if (cacheDocument.isEmpty()) {
                 List<Document> resultsElastic = searchService.searchDocuments(query);
                 List<Document> results = infererClient.inferBatch(resultsElastic);
+
                 CacheDocument doc = new CacheDocument();
                 doc.setQuery(query);
                 doc.setDocuments(results);
                 documentService.insertDocuments(doc);
+
                 return ResponseEntity.ok(results);
             } else {
                 List<Document> documents = cacheDocument.getFirst().getDocuments();
@@ -101,7 +108,4 @@ public class SearchController {
                     .body(Map.of("error", e.getMessage()));
         }
     }
-
 }
-
-

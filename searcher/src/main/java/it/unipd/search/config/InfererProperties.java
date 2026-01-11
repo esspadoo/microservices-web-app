@@ -5,29 +5,33 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * Configuration properties for the external inference service.
  *
- * <p>Properties are bound from configuration files using the
- * {@code inferer.*} prefix.</p>
+ * <p>This class binds external configuration values (e.g. from
+ * {@code application.yml} or {@code application.properties})
+ * using the prefix {@code inferer}.</p>
  */
 @ConfigurationProperties(prefix = "inferer")
 public class InfererProperties {
 
     /**
      * Base URL of the inference service.
+     *
+     * <p>Example: {@code http://inferer:5050}</p>
      */
     private String baseUrl;
 
     /**
-     * Base URL of the inference service.
+     * Returns the base URL of the inference service.
      *
-     * @return base URL
+     * @return the inference service base URL
      */
     public String getBaseUrl() {
         return baseUrl;
     }
 
     /**
-     * Set the base URL of the inference service.
+     * Sets the base URL of the inference service.
      *
+     * @param baseUrl the inference service base URL
      */
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;

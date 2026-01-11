@@ -23,23 +23,24 @@ public class ImporterService {
     private final Map<String, String> jobStatus = new ConcurrentHashMap<>();
 
     /**
-     * Constructs the ImporterService.
+     * Constructs an ImporterService.
      *
-     * @param elasticsearchClientIndexer Elasticsearch indexing component
+     * @param elasticsearchClientIndexer the Elasticsearch indexing component
      */
     public ImporterService(ElasticsearchClient_Importer elasticsearchClientIndexer) {
         this.elasticsearchClientIndexer = elasticsearchClientIndexer;
     }
 
     /**
-     * Starts the indexing of articles from the given file into Elasticsearch, handles the job status accordingly.
+     * Starts the asynchronous indexing of articles from the given file into Elasticsearch.
      *
-     * <p>The method is executed asynchronously, allowing the HTTP request to
-     * return immediately while the indexing continues in background.
+     * <p>The method updates the job status in {@link #jobStatus} accordingly:
+     * "IN_PROGRESS" while running, "COMPLETED" if successful, and
+     * "FAILED: <error message>" if an exception occurs.
      * The file is deleted after processing.
      *
-     * @param file      the NDJSON file to process
-     * @param indexName name of the Elasticsearch index
+     * @param file      the NDJSON file containing the documents to index
+     * @param indexName the name of the Elasticsearch index
      * @param jobId     unique identifier for the import job
      */
     @Async
@@ -58,10 +59,11 @@ public class ImporterService {
     }
 
     /**
-     * Retrieves the status of an import job.
+     * Retrieves the current status of an import job.
      *
      * @param jobId the unique identifier of the job
-     * @return the current status of the job, or "UNKNOWN" if not found
+     * @return the status of the job ("IN_PROGRESS", "COMPLETED", "FAILED: <message>")
+     *         or "UNKNOWN" if the job ID is not found
      */
     public String getJobStatus(String jobId) {
         return jobStatus.getOrDefault(jobId, "UNKNOWN");

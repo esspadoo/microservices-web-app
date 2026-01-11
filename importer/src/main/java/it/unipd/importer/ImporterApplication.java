@@ -10,10 +10,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * Main entry point of the Importer Spring Boot application.
  *
  * <p>This class bootstraps the Spring context and starts the embedded web server.
- * The application exposes REST APIs used to import NDJSON files into Elasticsearch.
+ * The application exposes REST APIs for importing NDJSON files into Elasticsearch.
  *
  * <p>The {@link EnableAsync} annotation enables asynchronous method execution,
- * allowing long-running tasks (such as bulk indexing) to be executed in background
+ * allowing long-running tasks (such as bulk indexing) to run in background
  * threads without blocking HTTP requests.
  */
 @SpringBootApplication
@@ -27,7 +27,6 @@ public class ImporterApplication {
      * @param args command-line arguments that can be passed to the application
      */
     public static void main(String[] args) {
-
         SpringApplication.run(ImporterApplication.class, args);
     }
 

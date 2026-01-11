@@ -23,10 +23,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ElasticsearchClient_Importer {
 
-    /** High-level Elasticsearch client */
+    /** High-level Elasticsearch client used for index operations */
     public final ElasticsearchClient esClient;
 
-    /** Low-level REST client */
+    /** Low-level REST client, used for closing connections */
     private final RestClient restClient;
 
     /**
@@ -48,20 +48,19 @@ public class ElasticsearchClient_Importer {
      *
      * @param inputStream input stream containing NDJSON data
      * @param indexName   name of the Elasticsearch index
-     * @throws Exception if the index operation fails or the input format is invalid
-     * @throws IllegalArgumentException if the file format is not valid NDJSON
+     * @throws Exception if the index operation fails
+     * @throws IllegalArgumentException if the input contains invalid NDJSON lines
      */
     public void bulkIndexWithContext(InputStream inputStream, String indexName) throws Exception {
         if (!esClient.indices().exists(b -> b.index(indexName)).value()) {
             esClient.indices().create(c -> c.index(indexName));
         }
 
-        try(BulkIngester<BinaryData> ingester = BulkIngester.of(b -> b
+        try (BulkIngester<BinaryData> ingester = BulkIngester.of(b -> b
                 .client(esClient)
                 .maxOperations(1000)
                 .flushInterval(1, TimeUnit.SECONDS))
         ) {
-
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
                 String line;
 
@@ -70,9 +69,10 @@ public class ElasticsearchClient_Importer {
 
                     if (!line.startsWith("{")) {
                         throw new IllegalArgumentException(
-                                "Not valid file's format: it mush be a NDJSON (a JSON for each row)"
+                                "Invalid file format: must be NDJSON (one JSON object per line)"
                         );
                     }
+
                     System.out.println(line);
 
                     BinaryData data = BinaryData.of(line.getBytes(StandardCharsets.UTF_8), ContentType.APPLICATION_JSON);

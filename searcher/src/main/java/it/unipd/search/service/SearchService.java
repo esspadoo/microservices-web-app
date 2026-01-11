@@ -4,15 +4,15 @@ import it.unipd.search.ElasticsearchClient_Search;
 import it.unipd.search.dto.Document;
 import org.springframework.stereotype.Service;
 
-
 import java.io.IOException;
 import java.util.List;
 
 /**
  * Service layer component responsible for search-related business logic.
  *
- * <p>This service acts as an intermediary between the REST controller
- * and the Elasticsearch client abstraction.</p>
+ * <p>This service acts as an intermediary between the REST layer and
+ * the Elasticsearch client abstraction, encapsulating search execution
+ * details.</p>
  */
 @Service
 public class SearchService {
@@ -35,16 +35,21 @@ public class SearchService {
     /**
      * Executes a search query against predefined Elasticsearch indices.
      *
-     * <p>The indices are currently statically defined to avoid user sabotage.</p>
+     * <p>The target indices are statically defined to restrict searches
+     * to known and controlled data sources.</p>
      *
-     * @param query user-provided search query
+     * @param query the user-provided search query string
      * @return list of documents matching the query
-     * @throws IOException if Elasticsearch communication fails
+     * @throws IOException if communication with Elasticsearch fails
      */
     public List<Document> searchDocuments(String query) throws IOException {
         List<String> indexName = List.of("guardian", "owi");
 
-        return this.elasticsearchClient_Search.searchDocuments(indexName, "title", "main_content", query);
+        return this.elasticsearchClient_Search.searchDocuments(
+                indexName,
+                "title",
+                "main_content",
+                query
+        );
     }
-
 }

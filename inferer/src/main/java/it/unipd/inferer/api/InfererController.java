@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * REST controller responsible for exposing inference-related APIs.
+ * REST controller that exposes inference-related APIs.
  * <p>
- * This controller represents the entry point of the INFERER service and
- * handles HTTP requests related to topic inference on {@link Document}
- * objects, both for single documents and batch processing.
+ * This controller serves as the entry point for the INFERER service and
+ * handles HTTP requests related to topic inference on {@link Document} objects,
+ * supporting both single-document and batch processing.
  * </p>
  *
  * <p>
@@ -21,8 +21,8 @@ import java.util.List;
  * </p>
  *
  * <p>
- * The controller delegates all business logic to the service layer,
- * ensuring a clear separation of concerns.
+ * All business logic is delegated to the service layer, ensuring a clear
+ * separation of concerns.
  * </p>
  */
 @RestController
@@ -32,9 +32,8 @@ public class InfererController {
     /**
      * Service layer component responsible for executing the inference logic.
      * <p>
-     * This dependency abstracts the business logic and allows the controller
-     * to delegate the actual processing of documents without handling
-     * implementation details.
+     * This dependency abstracts the business logic, allowing the controller
+     * to delegate document processing without dealing with implementation details.
      * </p>
      */
     private final DocService docService;
@@ -57,10 +56,10 @@ public class InfererController {
      * Health-check and test endpoint.
      * <p>
      * This endpoint can be used to verify that the INFERER service is running
-     * correctly and is able to respond to HTTP requests.
+     * and is able to respond to HTTP requests.
      * </p>
      *
-     * @return a static confirmation message indicating that the service is up
+     * @return a static message confirming that the service is up
      */
     @GetMapping("/hello")
     public String hello(){
@@ -86,8 +85,8 @@ public class InfererController {
     /**
      * Performs topic inference on a batch of documents.
      * <p>
-     * This endpoint is designed for bulk processing scenarios, allowing
-     * multiple documents to be analyzed within a single request.
+     * This endpoint supports bulk processing, allowing multiple documents
+     * to be analyzed within a single request.
      * </p>
      *
      * @param doc a list of documents to be processed, provided in the request body
@@ -99,4 +98,3 @@ public class InfererController {
         return docService.inferBatch(doc);
     }
 }
-

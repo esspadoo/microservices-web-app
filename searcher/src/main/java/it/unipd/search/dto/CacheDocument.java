@@ -8,8 +8,9 @@ import java.util.List;
 /**
  * MongoDB document representing cached search results.
  *
- * <p>Each instance maps a search query to the list of documents
- * produced for that query.</p>
+ * <p>Each instance maps a unique search query to the list of documents
+ * returned for that query, allowing fast retrieval of previously
+ * computed search results.</p>
  */
 @org.springframework.data.mongodb.core.mapping.Document
 public class CacheDocument {
@@ -22,26 +23,29 @@ public class CacheDocument {
 
     /**
      * Search query associated with this cache entry.
+     *
+     * <p>This field is indexed and must be unique to ensure that
+     * only one cache entry exists per query.</p>
      */
     @Indexed(unique = true)
     private String query;
 
     /**
-     * List of documents retrieved and cached for the query.
+     * List of documents retrieved and cached for the associated query.
      */
     private List<Document> documents;
 
     /**
-     * Returns the document identifier.
+     * Returns the unique identifier of this cache document.
      *
-     * @return cache document ID
+     * @return cache document identifier
      */
     public String getId() {
         return id;
     }
 
     /**
-     * Returns the associated search query.
+     * Returns the search query associated with this cache entry.
      *
      * @return search query string
      */
@@ -50,9 +54,9 @@ public class CacheDocument {
     }
 
     /**
-     * Returns the cached documents.
+     * Returns the list of cached documents.
      *
-     * @return list of documents
+     * @return list of cached {@link Document} instances
      */
     public List<Document> getDocuments() {
         return documents;
@@ -67,9 +71,8 @@ public class CacheDocument {
         this.query = query;
     }
 
-
     /**
-     * Sets the list of cached documents.
+     * Sets the list of documents to be cached for this query.
      *
      * @param documents list of documents
      */

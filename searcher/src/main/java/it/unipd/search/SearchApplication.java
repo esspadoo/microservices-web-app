@@ -8,26 +8,20 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /**
- * Entry point for the Spring Boot search application.
- * <p>
- * This class is annotated with {@link SpringBootApplication}, which indicates that it is the
- * primary configuration class for the Spring Boot application. It enables component scanning,
- * auto-configuration and configuration properties scanning.
- * </p>
- * <p>
- * The {@link #main(String[])} method launches the application by invoking
- * {@link SpringApplication#run(Class, String...)}.
- * </p>
- * <p>
- * Example usage:
- * <pre>{@code
- * java -jar search-application.jar
- * }</pre>
- * </p>
- * <p>
- * Once started, the Spring Boot application initializes the application context and all configured
- * beans, and starts any embedded web server (if applicable).
- * </p>
+ * Main entry point of the Spring Boot search application.
+ *
+ * <p>This class bootstraps the application and serves as the primary
+ * configuration source. The {@link SpringBootApplication} annotation
+ * enables component scanning, auto-configuration and configuration
+ * class registration.</p>
+ *
+ * <p>External configuration properties are enabled via
+ * {@link EnableConfigurationProperties}, allowing structured access
+ * to Elasticsearch and inference service settings.</p>
+ *
+ * <p>MongoDB repositories are detected and registered by enabling
+ * {@link EnableMongoRepositories} on the designated base package.</p>
+ *
  */
 @SpringBootApplication
 @EnableConfigurationProperties({InfererProperties.class, ElasticsearchProperties.class})
@@ -37,11 +31,9 @@ public class SearchApplication {
     /**
      * Application entry point.
      *
-     * @param args command-line arguments passed to the application
+     * @param args command-line arguments passed at startup
      */
     public static void main(String[] args) {
         SpringApplication.run(SearchApplication.class, args);
-
     }
-
 }

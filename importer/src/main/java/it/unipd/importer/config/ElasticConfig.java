@@ -20,25 +20,33 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "elasticsearch.server")
 public class ElasticConfig {
 
-        /**
-         * URL del nodo Elasticsearch
-         */
-        private String url;
+    /**
+     * URL of the Elasticsearch node.
+     */
+    private String url;
 
-        public String getUrl() {
-            return url;
-        }
+    /**
+     * Returns the configured Elasticsearch URL.
+     *
+     * @return the Elasticsearch node URL
+     */
+    public String getUrl() {
+        return url;
+    }
 
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
+    /**
+     * Sets the Elasticsearch node URL.
+     *
+     * @param url the URL to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     /**
      * Creates a low-level {@link RestClient} for communicating with Elasticsearch.
      *
-     * <p>The client connects to the Elasticsearch instance running at
-     * {@code http://elasticsearch:9200}.
+     * <p>The client connects to the Elasticsearch instance at the configured {@code url}.
      *
      * @return a configured {@link RestClient} instance
      */
@@ -46,7 +54,6 @@ public class ElasticConfig {
     public RestClient restClient() {
         return RestClient.builder(HttpHost.create(url)).build();
     }
-
 
     /**
      * Creates a high-level {@link ElasticsearchClient} using the provided {@link RestClient}.

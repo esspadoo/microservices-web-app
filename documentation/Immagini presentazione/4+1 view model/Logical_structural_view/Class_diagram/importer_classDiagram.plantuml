@@ -1,5 +1,4 @@
 @startuml
-
 !theme plain
 top to bottom direction
 skinparam linetype ortho
@@ -7,15 +6,18 @@ skinparam classAttributeIconSize 0
 
 class ElasticConfig {
   + ElasticConfig(): 
+  - url: String
   + elasticsearchClient(RestClient): ElasticsearchClient
+  + setUrl(String): void
   + restClient(): RestClient
+  + getUrl(): String
 }
 class ElasticsearchClient_Importer {
   + ElasticsearchClient_Importer(ElasticsearchClient, RestClient): 
   - restClient: RestClient
   + esClient: ElasticsearchClient
-  + bulkIndexWithContext(InputStream, String): void
   + close(): void
+  + bulkIndexWithContext(InputStream, String): void
 }
 class ImporterApplication {
   + ImporterApplication(): 
@@ -25,14 +27,21 @@ class ImporterController {
   + ImporterController(ImporterService): 
   - importerService: ImporterService
   + hello(): String
+  + getStatus(String): ResponseEntity<String>
   + import_indexFile(MultipartFile, String): ResponseEntity<String>
 }
 class ImporterService {
   + ImporterService(ElasticsearchClient_Importer): 
   - elasticsearchClientIndexer: ElasticsearchClient_Importer
-  + indexArticles(InputStream, String): void
+  - jobStatus: Map<String, String>
+  + indexArticles(File, String, String): void
+  + getJobStatus(String): String
+}
+class OpenApiConfig {
+  + OpenApiConfig(): 
+  + customOpenAPI(): OpenAPI
 }
 
 ImporterController           "1" *-[#595959,plain]-> "importerService\n1" ImporterService              
-ImporterService              "1" *-[#595959,plain]-> "elasticsearchClientIndexer\n1" ElasticsearchClient_Importer 
+ImporterService              "1" *-[#595959,plain]-> "elasticsearchClientIndexer\n1" ElasticsearchClient_Importer
 @enduml

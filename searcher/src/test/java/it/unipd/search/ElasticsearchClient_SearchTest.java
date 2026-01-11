@@ -43,7 +43,7 @@ public class ElasticsearchClient_SearchTest {
 
     @BeforeEach
     void setUp() {
-        elasticsearchClient_Search = new ElasticsearchClient_Search();
+        elasticsearchClient_Search = new ElasticsearchClient_Search(esClient);
         // Inject the mock client into the protected field using ReflectionTestUtils
         ReflectionTestUtils.setField(elasticsearchClient_Search, "esClient", esClient);
     }

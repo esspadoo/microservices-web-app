@@ -1,0 +1,20 @@
+package it.unipd.search.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * Configuration class for OpenAPI clients.
+ *
+ * <p>This class defines the module API metadata </p>
+ */
+@Configuration
+public class OpenApiConfig {
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .addServersItem(new Server().url("/").description("Nginx Proxy"));
+    }
+}

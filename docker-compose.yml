@@ -138,7 +138,25 @@ services:
     networks:
       - public
       - internal
-      
+
+#-----------------------------------------------------
+# SWAGGER-UI — Responsible for API docs
+#-----------------------------------------------------
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-docs
+    environment:
+      # This builds the dropdown menu.
+      # Note: The URLs point to the paths Nginx will handle in the next step.
+      URLS: "[ 
+          { url: '/docs/api-docs/searcher', name: 'Searcher API' },
+          { url: '/docs/api-docs/importer', name: 'Importer API' },
+          { url: '/docs/api-docs/inferer', name: 'Inferer API' } 
+        ]"
+    networks:
+      - public
+      - internal
+
 
 volumes:
   mongodb-volume:

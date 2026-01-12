@@ -15,6 +15,56 @@ body {
   flex: 1;
 }
 
+.docs-container {
+  display: flex;
+  justify-content: end;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.google-style-btn {
+  /* Google's signature button colors */
+  background-color: #f8f9fa;
+  border: 1px solid #f8f9fa;
+  color: #3c4043;
+
+  /* Layout & Font */
+  font-family: 'Roboto', arial, sans-serif;
+  font-size: 14px;
+  margin: 11px 4px;
+  padding: 0 16px;
+  line-height: 27px;
+  height: 36px;
+  min-width: 54px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 4px;
+
+  /* Smooth transition for the hover effect */
+  transition: all 0.1s ease;
+}
+
+/* Hover state: Darker border and subtle shadow */
+.google-style-btn:hover {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+  background-color: #f8f9fa;
+  border: 1px solid #dadce0;
+  color: #202124;
+}
+
+/* Focus state: Blue outline when using keyboard navigation */
+.google-style-btn:focus {
+  outline: none;
+  border: 1px solid #4285f4;
+}
+
+/* Active state: Slightly darker when clicked */
+.google-style-btn:active {
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+  background-color: #f2f2f2;
+}
+
 /* SEARCH AREA */
 
 .search-area {
@@ -76,12 +126,12 @@ button {
   background-color: #fff;
   border-radius: 10px;
   padding: 15px 20px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease-in-out;
 }
 
 .document-result:hover {
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .document-result h5 {
@@ -147,4 +197,3 @@ footer {
     width: 95%;
   }
 }
-

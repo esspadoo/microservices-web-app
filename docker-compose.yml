@@ -146,9 +146,8 @@ services:
     image: swaggerapi/swagger-ui
     container_name: swagger-docs
     ports:
-      - 8081:8080
+      - "8081"
     environment:
-      #BASE_URL: /docs
       URLS: "[ 
           { url: '/docs/api-docs/searcher', name: 'Searcher API' },
           { url: '/docs/api-docs/importer', name: 'Importer API' },
@@ -156,7 +155,6 @@ services:
         ]" 
     networks:
       - public
-      #- internal
 
 
 volumes:

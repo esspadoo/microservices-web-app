@@ -1,28 +1,48 @@
-# Project of software platform's course 
-The project's objective is to build a platform for obtaining documents from one or more online sources, identify the subset of these documents about science and technology, storing it, making it searchable, and extracting useful representations for expert users.
+# Software Platforms Project
 
-## Notes
-### About the project
-- **Storing it**: mongoDB or others;
-- **Searchable**: mosaic, mongoDB, elasticsearch. I can use REST or other things that we will see in the next lessons.
-- **Topic modeling**: from a given set of documents I have to understand the main topic of each document. **Suggestion**: LDA topic modeling
+## Overview
+This project was developed as part of the **Software Platforms** course.
+The objective is to design and implement a distributed platform that collects documents from one or more online sources, identifies documents related to **science and technology**, stores them, makes them searchable, and extracts useful representations for expert users.
 
-### About the requirements
-- Use different services;
-- (suggested) Use Docker for container deployment;
-- The services must be implemented (mainly) in Java;
-- **Document adpoted patterns**: if I need an adapter I develop it and then I have to document it. **Very important part of the project: patterns and architecture.**
+The system follows a **service-oriented architecture**, emphasizing modularity, reproducibility, and documented design patterns.
 
-### About the evaluation criteria
-- Documentation
-- Code
-- Reproducibility
-- Presentation: professor suggested to prepare a Power Point where **every** member of the group has to speak and partecipate.
+---
+
+## Project Objectives
+- Collect documents from external online sources
+- Identify and filter documents related to science and technology
+- Store documents in a persistent database
+- Provide search and indexing capabilities
+- Perform topic modeling to extract meaningful representations
+- Support expert users through structured data access and analysis
+
+
+---
+
+## Project Requirements
+- Use **multiple services** (microservice-oriented approach)
+- Use **Docker** for containerized deployment (recommended)
+- Services implemented primarily in **Java**
+- Apply and document **design patterns and architectural choices**
+  - Adapter pattern and other relevant patterns must be explicitly documented
+  - Architecture documentation is a **core evaluation component**
+
+---
+
+## Evaluation Criteria
+The project is evaluated based on:
+- **Documentation**
+- **Code quality**
+- **Reproducibility**
+- **Final presentation**
+  - Every group member must actively participate
+  - A slide-based presentation (e.g., PowerPoint) is recommended
+
+---
 
 
 # Project's structure
-VERDE= (ipoteticamente) finito e funzionante, GIALLO = funzionante ma da integrare <br />
-![Project's schema](images/project_schema.png)
+![Project's Pipeline](./documentation/Immagini%20presentazione/pipeline_diagram.png)
 
 # **GETTING STARTED**
 To get started with a seamingless installation of the application, use the followings commands.<br/>
@@ -79,51 +99,38 @@ To effectively close the application and all its services run the following comm
 ```
 sudo docker compose down
 ```
+<br/><br/>
 
-# PORTS USED - AVOID CONFLICTS
-Go to *.../softplat-project-main* and check in the *docker-compose.yml* file if there are some conflicts with the ports chosen for the application (5050, 27017, 8881, 8882, 9200, 8080).
+# LOAD A DATASET
 
-#TO-----FINISSSSSSSSSSSSSSSSSSH_________________TO DOOOOOO
-##COMPONENTS
+To load a dataset and use it in the application you have to perform the following steps:
 
-# OWI [NOT RUNNING IN THE DEFAULT CONFIG]
-To startup modify the docker-compose.yml file and remove the comment on the Owi service.
-The following command provide a sequencial way to download a dataset using owilix-cli from the owi database and to export the database as a JsonL file.
+1. Start the application
+```
+sudo docker compose up -d --build
+```
 
-**DATASET SCARICATO: owilix remote pull all/internalID=9e8b85a0-d5d3-11f0-a4ba-f6a03915313d**
+2. Load them using the imported via POST call to the service
+```
+curl -X POST http://localhost:8080/api/v1/importer/import \
+  -F "file=@{YOUR_DATASET_FILENAME.JSON}" \
+  -F "indexName={YOUR_INDEX_NAME}"
+```
+3. Wait until the dataset is loaded and then you can use it in the application.
 
-**A specific dataset denoted with internalID=XX has to be choosen, here in the example (and for the project too) we chose a dataset that is both "curlie_full" and "public".**
+# TRAIN YOUR OWN MODEL
+We have provided also the possibility to train your own model, in order to be able to use the application for different types of datasets.<br/>
 
-### Usage
+to do that you have to perform the following steps:<br/>
 
-- **Start container with attached shell** <br />
-    `docker compose run --rm -it owilix bash`
-    
-- **Pull the raw dataset <br />**
-    `owilix --yes remote pull all/internalID=fc4f5c20-ca02-11f0-a6f8-f6a03915313d num_threads=10 files="**/language=eng/*"` 
+1. Open the trainer module and place your train set in the src folder.<br/>
+**The train dataset have to match this name and filetype [train_set.json]**
 
-- **Manual importing dataset <br />**
-    'owilix local insert file:///data/mydataset access=public collectionName="main" move=False'
+2. A stoplist is already provided, if you want to use a modified one place it in the ./scr/resources/ folder. <br/>
+**The stoplist have to be match this name and filetype [stoplist.txt]**
 
+3. You can then starts the module and when the training concludes it will provide both an **inferer.model** and a **model.pipe** files. Both this files, in order to be used in the application have to be placed in the inferer module under the path: inferer/src/main/resources/inferer/
 
-- **Make a query selecting "curlielabels_en IS NOT NULL"**<br />
-    `owilix query less --local all/internalID=fc4f5c20-ca02-11f0-a6f8-f6a03915313d "select=url,curlielabels_en,curlielabels" "where=curlielabels is not NULL"`<br />
+4. The stoplist used have to be placed in the inferer module under the path: inferer/src/main/resources/
 
-- **Make a query selecting topic-related curlielabels (in this case "Computers..."):**<br />
-     `owilix query less --local all/internalID=fc4f5c20-ca02-11f0-a6f8-f6a03915313d "select=url,curlielabels_en, curlielabels" "where=length(list_filter(curlielabels_en, x -> x LIKE 'Computers%')) > 0"`<br />
-
-
-### Slicing and export of the selected documents based on their curlielabels
-- **Slicing of the selected owilix's dataset(s). We want to have only the pages with curlielabels_en=Computers... (after Computers there can be everything)** <br />
-    `owilix query slice --local all/internalID=fc4f5c20-ca02-11f0-a6f8-f6a03915313d "where=length(list_filter(curlielabels_en, x -> x LIKE 'Computers%')) > 0" collection_name=provaSlicing`
-
-- **OWILIX export like a JSONL file** <br />
-    `owilix query less --local all/internalID=f79bf6c8-52fe-11f0-a4a5-528c047b29ff as_json=True json_file=$PWD/all_data/json_out.json`<br />
-
-
-# MongoDB
-Ready to use from the first start-up, the container has already installed the main tools to work on mongoDB such as mongosh and mongoimport. It is mapped at the port 27017. It remains up and running once the command ‘docker compose up’ has been executed.
-
-
-# Nginx
-The static HTML site is mapped at the port 4321 to avoid conflicts with other services mapped at the default port (80) on the host machine. To view it, simply connect to the URL `http://localhost:4321/`. It remains up and running once the command ‘docker compose up’ has been executed.
+5. You can now start the application with your own model.

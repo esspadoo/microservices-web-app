@@ -56,7 +56,7 @@ public class JsonHtmlCleanerTest {
         Path mockOutputPath = Mockito.mock(Path.class);
 
         // Stub Paths.get to return our mock paths
-        mockedPaths.when(() -> Paths.get("trainer/src/json_out.json")).thenReturn(mockInputPath);
+        mockedPaths.when(() -> Paths.get("trainer/src/train_set.json")).thenReturn(mockInputPath);
         mockedPaths.when(() -> Paths.get("trainer/src/main/resources/clean_json_out.json")).thenReturn(mockOutputPath);
 
         // Prepare StringWriter for capturing output

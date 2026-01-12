@@ -53,7 +53,7 @@ public class JsonHtmlCleaner {
      * @throws IOException if there is an error reading or writing the files
      */
     public static void clean() throws IOException {
-        Path inputPath = Paths.get("trainer/src/json_out.json");
+        Path inputPath = Paths.get("trainer/src/train_set.json");
         Path outputPath = Paths.get("trainer/src/main/resources/clean_json_out.json");
 
         try (BufferedReader reader = Files.newBufferedReader(inputPath, StandardCharsets.UTF_8);

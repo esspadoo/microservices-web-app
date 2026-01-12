@@ -1,10 +1,10 @@
 package it.unipd.importer.client;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.BulkResponse;
+import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
 import co.elastic.clients.elasticsearch.indices.ElasticsearchIndicesClient;
-import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
+import co.elastic.clients.util.BinaryData;
 import it.unipd.importer.ElasticsearchClient_Importer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,10 +43,10 @@ public class ElasticsearchClient_ImporterTest {
     private ElasticsearchClient esClient; // This mock replaces the real client
 
     @Mock
-    private ElasticsearchTransport transport; // Add this mock
+    private ElasticsearchIndicesClient indicesClient;
 
     @Mock
-    private ElasticsearchIndicesClient indicesClient;
+    private BulkIngester<BinaryData> bulkIngester;
 
     @InjectMocks
     private ElasticsearchClient_Importer importer;
@@ -55,7 +55,6 @@ public class ElasticsearchClient_ImporterTest {
     void setUp() throws IOException {
         // Setup the indices() client mock chain
         when(esClient.indices()).thenReturn(indicesClient);
-        when(esClient._transport()).thenReturn(transport);
     }
 
     /**
@@ -103,14 +102,10 @@ public class ElasticsearchClient_ImporterTest {
         // Arrange
         String ndjson = "{\"id\":1}\n{\"id\":2}";
         InputStream is = new ByteArrayInputStream(ndjson.getBytes(StandardCharsets.UTF_8));
-        String indexName = "existing-index";
 
         BooleanResponse existsResponse = new BooleanResponse(true);
         when(indicesClient.exists(any(Function.class))).thenReturn(existsResponse);
 
-
-        BulkResponse mockBulkResponse = mock(BulkResponse.class);
-        when(esClient.bulk(any(Function.class))).thenReturn(mockBulkResponse);
         importer.bulkIndexWithContext(is, "test-index");
         verify(indicesClient, times(1)).exists(any(Function.class));
         verify(indicesClient, never()).create(any(Function.class));
@@ -136,10 +131,7 @@ public class ElasticsearchClient_ImporterTest {
         BooleanResponse existsResponse = new BooleanResponse(false);
         when(indicesClient.exists(any(Function.class))).thenReturn(existsResponse);
 
-        // Act
         importer.bulkIndexWithContext(is, indexName);
-
-        // Assert
         verify(indicesClient, times(1)).create(any(Function.class));
     }
 
@@ -161,7 +153,6 @@ public class ElasticsearchClient_ImporterTest {
 
         when(indicesClient.exists(any(Function.class))).thenReturn(new BooleanResponse(true));
 
-        // Act & Assert
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
                 importer.bulkIndexWithContext(is, "test-index")
         );
@@ -186,7 +177,6 @@ public class ElasticsearchClient_ImporterTest {
 
         when(indicesClient.exists(any(Function.class))).thenReturn(new BooleanResponse(true));
 
-        // Act & Assert
         assertDoesNotThrow(() -> importer.bulkIndexWithContext(is, "test-index"));
     }
 }

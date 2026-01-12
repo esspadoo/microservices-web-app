@@ -40,97 +40,147 @@ The project is evaluated based on:
 
 ---
 
+## Project Structure
+The following diagram illustrates the system pipeline:
 
-# Project's structure
-![Project's Pipeline](./documentation/Immagini%20presentazione/pipeline_diagram.png)
+![Project Pipeline](./documentation/Immagini%20presentazione/pipeline_diagram.png)
 
-# **GETTING STARTED**
-To get started with a seamingless installation of the application, use the followings commands.<br/>
-Download the project with the following command.<br/>
-```
+---
+
+## Getting Started
+
+### Prerequisites
+- Docker and Docker Compose
+- Git
+- Unix-based shell environment (Linux/macOS recommended)
+- Python  3+
+
+### Clone the Repository
+```bash
 git clone https://gitlab.com/giancarlopadoan-group/softplat-project
 ```
 
-# Compile & Start the services
-**Since we have custom images** we need to build and start them all using the following command<br />
+---
 
-```
+## Build and Start the Services
+Since the project uses **custom Docker images**, all services must be built before execution.
+
+```bash
 cd softplat-project-main/scripts
-chmod +x init.sh && ./init.sh 
+chmod +x init.sh
+./init.sh
 ```
 
-The previous script, startup all the services, and retrieve some articles via the Guardian API.<br/><br/>
+This script:
+- Builds all services
+- Starts the application
+- Retrieves a sample set of articles from **The Guardian API**
 
-## OpenWebIndex Data
-**[This step is not mandatory]**<br/>
-If you want to work also with OpenWebIndex dataset follow **INSTEAD** this manual procedure.<br/>
+---
 
-1. From the project root directory start the owilix service:<br/>`sudo docker compose -f owi-docker-compose.yml run --rm -it owilix bash`
-   - **!IMPORTANT**: if you already have other images of owilix make sure to delete them and re-build following the above procedure otherwise the service will not work properly  
-2. After the service boot up, download a preferred dataset:<br/>`owilix --yes remote pull all/internalID=PASTE-YOUR-DATASET-ID --threads=10 --language=eng` and follow the instruction prompted.<br/>
-   - You can choose your dataset between the ones provided here: [OWI Datasets](https://openwebindex.eu/owler/our_datasets)<br/>
-    Make sure to select the **curlie_full** ones. 
-3. When the download is complete the container/service can be closed.
-4. Now from the project root folder run the following command: <br/>
+## OpenWebIndex Data (Optional)
+
+This step is optional.
+
+If you want to work with datasets from **OpenWebIndex**, follow the procedure below instead of the default initialization.
+
+### Steps
+
+1. Start the `owilix` service:
+```bash
+sudo docker compose -f owi-docker-compose.yml run --rm -it owilix bash
 ```
-   cd ./scripts
-   sudo chmod +x init.sh && ./init.sh
+**Important:** Remove any existing owilix images before rebuilding.
+
+2. Download a dataset:
+```bash
+owilix --yes remote pull all/internalID=PASTE-YOUR-DATASET-ID --threads=10 --language=eng
 ```
-- If you want to force the crawl of THE GUARDIAN data just use the flag **--guardian-force** like this: 
-```
-   cd ./scripts
-   sudo chmod +x init.sh && ./init.sh --guardian-force
+Available datasets: https://openwebindex.eu/owler/our_datasets  
+Select datasets of type **curlie_full**.
+
+3. Exit the container after the download completes.
+
+4. Restart the application:
+```bash
+cd ./scripts
+sudo chmod +x init.sh
+./init.sh
 ```
 
-- If you want to force the update/download of the inferer model just use the flag **--model-update** like this:
-```
-   cd ./scripts
-   sudo chmod +x init.sh && ./init.sh --model-update
+### Optional Flags
+Force Guardian crawl:
+```bash
+./init.sh --guardian-force
 ```
 
-## RE-START THE APPLICATION
-If you have already initialised the setup and the app in a previou scenario and you need only to start the application just run:
+Force model update:
+```bash
+./init.sh --model-update
 ```
+
+---
+
+## Restart the Application
+```bash
 sudo docker compose up -d --build
 ```
 
-## CLOSE THE APPLICATION
-To effectively close the application and all its services run the following command:
-```
+---
+
+## Stop the Application
+```bash
 sudo docker compose down
 ```
-<br/><br/>
 
-# LOAD A DATASET
+---
 
-To load a dataset and use it in the application you have to perform the following steps:
+## Load a Dataset
 
-1. Start the application
-```
+1. Start the application:
+```bash
 sudo docker compose up -d --build
 ```
 
-2. Load them using the imported via POST call to the service
-```
+2. Import the dataset:
+```bash
 curl -X POST http://localhost:8080/api/v1/importer/import \
-  -F "file=@{YOUR_DATASET_FILENAME.JSON}" \
-  -F "indexName={YOUR_INDEX_NAME}"
+  -F "file=@YOUR_DATASET_FILENAME.json" \
+  -F "indexName=YOUR_INDEX_NAME"
 ```
-3. Wait until the dataset is loaded and then you can use it in the application.
 
-# TRAIN YOUR OWN MODEL
-We have provided also the possibility to train your own model, in order to be able to use the application for different types of datasets.<br/>
+3. Wait for the import to complete.
 
-to do that you have to perform the following steps:<br/>
+---
 
-1. Open the trainer module and place your train set in the src folder.<br/>
-**The train dataset have to match this name and filetype [train_set.json]**
+## Train a Custom Model
 
-2. A stoplist is already provided, if you want to use a modified one place it in the ./scr/resources/ folder. <br/>
-**The stoplist have to be match this name and filetype [stoplist.txt]**
+1. Place your training dataset in:
+```
+trainer/src/train_set.json
+```
 
-3. You can then starts the module and when the training concludes it will provide both an **inferer.model** and a **model.pipe** files. Both this files, in order to be used in the application have to be placed in the inferer module under the path: inferer/src/main/resources/inferer/
+2. Optional stoplist:
+```
+trainer/src/resources/stoplist.txt
+```
 
-4. The stoplist used have to be placed in the inferer module under the path: inferer/src/main/resources/
+3. Run the trainer module.
 
-5. You can now start the application with your own model.
+4. Generated files:
+- inferer.model
+- model.pipe
+
+5. Move them to:
+```
+inferer/src/main/resources/inferer/
+```
+
+6. Place the stoplist in:
+```
+inferer/src/main/resources/
+```
+
+7. Restart the application.
+
+---

@@ -14,16 +14,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <strong> Class DocServiceImplTest </strong>
@@ -56,14 +52,8 @@ public class DocServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        // Mock the static JsonInferencerService class
         jsonInferencerServiceMock = Mockito.mockStatic(JsonInferencerService.class);
 
-        // Mock the behavior of the model and its inferer
-        when(model.getInferencer()).thenReturn(topicInferencer);
-
-        // Use reflection to inject the mock model and a dummy map for topic words,
-        // bypassing the @PostConstruct init() method that loads the real model from a file.
         Map<Integer, String> topicTopWords = new HashMap<>();
         topicTopWords.put(0, "test topic words");
         ReflectionTestUtils.setField(docService, "model", model);
@@ -77,13 +67,17 @@ public class DocServiceImplTest {
     }
 
     /**
-     * <p><b>Summary:</b> Tests topic inference for a single document.
-     * <p><b>Test Case Design:</b> The {@code infer} method is called with a sample document. The static {@code JsonInferencerService.inferPrevalentTopicJsonl} method is mocked to return a predictable, processed document.
-     * <p><b>Test Description:</b> This test verifies that the {@code infer} method correctly invokes the underlying static inference utility and returns its result without modification.
-     * <p><b>Pre-Condition:</b> The {@code DocServiceImpl} is initialized with a mocked {@code ParallelTopicModel}. The {@code JsonInferencerService} is mocked to return a document with an inferred topic.
-     * <p><b>Post-Condition:</b> The method returns the exact document object provided by the mocked static method.
-     * <p><b>Expected Results:</b> The returned document's topic field should match the value set by the mocked service ("inferred_topic").
-     * @throws Exception if any error occurs during the inference
+     * <p><b>Summary:</b> Tests topic inference for a single document.</p>
+     * <p><b>Test Case Design:</b> The {@code infer} method is called with a sample document. The static {@code JsonInferencerService.inferPrevalentTopicJsonl} method is mocked to return a predictable, processed document.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-INF-001
+     * - **Prerequisites**: The {@code DocServiceImpl} is injected with a mocked {@code ParallelTopicModel}, and {@code JsonInferencerService} static behavior is controlled via Mockito.
+     * - **Data**: A single {@link Document} object.
+     * - **Evaluation**: Verifies that the {@code infer} method correctly invokes the underlying static inference utility and returns its result without modification.</p>
+     * <p><b>Pre-Condition:</b> Service is initialized with a model; the static inferencer is mocked to return a document with the topic "inferred_topic".</p>
+     * <p><b>Post-Condition:</b> None.</p>
+     * <p><b>Expected Results:</b> The returned document object is the same instance provided by the mocked static method, and its topic field matches "inferred_topic".</p>
+     * @throws Exception if any error occurs during the inference processing
      */
     @Test
     void testInfer() throws Exception {
@@ -91,6 +85,7 @@ public class DocServiceImplTest {
         Document expectedDoc = new Document("id1", "url1", "title1", "main_content1", "inferred_topic");
         Map<Integer, String> topicTopWords = (Map<Integer, String>) ReflectionTestUtils.getField(docService, "topicTopWords");
 
+        when(model.getInferencer()).thenReturn(topicInferencer);
         jsonInferencerServiceMock.when(() -> JsonInferencerService.inferPrevalentTopicJsonl(
                 eq(topicInferencer),
                 any(Document.class),
@@ -105,13 +100,37 @@ public class DocServiceImplTest {
     }
 
     /**
-     * <p><b>Summary:</b> Tests topic inference for a batch of documents.
-     * <p><b>Test Case Design:</b> The {@code inferBatch} method is called with a list containing a single sample document. The static {@code JsonInferencerService.inferPrevalentTopicJsonl} method is mocked to return a predictable, processed document.
-     * <p><b>Test Description:</b> This test ensures that the {@code inferBatch} method iterates through the list of documents, calls the underlying static inference utility for each one, and collects the results into a list.
-     * <p><b>Pre-Condition:</b> The {@code DocServiceImpl} is initialized with a mocked {@code ParallelTopicModel}. The {@code JsonInferencerService} is mocked to return a document with an inferred topic for each input document.
-     * <p><b>Post-Condition:</b> The method returns a list of processed documents.
-     * <p><b>Expected Results:</b> The returned list should contain one document, and its topic field should be "inferred_topic".
-     * @throws Exception if any error occurs during the batch inference
+     * <p><b>Summary:</b> Verifies failure when the model inferencer is missing.</p>
+     * <p><b>Test Case Design:</b> Mock the model to throw a NullPointerException when accessing the inferencer.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-DOC-002
+     * - **Prerequisites**: ParallelTopicModel returns null for getInferencer().
+     * - **Data**: Valid Document.
+     * - **Evaluation**: Ensure the exception propagates upwards.</p>
+     * <p><b>Pre-Condition:</b> Service is injected with a faulty model.</p>
+     * <p><b>Post-Condition:</b> Exception is thrown.</p>
+     * <p><b>Expected Results:</b> An Exception (NullPointerException) is thrown by the service.</p>
+     */
+    @Test
+    void testInfer_Failure_ModelError() {
+        Document inputDoc = new Document();
+        when(model.getInferencer()).thenThrow(new RuntimeException("Model not ready"));
+
+        assertThrows(Exception.class, () -> docService.infer(inputDoc));
+    }
+
+    /**
+     * <p><b>Summary:</b> Tests topic inference for a batch of documents.</p>
+     * <p><b>Test Case Design:</b> The {@code inferBatch} method is called with a list containing a single sample document. The static {@code JsonInferencerService.inferPrevalentTopicJsonl} method is mocked to return a predictable, processed document.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-INF-003
+     * - **Prerequisites**: The {@code DocServiceImpl} is initialized with a mocked {@code ParallelTopicModel}, and {@code JsonInferencerService} static behavior is controlled via Mockito.
+     * - **Data**: A {@link List} containing a single {@link Document} object.
+     * - **Evaluation**: Ensures that the method correctly iterates through the list, invokes the static inference utility for each entry, and collects results into a new list.</p>
+     * <p><b>Pre-Condition:</b> Service is initialized; the static utility is mocked to return a document with the topic "inferred_topic" for each input.</p>
+     * <p><b>Post-Condition:</b> A list of processed documents is returned to the caller.</p>
+     * <p><b>Expected Results:</b> The returned list contains one document, and its topic field is correctly set to "inferred_topic".</p>
+     * @throws Exception if any error occurs during the batch inference processing
      */
     @Test
     void testInferBatch() throws Exception {
@@ -120,6 +139,7 @@ public class DocServiceImplTest {
         Document expectedDoc = new Document("id1", "url1", "title1", "main_content1", "inferred_topic");
         Map<Integer, String> topicTopWords = (Map<Integer, String>) ReflectionTestUtils.getField(docService, "topicTopWords");
 
+        when(model.getInferencer()).thenReturn(topicInferencer);
         jsonInferencerServiceMock.when(() -> JsonInferencerService.inferPrevalentTopicJsonl(
                 eq(topicInferencer),
                 any(Document.class),
@@ -132,5 +152,48 @@ public class DocServiceImplTest {
         assertEquals(1, resultList.size());
         assertEquals("inferred_topic", resultList.getFirst().getTopic());
         assertEquals(expectedDoc, resultList.getFirst());
+    }
+
+    /**
+     * <p><b>Summary:</b> Verifies batch inference behavior with an empty list.</p>
+     * <p><b>Test Case Design:</b> Pass an empty ArrayList to inferBatch.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-DOC-004
+     * - **Prerequisites**: Service initialized.
+     * - **Data**: Empty List<Document>.
+     * - **Evaluation**: Ensure no processing occurs and an empty list is returned.</p>
+     * <p><b>Pre-Condition:</b> None.</p>
+     * <p><b>Post-Condition:</b> None.</p>
+     * <p><b>Expected Results:</b> An empty list is returned without errors.</p>
+     * @throws Exception if any error occurs
+     */
+    @Test
+    void testInferBatch_EmptyList() throws Exception {
+        List<Document> results = docService.inferBatch(new ArrayList<>());
+        assertTrue(results.isEmpty());
+        verify(model, never()).getInferencer();
+    }
+
+    /**
+     * <p><b>Summary:</b> Verifies failure during batch processing if one item fails.</p>
+     * <p><b>Test Case Design:</b> Mock the static utility to throw an exception on the second item.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-DOC-005
+     * - **Prerequisites**: Mocked static behavior for JsonInferencerService.
+     * - **Data**: List with 2 documents.
+     * - **Evaluation**: Verify that an exception in one document stops the batch execution.</p>
+     * <p><b>Pre-Condition:</b> Service is initialized.</p>
+     * <p><b>Post-Condition:</b> Partial processing may occur, but an exception is thrown.</p>
+     * <p><b>Expected Results:</b> The method throws an Exception when the internal utility fails.</p>
+     */
+    @Test
+    void testInferBatch_Failure_InternalError() {
+        List<Document> inputList = List.of(new Document(), new Document());
+        when(model.getInferencer()).thenReturn(topicInferencer);
+
+        jsonInferencerServiceMock.when(() -> JsonInferencerService.inferPrevalentTopicJsonl(any(), any(), any()))
+                .thenThrow(new RuntimeException("Inference failed"));
+
+        assertThrows(Exception.class, () -> docService.inferBatch(inputList));
     }
 }

@@ -1,14 +1,18 @@
 package it.unipd.importer.config;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
+import co.elastic.clients.util.BinaryData;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Configuration class for Elasticsearch clients.
@@ -68,5 +72,14 @@ public class ElasticConfig {
         ElasticsearchTransport transport = new RestClientTransport(
                 restClient, new JacksonJsonpMapper());
         return new ElasticsearchClient(transport);
+    }
+
+    @Bean
+    public BulkIngester<BinaryData> bulkIngester(ElasticsearchClient client) {
+        return BulkIngester.of(b -> b
+                .client(client)
+                .maxOperations(1000)
+                .flushInterval(1, TimeUnit.SECONDS)
+        );
     }
 }

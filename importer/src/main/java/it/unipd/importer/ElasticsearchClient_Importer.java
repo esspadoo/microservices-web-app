@@ -29,15 +29,22 @@ public class ElasticsearchClient_Importer {
     /** Low-level REST client, used for closing connections */
     private final RestClient restClient;
 
+    /** BulkIngester injected for testing purposes */
+    private final BulkIngester<BinaryData> bulkIngester;
+
     /**
      * Constructs an ElasticsearchClient_Importer with the required clients.
      *
      * @param esClient   high-level Elasticsearch client
      * @param restClient low-level REST client
      */
-    public ElasticsearchClient_Importer(ElasticsearchClient esClient, RestClient restClient) {
+    public ElasticsearchClient_Importer(
+            ElasticsearchClient esClient,
+            RestClient restClient,
+            BulkIngester<BinaryData> bulkIngester) {
         this.esClient = esClient;
         this.restClient = restClient;
+        this.bulkIngester = bulkIngester;
     }
 
     /**
@@ -56,34 +63,29 @@ public class ElasticsearchClient_Importer {
             esClient.indices().create(c -> c.index(indexName));
         }
 
-        try (BulkIngester<BinaryData> ingester = BulkIngester.of(b -> b
-                .client(esClient)
-                .maxOperations(1000)
-                .flushInterval(1, TimeUnit.SECONDS))
-        ) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-                String line;
 
-                while ((line = reader.readLine()) != null) {
-                    if (line.isBlank()) continue;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            String line;
 
-                    if (!line.startsWith("{")) {
-                        throw new IllegalArgumentException(
-                                "Invalid file format: must be NDJSON (one JSON object per line)"
-                        );
-                    }
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) continue;
 
-                    System.out.println(line);
-
-                    BinaryData data = BinaryData.of(line.getBytes(StandardCharsets.UTF_8), ContentType.APPLICATION_JSON);
-
-                    ingester.add(op -> op
-                            .index(idx -> idx
-                                    .index(indexName)
-                                    .document(data)
-                            )
+                if (!line.startsWith("{")) {
+                    throw new IllegalArgumentException(
+                            "Invalid file format: must be NDJSON (one JSON object per line)"
                     );
                 }
+
+                System.out.println(line);
+
+                BinaryData data = BinaryData.of(line.getBytes(StandardCharsets.UTF_8), ContentType.APPLICATION_JSON);
+
+                bulkIngester.add(op -> op
+                        .index(idx -> idx
+                                .index(indexName)
+                                .document(data)
+                        )
+                );
             }
         }
     }

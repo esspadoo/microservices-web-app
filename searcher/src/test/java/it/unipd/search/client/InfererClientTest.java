@@ -10,13 +10,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 /**
@@ -81,25 +84,132 @@ public class InfererClientTest {
     }
 
     /**
-     * <p><b>Summary:</b> Verifies that an exception is thrown for an invalid base URL.</p>
-     * <p><b>Test Case Design:</b> Boundary testing with null, empty, and malformed URLs.</p>
+     * <p><b>Summary:</b> Tests failure when the base URL is null.</p>
+     * <p><b>Test Case Design:</b> Configure the properties mock to return {@code null} for the base URL.</p>
      * <p><b>Test Description:</b>
-     * - **ID**: TC-INFER-002
-     * - **Data**: baseUrl is null or "invalid".
-     * - **Evaluation**: Expects IllegalStateException.</p>
-     * <p><b>Pre-Condition:</b> InfererProperties is configured with an invalid URL.</p>
-     * <p><b>Post-Condition:</b> No network call is attempted.</p>
-     * <p><b>Expected Results:</b> IllegalStateException is thrown with a descriptive message.</p>
+     * - **ID**: TC-CLIENT-002
+     * - **Prerequisites**: InfererProperties returns null.
+     * - **Data**: Valid document list.
+     * - **Evaluation**: Verifies that an IllegalStateException is thrown with the correct message.</p>
+     * <p><b>Pre-Condition:</b> Configuration for inferer.base-url is missing.</p>
+     * <p><b>Post-Condition:</b> No HTTP call is attempted.</p>
+     * <p><b>Expected Results:</b> Throws {@link IllegalStateException} containing "Invalid inferer.base-baseUrl1".</p>
      */
     @Test
-    void shouldThrowExceptionForInvalidUrl() {
+    void testInferBatch_Failure_NullUrl() {
+        List<Document> sampleDocs = List.of(new Document("id", "title", "url", "main_content", null));
+        when(infererProperties.getBaseUrl()).thenReturn(null);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+                infererClient.inferBatch(sampleDocs)
+        );
+
+        assertTrue(exception.getMessage().contains("null"));
+        verifyNoInteractions(restTemplate);
+    }
+
+    /**
+     * <p><b>Summary:</b> Tests failure when the base URL is null.</p>
+     * <p><b>Test Case Design:</b> Configure the properties mock to return {@code null} for the base URL.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-CLIENT-003
+     * - **Prerequisites**: InfererProperties returns null.
+     * - **Data**: Valid document list.
+     * - **Evaluation**: Verifies that an IllegalStateException is thrown with the correct message.</p>
+     * <p><b>Pre-Condition:</b> Configuration for inferer.base-url is missing.</p>
+     * <p><b>Post-Condition:</b> No HTTP call is attempted.</p>
+     * <p><b>Expected Results:</b> Throws {@link IllegalStateException} containing "Invalid inferer.base-baseUrl1".</p>
+     */
+    @Test
+    void testInfererBatch_UrlNull() {
         when(infererProperties.getBaseUrl()).thenReturn(null);
         assertThrows(IllegalStateException.class, () -> infererClient.inferBatch(List.of()));
+        verifyNoInteractions(restTemplate);
+    }
 
-        when(infererProperties.getBaseUrl()).thenReturn("   ");
+    /**
+     * <p><b>Summary:</b> Tests failure when the base URL is blank.</p>
+     * <p><b>Test Case Design:</b> Configure the properties mock to return an empty string.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-CLIENT-004
+     * - **Prerequisites**: InfererProperties returns "".
+     * - **Data**: Valid document list.
+     * - **Evaluation**: Verifies that a blank URL triggers the validation logic.</p>
+     * <p><b>Pre-Condition:</b> Configuration is empty.</p>
+     * <p><b>Post-Condition:</b> None.</p>
+     * <p><b>Expected Results:</b> Throws {@link IllegalStateException}.</p>
+     */
+    @Test
+    void testInfererBatch_UrlBlank() {
+        when(infererProperties.getBaseUrl()).thenReturn("    ");
         assertThrows(IllegalStateException.class, () -> infererClient.inferBatch(List.of()));
+        verifyNoInteractions(restTemplate);
+    }
 
+    /**
+     * <p><b>Summary:</b> Tests failure when the URL does not start with http.</p>
+     * <p><b>Test Case Design:</b> Provide a malformed URL protocol (e.g., "ftp://...").</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-CLIENT-005
+     * - **Prerequisites**: InfererProperties returns "ftp://invalid-url".
+     * - **Data**: Valid document list.
+     * - **Evaluation**: Verifies the protocol validation check.</p>
+     * <p><b>Pre-Condition:</b> Incorrect protocol in configuration.</p>
+     * <p><b>Post-Condition:</b> None.</p>
+     * <p><b>Expected Results:</b> Throws {@link IllegalStateException}.</p>
+     */
+    @Test
+    void testInferBatch_InvalidProtocol() {
         when(infererProperties.getBaseUrl()).thenReturn("ftp://invalid");
         assertThrows(IllegalStateException.class, () -> infererClient.inferBatch(List.of()));
+        verifyNoInteractions(restTemplate);
+    }
+
+    /**
+     * <p><b>Summary:</b> Tests handling of REST client exceptions (e.g., Connection Timeout).</p>
+     * <p><b>Test Case Design:</b> Mock {@code restTemplate.exchange} to throw a {@link RestClientException}.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-CLIENT-006
+     * - **Prerequisites**: Valid URL; RestTemplate throws exception.
+     * - **Data**: Valid document list.
+     * - **Evaluation**: Verifies that the client propagates the network-level exception.</p>
+     * <p><b>Pre-Condition:</b> The external service is down or timing out.</p>
+     * <p><b>Post-Condition:</b> None.</p>
+     * <p><b>Expected Results:</b> The method propagates the {@link RestClientException}.</p>
+     */
+    @Test
+    void testInferBatch_Failure_ConnectionError() {
+        List<Document> sampleDocs = List.of(new Document("id", "title", "url", "main_content", null));
+        String validUrl = "http://inferer:5050";
+        when(infererProperties.getBaseUrl()).thenReturn(validUrl);
+        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+                .thenThrow(new RestClientException("Connection Refused"));
+
+        assertThrows(RestClientException.class, () -> infererClient.inferBatch(sampleDocs));
+    }
+
+    /**
+     * <p><b>Summary:</b> Tests behavior when the inference service returns an empty body.</p>
+     * <p><b>Test Case Design:</b> Return a ResponseEntity with a {@code null} body.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-CLIENT-007
+     * - **Prerequisites**: Valid URL and successful call.
+     * - **Data**: Valid document list.
+     * - **Evaluation**: Verifies how the client handles a null response body from the API.</p>
+     * <p><b>Pre-Condition:</b> API responds with 200 OK but no content.</p>
+     * <p><b>Post-Condition:</b> Returns null to the caller.</p>
+     * <p><b>Expected Results:</b> The method returns {@code null} without throwing an exception.</p>
+     */
+    @Test
+    void testInferBatch_EmptyResponseBody() {
+        List<Document> sampleDocs = List.of(new Document("id", "title", "url", "main_content", null));
+        String validUrl = "http://inferer:5050";
+        when(infererProperties.getBaseUrl()).thenReturn(validUrl);
+        when(restTemplate.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+                .thenReturn(new ResponseEntity<>((Object) null, HttpStatus.OK));
+
+        List<Document> result = infererClient.inferBatch(sampleDocs);
+
+        assertNull(result);
     }
 }

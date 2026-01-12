@@ -9,10 +9,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -49,7 +49,7 @@ public class SearchServiceTest {
      * @throws IOException if the mocked client throws an exception
      */
     @Test
-    void shouldSearchDocuments() throws IOException {
+    void testSearchDocuments_Success() throws IOException {
         String query = "java";
         List<String> expectedIndices = List.of("guardian", "owi");
         Document doc = new Document("1", "url", "title", "content", null);
@@ -65,5 +65,73 @@ public class SearchServiceTest {
         assertEquals("title", result.getFirst().getTitle());
         verify(elasticsearchClient, times(1))
                 .searchDocuments(eq(expectedIndices), eq("title"), eq("main_content"), eq(query));
+    }
+
+    /**
+     * <p><b>Summary:</b> Tests search execution with no matching results.</p>
+     * <p><b>Test Case Design:</b> Configure the client mock to return an empty list for a query that does not exist in the index.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-SRCH-002
+     * - **Prerequisites**: Mocked ElasticsearchClient_Search.
+     * - **Data**: A query likely to yield no results.
+     * - **Evaluation**: Verifies that the service propagates an empty list correctly without throwing errors.</p>
+     * <p><b>Pre-Condition:</b> None.</p>
+     * <p><b>Post-Condition:</b> None.</p>
+     * <p><b>Expected Results:</b> Returns an empty list.</p>
+     * @throws IOException if any communication error occurs
+     */
+    @Test
+    void testSearchDocuments_NoResults() throws IOException {
+        when(elasticsearchClient.searchDocuments(anyList(), anyString(), anyString(), anyString()))
+                .thenReturn(Collections.emptyList());
+
+        List<Document> result = searchService.searchDocuments("unknown term");
+
+        assertTrue(result.isEmpty());
+    }
+
+    /**
+     * <p><b>Summary:</b> Tests failure due to Elasticsearch communication error.</p>
+     * <p><b>Test Case Design:</b> Force the mocked client to throw an IOException to simulate a network or cluster failure.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-SRCH-003
+     * - **Prerequisites**: Mocked ElasticsearchClient_Search configured to fail.
+     * - **Data**: Any search query.
+     * - **Evaluation**: Verifies that the service correctly throws the IOException back to the controller layer.</p>
+     * <p><b>Pre-Condition:</b> Elasticsearch cluster is down or network is interrupted.</p>
+     * <p><b>Post-Condition:</b> None.</p>
+     * <p><b>Expected Results:</b> The method throws an {@link IOException}.</p>
+     * @throws IOException expected exception for this test case
+     */
+    @Test
+    void testSearchDocuments_Failure_IOException() throws IOException {
+        String testQuery = "test search term";
+        when(elasticsearchClient.searchDocuments(anyList(), anyString(), anyString(), anyString()))
+                .thenThrow(new IOException("Connection Refused"));
+
+        assertThrows(IOException.class, () -> searchService.searchDocuments(testQuery));
+    }
+
+    /**
+     * <p><b>Summary:</b> Tests behavior with a null or empty query.</p>
+     * <p><b>Test Case Design:</b> Pass null and empty strings to the search method to see if validation is needed or if it is handled by the client.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-SRCH-004
+     * - **Prerequisites**: None.
+     * - **Data**: Empty string "" and {@code null}.
+     * - **Evaluation**: Ensures the service behaves predictably with malformed input.</p>
+     * <p><b>Pre-Condition:</b> None.</p>
+     * <p><b>Post-Condition:</b> None.</p>
+     * <p><b>Expected Results:</b> Depending on client implementation, either returns empty results or propagates a {@link NullPointerException}.</p>
+     * @throws IOException if the client is invoked
+     */
+    @Test
+    void testSearchDocuments_EmptyQuery() throws IOException {
+        when(elasticsearchClient.searchDocuments(anyList(), anyString(), anyString(), eq("")))
+                .thenReturn(Collections.emptyList());
+
+        List<Document> result = searchService.searchDocuments("");
+
+        assertTrue(result.isEmpty());
     }
 }

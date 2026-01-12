@@ -1,9 +1,12 @@
 package it.unipd.importer.client;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.indices.ElasticsearchIndicesClient;
 import co.elastic.clients.transport.ElasticsearchTransport;
+import co.elastic.clients.transport.endpoints.BooleanResponse;
 import it.unipd.importer.ElasticsearchClient_Importer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,12 +14,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <strong> Class ElasticsearchClient_ImporterTest </strong>
@@ -46,6 +51,13 @@ public class ElasticsearchClient_ImporterTest {
     @InjectMocks
     private ElasticsearchClient_Importer importer;
 
+    @BeforeEach
+    void setUp() throws IOException {
+        // Setup the indices() client mock chain
+        when(esClient.indices()).thenReturn(indicesClient);
+        when(esClient._transport()).thenReturn(transport);
+    }
+
     /**
      * <p><b>Summary:</b> Verifies that the importer correctly identifies and rejects invalid
      * data formats during bulk indexing.</p>
@@ -67,17 +79,114 @@ public class ElasticsearchClient_ImporterTest {
      */
     @Test
     public void bulkIndex_InvalidFormat_ThrowsException() throws Exception {
-        // We stub the behavior so the code thinks the index already exists
-        when(esClient._transport()).thenReturn(transport);
-
-        when(esClient.indices()).thenReturn(indicesClient);
-        when(indicesClient.exists(any(java.util.function.Function.class)))
-                .thenReturn(new co.elastic.clients.transport.endpoints.BooleanResponse(true));
+        when(indicesClient.exists(any(Function.class))).thenReturn(new BooleanResponse(true));
 
         String invalidData = "INVALID_DATA";
         InputStream is = new ByteArrayInputStream(invalidData.getBytes(StandardCharsets.UTF_8));
 
         // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> importer.bulkIndexWithContext(is, "test-index"));
+    }
+
+    /**
+     * <p><b>Summary:</b> Verifies successful indexing when the index already exists.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-CLIENT-001
+     * - **Data**: A valid NDJSON string with two objects and index name "existing-index".
+     * - **Criteria**: Index existence check returns true, create is never called, and documents are added.</p>
+     * <p><b>Pre-Condition:</b> Mocks are configured to return true for index existence.</p>
+     * <p><b>Expected Results:</b> The indexing completes without errors; create() is not invoked.</p>
+     * @throws Exception if any error occurs during the bulk indexing
+     */
+    @Test
+    void testBulkIndexWithContext_SuccessIndexExists() throws Exception {
+        // Arrange
+        String ndjson = "{\"id\":1}\n{\"id\":2}";
+        InputStream is = new ByteArrayInputStream(ndjson.getBytes(StandardCharsets.UTF_8));
+        String indexName = "existing-index";
+
+        BooleanResponse existsResponse = new BooleanResponse(true);
+        when(indicesClient.exists(any(Function.class))).thenReturn(existsResponse);
+
+
+        BulkResponse mockBulkResponse = mock(BulkResponse.class);
+        when(esClient.bulk(any(Function.class))).thenReturn(mockBulkResponse);
+        importer.bulkIndexWithContext(is, "test-index");
+        verify(indicesClient, times(1)).exists(any(Function.class));
+        verify(indicesClient, never()).create(any(Function.class));
+    }
+
+    /**
+     * <p><b>Summary:</b> Verifies index creation when the specified index does not exist.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-CLIENT-002
+     * - **Data**: Valid NDJSON and index name "new-index".
+     * - **Criteria**: Index existence check returns false, leading to a create() call.</p>
+     * <p><b>Pre-Condition:</b> Mocks return false for index existence.</p>
+     * <p><b>Expected Results:</b> The client's indices().create() method is called exactly once.</p>
+     * @throws Exception if any error occurs during the bulk indexing
+     */
+    @Test
+    void testBulkIndexWithContext_CreatesIndexIfMissing() throws Exception {
+        // Arrange
+        String ndjson = "{\"id\":1}";
+        InputStream is = new ByteArrayInputStream(ndjson.getBytes(StandardCharsets.UTF_8));
+        String indexName = "new-index";
+
+        BooleanResponse existsResponse = new BooleanResponse(false);
+        when(indicesClient.exists(any(Function.class))).thenReturn(existsResponse);
+
+        // Act
+        importer.bulkIndexWithContext(is, indexName);
+
+        // Assert
+        verify(indicesClient, times(1)).create(any(Function.class));
+    }
+
+    /**
+     * <p><b>Summary:</b> Verifies failure when the input format is not valid NDJSON.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-CLIENT-003
+     * - **Data**: A string that does not start with '{' (e.g., plain text).
+     * - **Criteria**: Method should throw IllegalArgumentException.</p>
+     * <p><b>Pre-Condition:</b> Index existence check is mocked to true.</p>
+     * <p><b>Expected Results:</b> An IllegalArgumentException is thrown with the specific format message.</p>
+     * @throws Exception if any error occurs
+     */
+    @Test
+    void testBulkIndexWithContext_InvalidFormat_ThrowsException() throws Exception {
+        // Arrange
+        String invalidData = "Not a JSON object";
+        InputStream is = new ByteArrayInputStream(invalidData.getBytes(StandardCharsets.UTF_8));
+
+        when(indicesClient.exists(any(Function.class))).thenReturn(new BooleanResponse(true));
+
+        // Act & Assert
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+                importer.bulkIndexWithContext(is, "test-index")
+        );
+        assertTrue(ex.getMessage().contains("must be NDJSON"));
+    }
+
+    /**
+     * <p><b>Summary:</b> Verifies that empty lines in the input stream are ignored.</p>
+     * <p><b>Test Description:</b>
+     * - **ID**: TC-CLIENT-004
+     * - **Data**: NDJSON containing empty lines or whitespace between valid JSON objects.
+     * - **Criteria**: The loop continues without throwing exceptions or attempting to process blank lines.</p>
+     * <p><b>Pre-Condition:</b> Index exists.</p>
+     * <p><b>Expected Results:</b> The process completes successfully for the non-empty lines.</p>
+     * @throws Exception if any error occurs
+     */
+    @Test
+    void testBulkIndexWithContext_IgnoresBlankLines() throws Exception {
+        // Arrange
+        String ndjsonWithBlanks = "\n{\"valid\":true}\n   \n{\"valid\":true}";
+        InputStream is = new ByteArrayInputStream(ndjsonWithBlanks.getBytes(StandardCharsets.UTF_8));
+
+        when(indicesClient.exists(any(Function.class))).thenReturn(new BooleanResponse(true));
+
+        // Act & Assert
+        assertDoesNotThrow(() -> importer.bulkIndexWithContext(is, "test-index"));
     }
 }

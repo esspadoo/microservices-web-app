@@ -3,6 +3,7 @@ package it.unipd.importer.service;
 import it.unipd.importer.ElasticsearchClient_Importer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -10,11 +11,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * <strong> Class ImporterServiceTest </strong>
@@ -35,6 +38,9 @@ class ImporterServiceTest {
 
     @InjectMocks
     private ImporterService importerService;
+
+    @TempDir
+    Path tempDir;
 
     /**
      * <p><b>Summary:</b> Verifies that the service correctly calls the client method.</p>
@@ -57,6 +63,7 @@ class ImporterServiceTest {
 
         importerService.indexArticles(tempFile, indexName, jobId);
 
+        assertEquals("COMPLETED", importerService.getJobStatus(jobId));
         verify(elasticsearchClient, times(1)).bulkIndexWithContext(any(InputStream.class), eq(indexName));
     }
 

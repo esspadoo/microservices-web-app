@@ -1,9 +1,22 @@
 #!/bin/bash
 
-set -euo pipefail
-FORCE_GUARDIAN=false
-MODEL_UPDATE=false
+#Script is intended to be IDEMPOTENT
+# Exit immediately on:
+# - any command failure (-e)
+# - use of undefined variables (-u)
+# - failure in any part of a pipeline (-o pipefail)
 
+set -euo pipefail
+
+# ------------------------
+# Default flag values
+# ------------------------
+FORCE_GUARDIAN=false # Whether to force Guardian crawler execution
+MODEL_UPDATE=false #  Whether to force ML model re-download
+
+# ------------------------
+# Parse command-line arguments
+# ------------------------
 for arg in "$@"; do
   case "$arg" in
     --guardian-force)
@@ -15,26 +28,46 @@ for arg in "$@"; do
   esac
 done
 
+# ------------------------
+# Resolve script directory (absolute path)
+# ------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Path to the inferer ML model
 MODEL_FILE="$SCRIPT_DIR/../inferer/src/main/resources/inferer/inferer.model"
 
+# ------------------------
+# Download or update ML model if required
+# ------------------------
 if [ "$MODEL_UPDATE" = true ] || [ ! -f "$MODEL_FILE" ]; then
   echo "Downloading model ..."
+
+  # Download to a temporary file first (safe write)
   curl -L \
     https://huggingface.co/giancarlopadoan/inferer/resolve/main/inferer.model \
     -o ../inferer/src/main/resources/inferer/inferer.model.tmp && \
+
+  # Atomically move into final location
   mv ../inferer/src/main/resources/inferer/inferer.model.tmp \
      ../inferer/src/main/resources/inferer/inferer.model
 else
   echo "Model already present"
 fi
 
+# ------------------------
+# Compile the project
+# ------------------------
+# Sourced so that environment variables persist
 source "compileProject.sh"
 
 
+# ------------------------
+# Guardian crawler setup
+# ------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GUARDIAN_FILE="$SCRIPT_DIR/../all_data/guardian.jsonl"
 
+# Run crawler if forced or if dataset is missing
 if [ "$FORCE_GUARDIAN" = true ] || [ ! -f "$GUARDIAN_FILE" ]; then
   echo "Running guardianCrawler ..."
   source "$SCRIPT_DIR/guardianCrawler.sh"
@@ -42,43 +75,66 @@ else
   echo "Skipping guardianCrawler.sh"
 fi
 
-#------------------------
+# ------------------------
+# Python environment initialization
+# ------------------------
 source "py_init.sh"
-#-------------------
+
+
+# ------------------------
+# Start Docker services
+# ------------------------
 cd ..
 sudo docker compose up -d --build
 echo "Service running..."
 echo "..."
 echo "..."
 echo "Starting to import data"
+
+# ------------------------
+# Import datasets
+# ------------------------
 cd ./all_data/
 
-
+# Wait until importer service is ready
 echo "Waiting for importer service..."
 until curl -s http://localhost:8080/api/v1/importer/hello | grep -q "INDEXER UP"; do
   sleep 2
 done
 echo "Importer service is ready."
 
-
+# ------------------------
+# Import Guardian dataset
+# ------------------------
 echo "Importing... THE GUARDIAN"
 curl -X POST http://localhost:8080/api/v1/importer/import \
   -F "file=@guardian.jsonl" \
   -F "indexName=guardian"
-  
+  # Give the service time to process
 sleep 5
+
+# Wait again for importer readiness
 until curl -s http://localhost:8080/api/v1/importer/hello | grep -q "INDEXER UP"; do
   sleep 2
 done
 
+# ------------------------
+# Import OWI dataset
+# ------------------------
 echo ""
 echo "Importing... OWI"
 echo ""
 curl -X POST http://localhost:8080/api/v1/importer/import \
   -F "file=@owi.json" \
   -F "indexName=owi"
+
+# Final wait to ensure indexing completion
 sleep 5
 echo "Wait for finishing import..."
 sleep 20
+
+# ------------------------
+# Completion message
+# ------------------------
 echo "The search app is now running..."
 echo "Connect to http://localhost:8080/ to use it"

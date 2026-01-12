@@ -1,0 +1,54 @@
+@startuml
+title Java 21 Setup & Multi-Module Build Script
+
+start
+
+:Detect operating system\n(uname -s);
+
+if (OS == Linux?) then (Yes)
+  :Read /etc/os-release;
+  :Set DISTRO;
+endif
+
+:Try to locate Java 21;
+
+if (Java 21 found?) then (Yes)
+  :Set JAVA21_HOME;
+else (No)
+  :Java 21 missing;
+
+  if (OS == macOS?) then (Yes)
+    :Install Temurin 21\nvia Homebrew;
+    :Resolve JAVA21_HOME;
+  else (Linux)
+    if (DISTRO supported?) then (Yes)
+      :Install Temurin 21\n(OS-specific);
+      :Set JAVA21_HOME;
+    else (No)
+      :Abort (unsupported distro);
+      stop
+    endif
+  endif
+endif
+
+:Set JAVA_HOME and PATH;
+
+if (Java version != 21?) then (Error)
+  :Abort build;
+  stop
+endif
+
+:Resolve project root;
+
+while (More modules?) is (Yes)
+  :Select module\n(inferer/searcher/importer);
+  :Validate module directory;
+  :Validate mvnw;
+  :Normalize mvnw line endings;
+  :Build module\n(mvnw clean package);
+endwhile (No)
+
+:Build completed successfully;
+
+stop
+@enduml

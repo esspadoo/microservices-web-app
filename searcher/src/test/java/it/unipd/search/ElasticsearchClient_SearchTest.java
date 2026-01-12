@@ -31,7 +31,6 @@ import static org.mockito.Mockito.when;
  * and its nested response structures. It focuses on verifying the mapping logic from
  * Elasticsearch search hits to application-level Document objects.</p>
  *
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 public class ElasticsearchClient_SearchTest {

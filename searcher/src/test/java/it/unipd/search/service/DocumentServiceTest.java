@@ -24,7 +24,6 @@ import static org.mockito.Mockito.*;
  * It focuses on verifying that the service correctly delegates calls to the repository
  * layer for both searching by query and inserting new cache entries.</p>
  *
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 public class DocumentServiceTest {

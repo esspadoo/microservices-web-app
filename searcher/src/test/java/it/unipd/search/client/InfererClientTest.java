@@ -29,7 +29,6 @@ import static org.mockito.Mockito.when;
  * InfererProperties. It tests the batch inference logic, ensuring correct URL
  * construction, request handling, and error management for invalid configurations.</p>
  *
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 public class InfererClientTest {

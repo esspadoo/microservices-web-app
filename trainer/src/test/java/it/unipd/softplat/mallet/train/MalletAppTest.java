@@ -36,7 +36,6 @@ import static org.mockito.Mockito.*;
  * This is a unit test suite that tests the {@link MalletApp} by mocking its external dependencies
  * such as {@link MalletPipeFactory}, {@link DocumentIterator}, {@link InstanceList}, and {@link ParallelTopicModel}.
  * Mockito is used for mocking static methods and objects to control their behavior and verify interactions.
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 public class MalletAppTest {

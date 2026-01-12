@@ -34,7 +34,6 @@ import static org.springframework.test.util.ReflectionTestUtils.invokeMethod;
  * {@link ParallelTopicModel} and {@link TopicInferencer}, are mocked using Mockito. This approach
  * isolates the methods under test from the complexities of the underlying machine learning models
  * and file system, allowing for focused and predictable validation of the service's logic.
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 public class JsonInferencerServiceTest {

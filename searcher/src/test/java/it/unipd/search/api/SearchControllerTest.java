@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * during this slice test. The tests verify correct HTTP status codes, response bodies, and
  * the orchestration logic of the controller.</p>
  *
- * @author Leonardo Ongaro - 2197813
  */
 @WebMvcTest(SearchController.class)
 public class SearchControllerTest {

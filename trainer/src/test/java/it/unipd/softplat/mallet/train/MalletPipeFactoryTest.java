@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * This is a unit test suite that tests the {@link MalletPipeFactory} in isolation.
  * It focuses on verifying the composition of the pipeline returned by the {@code build} method.
  * A mocked {@link File} object is used for the stoplist to avoid actual file system interactions.
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 public class MalletPipeFactoryTest {

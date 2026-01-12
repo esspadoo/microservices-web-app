@@ -28,7 +28,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * The tests are designed to verify correct HTTP status codes, parameter mapping, and
  * error handling for invalid request methods.</p>
  *
- * @author Leonardo Ongaro - 2197813
  */
 
 @WebMvcTest(ImporterController.class)

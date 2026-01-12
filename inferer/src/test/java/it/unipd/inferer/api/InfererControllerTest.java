@@ -36,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * the controller, and {@link MockitoBean} is used to provide a mock implementation of the
  * {@link DocService}. This setup allows for focused, fast, and reliable tests of the
  * controller's behavior.
- * @author Leonardo Ongaro - 2197813
  */
 @WebMvcTest(InfererController.class)
 public class InfererControllerTest {

@@ -35,7 +35,6 @@ import static org.mockito.Mockito.when;
  * to redirect file I/O operations to in-memory {@link StringReader} and {@link StringWriter}.
  * This allows for precise control over input data and verification of output without
  * touching the actual file system.
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 public class JsonHtmlCleanerTest {

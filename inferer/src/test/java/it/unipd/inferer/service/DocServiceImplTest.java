@@ -39,7 +39,6 @@ import static org.mockito.Mockito.when;
  * the inference behavior and verify that the service interacts with them correctly.
  * Reflection is used to inject the mocked model, bypassing the file-loading logic
  * in the {@code @PostConstruct} method.
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 public class DocServiceImplTest {

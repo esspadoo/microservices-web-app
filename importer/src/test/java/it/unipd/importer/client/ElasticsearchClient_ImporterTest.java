@@ -30,7 +30,6 @@ import static org.mockito.Mockito.when;
  * to simulate different cluster states (e.g., index existence) without requiring a running
  * Elasticsearch instance. This ensures the tests are fast and deterministic.</p>
  *
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 public class ElasticsearchClient_ImporterTest {

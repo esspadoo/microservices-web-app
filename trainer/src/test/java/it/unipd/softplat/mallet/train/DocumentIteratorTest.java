@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * This is a unit test suite that tests the {@link DocumentIterator} in isolation.
  * It uses {@link ByteArrayInputStream} to simulate input streams with different
  * JSONL content, allowing for precise control over test data.
- * @author Leonardo Ongaro - 2197813
  */
 public class DocumentIteratorTest {
 

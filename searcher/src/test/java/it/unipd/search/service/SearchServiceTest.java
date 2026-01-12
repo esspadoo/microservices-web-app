@@ -25,7 +25,6 @@ import static org.mockito.Mockito.*;
  * It verifies that the service correctly passes the hardcoded index names and search fields
  * to the client and returns the results.</p>
  *
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 public class SearchServiceTest {

@@ -26,7 +26,6 @@ import static org.mockito.Mockito.verify;
  * ElasticsearchClient_Importer dependency. This ensures the service logic is tested
  * in isolation from the infrastructure layer.</p>
  *
- * @author Leonardo Ongaro - 2197813
  */
 @ExtendWith(MockitoExtension.class)
 class ImporterServiceTest {

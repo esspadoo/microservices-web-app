@@ -61,7 +61,7 @@ git clone https://gitlab.com/giancarlopadoan-group/softplat-project
 ```
 
 ---
-# Default initialization (fully automatized, just Guardian)
+# Default initialization (fully automatized, just Guardian pages)
 ## Build and Start the Services
 Since the project uses **custom Docker images**, all services must be built before execution.
 
@@ -78,11 +78,9 @@ This script:
 
 ---
 
-# OpenWebIndex Data initialization (Optional, not automatized due to authentication constraints. It requires manual operations)
+# OpenWebIndex Data initialization (Optional, not automatized due to authentication constraints: you need a valid account to download OWI's datasets)
 
-This step is optional.
-
-If you want to work with datasets from **OpenWebIndex**, follow the procedure below instead of the default initialization's one.
+If you want to work also with datasets from **OpenWebIndex**, follow the procedure below instead of the default initialization's one.
 
 ### Steps
 
@@ -94,12 +92,15 @@ sudo docker compose -f owi-docker-compose.yml run --rm -it owilix bash
 
 2. Download a dataset:
 ```bash
-owilix --yes remote pull all/internalID=PASTE-YOUR-DATASET-ID --threads=10 --language=eng
+owilix --yes remote pull all/internalID=<DATASET-ID> --threads=10 --language=eng
 ```
-Available datasets: https://openwebindex.eu/owler/our_datasets  
-Select datasets of type **curlie_full**. To perform the filtering of the dataset based on the curlie_labels you can either use our provided script `owi_filter.py` in the *scripts* folder (that is based on the official OWI's script https://opencode.it4i.eu/openwebsearcheu-public/owi-cli/-/blob/main/owilix/cli/query.py?ref_type=heads but it retains only the pages labeled with the *Computers* tag) or you can use the official command line `owilix` searching the **slice** command (official documentation here: https://opencode.it4i.eu/openwebsearcheu-public/owi-cli)
+**<DATASET-ID> needs to be replaced**. Eg: if you visit the websited pointed below this line you can find a command like this to download one of the available: `owilix remote pull all/internalID=a246f480-cc1f-11f0-9752-f6a03915313d`. In this example `a246f480-cc1f-11f0-9752-f6a03915313d` would be the <DATASET-ID> value.
 
-3. Exit the container after the download completes.
+*Official web page with available datasets to download*: https://openwebindex.eu/owler/our_datasets  
+
+Select datasets of type **curlie_full**. **With our command a filtering is already performed at download time: you will download only pages in english!**
+
+3. Exit the container after the download completes. You will find your downloaded dataset in the `/softplat-project-main/all_data/raw_data/public/curlie_full` directory.
 
 4. Restart the application:
 ```bash
@@ -107,6 +108,25 @@ cd ./scripts
 sudo chmod +x init.sh
 ./init.sh
 ```
+**Both for the OWI's and The Guardian's pages we perform another filtering phase that consists in retaining only the pages with scientific topics.**
+- **Speaking of OWI**: we chose to retain only the pages classified with the *"Computers'"* tag according to the curlie convention. To perform custom filtering of the dataset based on the curlie_labels you can either use our provided script `owi_filter.py` in the *scripts* folder (that is based on the official OWI's script https://opencode.it4i.eu/openwebsearcheu-public/owi-cli/-/blob/main/owilix/cli/query.py?ref_type=heads. It is necessary to only change the value of the `category` variable accordingly) or you can use the official command line `owilix` searching the **slice** command in the official documentation here: https://opencode.it4i.eu/openwebsearcheu-public/owi-cli.
+- **Speaking of the Guardian**: we chose to retain only the pages with the following tags 
+    "science/science"
+    "technology/technology"
+    "advertising/research"
+    "technology/computing"
+    "technology/artificialintelligence"
+    "technology/software"
+    "technology/games"
+    "technology/internet"
+    "technology/data-security"
+    "technology/hacking"
+    "technology/data-protection"
+    "artanddesign/graphic-design"
+    "artanddesign/digital-art"
+  To perform custom filtering you can change this tags accordingly to your needs. This is the official docs page: https://open-platform.theguardian.com/documentation/tag.
+
+
 
 5. At the end of the script's execution you will have both Guardian's and Owi's data (of the dataset that you chose) in your instance of the application! 
 

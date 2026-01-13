@@ -61,7 +61,7 @@ git clone https://gitlab.com/giancarlopadoan-group/softplat-project
 ```
 
 ---
-
+# Default initialization (fully automatized, just Guardian)
 ## Build and Start the Services
 Since the project uses **custom Docker images**, all services must be built before execution.
 
@@ -78,11 +78,11 @@ This script:
 
 ---
 
-## OpenWebIndex Data (Optional)
+# OpenWebIndex Data initialization (Optional, not automatized due to authentication constraints. It requires manual operations)
 
 This step is optional.
 
-If you want to work with datasets from **OpenWebIndex**, follow the procedure below instead of the default initialization.
+If you want to work with datasets from **OpenWebIndex**, follow the procedure below instead of the default initialization's one.
 
 ### Steps
 
@@ -97,7 +97,7 @@ sudo docker compose -f owi-docker-compose.yml run --rm -it owilix bash
 owilix --yes remote pull all/internalID=PASTE-YOUR-DATASET-ID --threads=10 --language=eng
 ```
 Available datasets: https://openwebindex.eu/owler/our_datasets  
-Select datasets of type **curlie_full**.
+Select datasets of type **curlie_full**. To perform the filtering of the dataset based on the curlie_labels you can either use our provided script `owi_filter.py` in the *scripts* folder (that is based on the official OWI's script https://opencode.it4i.eu/openwebsearcheu-public/owi-cli/-/blob/main/owilix/cli/query.py?ref_type=heads but it retains only the pages labeled with the *Computers* tag) or you can use the official command line `owilix` searching the **slice** command (official documentation here: https://opencode.it4i.eu/openwebsearcheu-public/owi-cli)
 
 3. Exit the container after the download completes.
 
@@ -107,6 +107,8 @@ cd ./scripts
 sudo chmod +x init.sh
 ./init.sh
 ```
+
+5. At the end of the script's execution you will have both Guardian's and Owi's data (of the dataset that you chose) in your instance of the application! 
 
 ### Optional Flags
 Force Guardian crawl:

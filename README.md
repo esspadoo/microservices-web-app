@@ -127,8 +127,11 @@ sudo chmod +x init.sh
   To perform custom filtering you can change this tags accordingly to your needs. This is the official docs page: https://open-platform.theguardian.com/documentation/tag.
 
 
+5. You can see how the import is going by using the dedicated REST call: http://localhost:8080/api/v1/importer/status/{jobId} where {jobId} needs to be replaced with the alpha-numerical value that is returned in the prompt when an import process is executed. 
 
-5. At the end of the script's execution you will have both Guardian's and Owi's data (of the dataset that you chose) in your instance of the application! 
+Eg. Import started. Job ID: 1bd8c0de-aac9-47b9-bef0-dba772e91bbf
+
+6. At the end of the script's execution and the then of the asynchronous import process(es) you will have both Guardian's and Owi's data (of the dataset that you chose) in your instance of the application!
 
 ### Optional Flags
 Force Guardian crawl:

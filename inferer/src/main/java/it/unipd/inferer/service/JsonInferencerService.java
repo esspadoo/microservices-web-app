@@ -9,13 +9,6 @@ import cc.mallet.types.Alphabet;
 import cc.mallet.types.IDSorter;
 
 import it.unipd.inferer.dto.Document;
-import org.springframework.core.io.ClassPathResource;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 /**
@@ -69,7 +62,7 @@ public class JsonInferencerService {
     public static Document inferPrevalentTopicJsonl(
             TopicInferencer inferencer,
             Document doc,
-            Map<Integer, String> topicTopWords
+            Map<Integer, String> topicTopWords,
             Pipe pipe
     ) throws Exception {
         String url = doc.getUrl();
@@ -97,32 +90,6 @@ public class JsonInferencerService {
         // Build output Document
         return new Document("", url, title, "", prevalentTopicWords);
     }
-
-    /**
-     * Loads a pre-configured MALLET {@link Pipe} from the classpath.
-     *
-     * <p>
-     * This method reads the serialized pipeline object from the resource
-     * file <code>inferer/model.pipe</code> and deserializes it into a {@link Pipe}
-     * instance. The returned pipeline must match the configuration used during
-     * the training of the topic model.
-     * </p>
-     *
-     * <p>
-     * The method uses a try-with-resources block to safely handle the input stream
-     * and ensure it is closed after reading the object.
-     * </p>
-     *
-     * @return a deserialized {@link Pipe} object ready for preprocessing documents
-     * @throws Exception if the resource cannot be found, read, or deserialized
-     */
-    private static Pipe loadPipe() throws Exception {
-        ClassPathResource resource = new ClassPathResource("inferer/model.pipe");
-        try (ObjectInputStream in = new ObjectInputStream(resource.getInputStream())) {
-            return (Pipe) in.readObject();
-        }
-    }
-
 
     /**
      * Returns the index of the maximum value in a numeric array.

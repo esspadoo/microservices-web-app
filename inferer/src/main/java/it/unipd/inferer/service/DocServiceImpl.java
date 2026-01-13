@@ -1,5 +1,6 @@
 package it.unipd.inferer.service;
 
+import cc.mallet.pipe.*;
 import cc.mallet.topics.ParallelTopicModel;
 import it.unipd.inferer.dto.Document;
 import jakarta.annotation.PostConstruct;
@@ -132,6 +133,32 @@ public class DocServiceImpl implements DocService{
         ClassPathResource resource = new ClassPathResource("inferer/inferer.model");
         try (ObjectInputStream in = new ObjectInputStream(resource.getInputStream())) {
             return (ParallelTopicModel) in.readObject();
+        }
+    }
+
+
+    /**
+     * Loads a pre-configured MALLET {@link Pipe} from the classpath.
+     *
+     * <p>
+     * This method reads the serialized pipeline object from the resource
+     * file <code>inferer/model.pipe</code> and deserializes it into a {@link Pipe}
+     * instance. The returned pipeline must match the configuration used during
+     * the training of the topic model.
+     * </p>
+     *
+     * <p>
+     * The method uses a try-with-resources block to safely handle the input stream
+     * and ensure it is closed after reading the object.
+     * </p>
+     *
+     * @return a deserialized {@link Pipe} object ready for preprocessing documents
+     * @throws Exception if the resource cannot be found, read, or deserialized
+     */
+    private static Pipe loadPipe() throws Exception {
+        ClassPathResource resource = new ClassPathResource("inferer/model.pipe");
+        try (ObjectInputStream in = new ObjectInputStream(resource.getInputStream())) {
+            return (Pipe) in.readObject();
         }
     }
 }

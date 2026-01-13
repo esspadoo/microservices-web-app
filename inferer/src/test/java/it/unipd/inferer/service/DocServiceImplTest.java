@@ -1,5 +1,6 @@
 package it.unipd.inferer.service;
 
+import cc.mallet.pipe.*;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
 import it.unipd.inferer.dto.Document;
@@ -45,6 +46,9 @@ public class DocServiceImplTest {
     @Mock
     private TopicInferencer topicInferencer;
 
+    @Mock
+    private Pipe pipe;
+
     @InjectMocks
     private DocServiceImpl docService;
 
@@ -89,7 +93,8 @@ public class DocServiceImplTest {
         jsonInferencerServiceMock.when(() -> JsonInferencerService.inferPrevalentTopicJsonl(
                 eq(topicInferencer),
                 any(Document.class),
-                eq(topicTopWords)
+                eq(topicTopWords),
+                eq(pipe)
         )).thenReturn(expectedDoc);
 
         Document resultDoc = docService.infer(inputDoc);
@@ -143,7 +148,8 @@ public class DocServiceImplTest {
         jsonInferencerServiceMock.when(() -> JsonInferencerService.inferPrevalentTopicJsonl(
                 eq(topicInferencer),
                 any(Document.class),
-                eq(topicTopWords)
+                eq(topicTopWords),
+                eq(pipe)
         )).thenReturn(expectedDoc);
 
         List<Document> resultList = docService.inferBatch(inputList);
@@ -191,7 +197,7 @@ public class DocServiceImplTest {
         List<Document> inputList = List.of(new Document(), new Document());
         when(model.getInferencer()).thenReturn(topicInferencer);
 
-        jsonInferencerServiceMock.when(() -> JsonInferencerService.inferPrevalentTopicJsonl(any(), any(), any()))
+        jsonInferencerServiceMock.when(() -> JsonInferencerService.inferPrevalentTopicJsonl(any(), any(), any(), any()))
                 .thenThrow(new RuntimeException("Inference failed"));
 
         assertThrows(Exception.class, () -> docService.inferBatch(inputList));

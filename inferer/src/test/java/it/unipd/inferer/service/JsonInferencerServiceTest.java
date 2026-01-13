@@ -1,5 +1,6 @@
 package it.unipd.inferer.service;
 
+import cc.mallet.pipe.*;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.Alphabet;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +39,9 @@ public class JsonInferencerServiceTest {
 
     @Mock
     private ParallelTopicModel model;
+
+    @Mock
+    private Pipe pipe;
 
     @Mock
     private TopicInferencer inferencer;
@@ -160,7 +163,7 @@ public class JsonInferencerServiceTest {
         double[] distribution = {0.2, 0.8};
         when(inferencer.getSampledDistribution(any(Instance.class), any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(distribution);
 
-        Document resultDoc = JsonInferencerService.inferPrevalentTopicJsonl(inferencer, inputDoc, topicTopWords);
+        Document resultDoc = JsonInferencerService.inferPrevalentTopicJsonl(inferencer, inputDoc, topicTopWords,pipe);
 
         assertNotNull(resultDoc);
         assertEquals("topic words for topic 1", resultDoc.getTopic());
@@ -186,7 +189,7 @@ public class JsonInferencerServiceTest {
     void testLoadPipe_FileNotFound() {
         Document doc = new Document();
         assertThrows(Exception.class, () ->
-                JsonInferencerService.inferPrevalentTopicJsonl(inferencer, doc, new HashMap<>())
+                JsonInferencerService.inferPrevalentTopicJsonl(inferencer, doc, new HashMap<>(),pipe)
         );
     }
 
@@ -206,7 +209,7 @@ public class JsonInferencerServiceTest {
     void testInfer_NullDocumentContent() {
         Document doc = new Document("id", "url", "title", null, null);
         assertThrows(NullPointerException.class, () ->
-                JsonInferencerService.inferPrevalentTopicJsonl(inferencer, doc, new HashMap<>())
+                JsonInferencerService.inferPrevalentTopicJsonl(inferencer, doc, new HashMap<>(),pipe)
         );
     }
 }

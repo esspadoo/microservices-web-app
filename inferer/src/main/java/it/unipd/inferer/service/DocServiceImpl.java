@@ -46,6 +46,15 @@ public class DocServiceImpl implements DocService{
     private Map<Integer, String> topicTopWords;
 
     /**
+     * Pipeline used to preprocess documents.
+     * <p>
+     * This pipeline is loaded once during application initialization and reused
+     * for all subsequent inference requests to ensure efficiency.
+     * </p>
+     */
+    private Pipe pipe;
+
+    /**
      * Service initialization method.
      * <p>
      * This method is automatically invoked by the Spring container after
@@ -60,6 +69,7 @@ public class DocServiceImpl implements DocService{
         this.model = loadModel();
         this.topicTopWords =
                 JsonInferencerService.computeTopicTopWords(model, 10);
+        this.pipe = loadPipe();
     }
 
     /**
@@ -77,7 +87,8 @@ public class DocServiceImpl implements DocService{
         return JsonInferencerService.inferPrevalentTopicJsonl(
                 model.getInferencer(),
                 doc,
-                topicTopWords
+                topicTopWords,
+                pipe
         );
     }
 
@@ -99,7 +110,7 @@ public class DocServiceImpl implements DocService{
         for (Document d : doc) {
             results.add(
                     JsonInferencerService.inferPrevalentTopicJsonl(
-                            model.getInferencer(), d, topicTopWords
+                            model.getInferencer(), d, topicTopWords, pipe
                     )
             );
         }

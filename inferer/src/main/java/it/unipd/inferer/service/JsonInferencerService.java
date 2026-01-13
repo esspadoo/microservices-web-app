@@ -62,6 +62,7 @@ public class JsonInferencerService {
      * @param inferencer the MALLET topic inferencer derived from a trained model
      * @param doc the input document to analyze
      * @param topicTopWords a mapping of topic identifiers to their top words
+     * @param pipe the pipeline used to preprocess the documents
      * @return a new {@link Document} containing the inference result
      * @throws Exception if preprocessing, inference, or resource loading fails
      */
@@ -69,13 +70,12 @@ public class JsonInferencerService {
             TopicInferencer inferencer,
             Document doc,
             Map<Integer, String> topicTopWords
+            Pipe pipe
     ) throws Exception {
         String url = doc.getUrl();
         String title = doc.getTitle();
         String text = doc.getMain_content();
 
-        // Build Pipe (must match training configuration)
-        Pipe pipe = loadPipe();
         InstanceList instances = new InstanceList(pipe);
 
         // Create single-instance input

@@ -217,7 +217,7 @@ def stream_parquet_to_json_parallel(
     workers: Optional[int] = None
 ):
 
-"""
+    """
     Convert multiple Parquet files into a single JSONL file
     using parallel processing.
 
@@ -273,7 +273,7 @@ def stream_parquet_to_json_parallel(
 # Entry point
 # -------------------------------------------------
 def main():
-"""
+    """
     Entry point of the script.
 
     - Validates dataset path

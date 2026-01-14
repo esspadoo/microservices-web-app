@@ -147,7 +147,7 @@ echo "Importing... OWI"
 echo ""
 
 
-JOB_ID=$(curl -s -D - -o /dev/null \
+JOB_ID_2=$(curl -s -D - -o /dev/null \
   -X POST http://localhost:8080/api/v1/importer/import \
   -F "file=@owi.json" \
   -F "indexName=owi" \
@@ -155,18 +155,18 @@ JOB_ID=$(curl -s -D - -o /dev/null \
 
 echo "HERE AFTER CURL"
 
-if [ -z "$JOB_ID" ]; then
+if [ -z "$JOB_ID_2" ]; then
   echo "Failed to extract JOB ID"
 else
 
-  echo "Job ID: $JOB_ID"
+  echo "Job ID: $JOB_ID_2"
 
   # Wait until import completed, and in the meantime print the status
   while true; do
-    STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID)
-    echo "$STAT"
+    STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID_2)
+    echo "$STAT_2"
 
-    if echo "$STAT" | grep -q "COMPLETED"; then
+    if echo "$STAT_2" | grep -q "COMPLETED"; then
       break
     fi
     sleep 1

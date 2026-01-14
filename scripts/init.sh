@@ -108,16 +108,12 @@ echo "Importer service is ready."
 # ------------------------
 echo "Importing... THE GUARDIAN"
 
-# Send curl request and save response for parsing
-IMPORT_RESPONSE=$(curl -s -X POST http://localhost:8080/api/v1/importer/import \
+JOB_ID=$(curl -s -D - -o /dev/null \
+  -X POST http://localhost:8080/api/v1/importer/import \
   -F "file=@guardian.jsonl" \
-  -F "indexName=guardian")
+  -F "indexName=guardian" \
+  | grep -i '^X-Job-Id:' | awk '{print $2}' | tr -d '\r')
 
-# Print the actual response
-echo "$IMPORT_RESPONSE"
-
-# Parse the JOBID from header
-JOB_ID=$(echo "$IMPORT_RESPONSE" | grep -i '^X-Job-Id:' | awk '{print $2}' | tr -d '\r')
 
 if [ -z "$JOB_ID" ]; then
   echo "Failed to extract JOB ID"
@@ -144,16 +140,14 @@ echo ""
 echo "Importing... OWI"
 echo ""
 
-# Send curl request and save response for parsing
-IMPORT_RESPONSE=$(curl -s -X POST http://localhost:8080/api/v1/importer/import \
+
+JOB_ID=$(curl -s -D - -o /dev/null \
+  -X POST http://localhost:8080/api/v1/importer/import \
   -F "file=@owi.json" \
-  -F "indexName=owi")
+  -F "indexName=owi" \
+  | grep -i '^X-Job-Id:' | awk '{print $2}' | tr -d '\r')
 
-# Print the actual response
-echo "$IMPORT_RESPONSE"
 
-# Parse the JOBID from header
-JOB_ID=$(echo "$IMPORT_RESPONSE" | grep -i '^X-Job-Id:' | awk '{print $2}' | tr -d '\r')
 if [ -z "$JOB_ID" ]; then
   echo "Failed to extract JOB ID"
 else

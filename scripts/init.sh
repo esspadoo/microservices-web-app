@@ -119,12 +119,17 @@ if [ -z "$JOB_ID" ]; then
   echo "Failed to extract JOB ID"
 else
 
+  # Wait until import completed, and in the meantime print the status
   echo "Job ID: $JOB_ID"
 
   # Wait until import completed, and in the meantime print the status
-  until STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID) | grep -q "COMPLETED"; do
+  while true; do
+    STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID)
     echo "$STAT"
-    sleep 1
+
+    if echo "$STAT" | grep -q "COMPLETED"; then
+      break
+    fi
   done
 fi
 
@@ -155,9 +160,13 @@ else
   echo "Job ID: $JOB_ID"
 
   # Wait until import completed, and in the meantime print the status
-  until STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID) | grep -q "COMPLETED"; do
+  while true; do
+    STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID)
     echo "$STAT"
-    sleep 1
+
+    if echo "$STAT" | grep -q "COMPLETED"; then
+      break
+    fi
   done
 fi
 # ------------------------

@@ -10,6 +10,7 @@ import org.elasticsearch.client.RestClient;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Component;
 
@@ -87,6 +88,8 @@ public class ElasticsearchClient_Importer {
                 );
             }
         }
+        bulkIngester.flush();
+
     }
 
     /**

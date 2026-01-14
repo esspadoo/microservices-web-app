@@ -1,6 +1,7 @@
 package it.unipd.importer.api;
 
 import it.unipd.importer.service.ImporterService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -96,7 +97,9 @@ public class ImporterController {
 
         String jobId = UUID.randomUUID().toString();
         this.importerService.indexArticles(tempFile, indexName, jobId);
-        return ResponseEntity.ok("Import started. Job ID: " + jobId).header("X-Job-Id", jobId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Job-Id", jobId);
+        return new ResponseEntity<>("Import started. Job ID: " + jobId, headers, HttpStatus.OK);
     }
 
     /**

@@ -26,7 +26,7 @@ import java.util.List;
  * </p>
  */
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/inferer")
 public class InfererController {
 
     /**

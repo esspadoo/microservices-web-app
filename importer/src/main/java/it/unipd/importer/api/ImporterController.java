@@ -96,7 +96,7 @@ public class ImporterController {
 
         String jobId = UUID.randomUUID().toString();
         this.importerService.indexArticles(tempFile, indexName, jobId);
-        return ResponseEntity.ok("Import started. Job ID: " + jobId);
+        return ResponseEntity.ok("Import started. Job ID: " + jobId).header("X-Job-Id", jobId);
     }
 
     /**

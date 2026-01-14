@@ -60,7 +60,7 @@ public class InfererControllerTest {
      */
     @Test
     public void testHello() throws Exception {
-        mockMvc.perform(get("/api/v1/hello"))
+        mockMvc.perform(get("/api/v1/inferer/hello"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello this is a test, service INFERER UP!"));
     }
@@ -81,7 +81,7 @@ public class InfererControllerTest {
 
         when(docService.infer(any(Document.class))).thenReturn(outputDoc);
 
-        mockMvc.perform(post("/api/v1/infer")
+        mockMvc.perform(post("/api/v1/inferer/infer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDoc)))
                 .andExpect(status().isOk())
@@ -106,7 +106,7 @@ public class InfererControllerTest {
 
         when(docService.inferBatch(any(List.class))).thenReturn(outputList);
 
-        mockMvc.perform(post("/api/v1/inferBatch")
+        mockMvc.perform(post("/api/v1/inferer/inferBatch")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputList)))
                 .andExpect(status().isOk())

@@ -12,10 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -162,6 +159,12 @@ public class JsonInferencerServiceTest {
 
         double[] distribution = {0.2, 0.8};
         when(inferencer.getSampledDistribution(any(Instance.class), any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(distribution);
+
+        String text = inputDoc.getMain_content();
+        Instance createdInstance = new Instance(text, null, "doc", null);
+
+        when(pipe.newIteratorFrom(any(java.util.Iterator.class)))
+                .thenReturn(Collections.singletonList(createdInstance).iterator());
 
         Document resultDoc = JsonInferencerService.inferPrevalentTopicJsonl(inferencer, inputDoc, topicTopWords,pipe);
 

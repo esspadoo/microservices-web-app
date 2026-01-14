@@ -107,11 +107,31 @@ echo "Importer service is ready."
 # Import Guardian dataset
 # ------------------------
 echo "Importing... THE GUARDIAN"
-curl -X POST http://localhost:8080/api/v1/importer/import \
+
+# Send curl request and save response for parsing
+IMPORT_RESPONSE=$(curl -s -X POST http://localhost:8080/api/v1/importer/import \
   -F "file=@guardian.jsonl" \
-  -F "indexName=guardian"
-  # Give the service time to process
-sleep 5
+  -F "indexName=guardian")
+
+# Print the actual response
+echo "$IMPORT_RESPONSE"
+
+# Parse the JOBID 
+JOB_ID=$(echo "$IMPORT_RESPONSE" | sed -n 's/.*JOB ID: \([a-f0-9\-]\+\).*/\1/p')
+
+if [ -z "$JOB_ID" ]; then
+  echo "Failed to extract JOB ID"
+  exit 1
+fi
+
+echo "Job ID: $JOB_ID"
+
+# Wait until import completed, and in the meantime print the status
+until STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID) | grep -q "COMPLETED"; do
+  echo "$STAT"
+  sleep 0.5
+done
+
 
 # Wait again for importer readiness
 until curl -s http://localhost:8080/api/v1/importer/hello | grep -q "INDEXER UP"; do
@@ -124,14 +144,30 @@ done
 echo ""
 echo "Importing... OWI"
 echo ""
-curl -X POST http://localhost:8080/api/v1/importer/import \
-  -F "file=@owi.json" \
-  -F "indexName=owi"
 
-# Final wait to ensure indexing completion
-sleep 5
-echo "Wait for finishing import..."
-sleep 20
+# Send curl request and save response for parsing
+IMPORT_RESPONSE=$(curl -s -X POST http://localhost:8080/api/v1/importer/import \
+  -F "file=@owi.json" \
+  -F "indexName=owi")
+
+# Print the actual response
+echo "$IMPORT_RESPONSE"
+
+# Parse the JOBID 
+JOB_ID=$(echo "$IMPORT_RESPONSE" | sed -n 's/.*JOB ID: \([a-f0-9\-]\+\).*/\1/p')
+
+if [ -z "$JOB_ID" ]; then
+  echo "Failed to extract JOB ID"
+  exit 1
+fi
+
+echo "Job ID: $JOB_ID"
+
+# Wait until import completed, and in the meantime print the status
+until STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID) | grep -q "COMPLETED"; do
+  echo "$STAT"
+  sleep 0.5
+done
 
 # ------------------------
 # Completion message

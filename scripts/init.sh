@@ -116,22 +116,21 @@ IMPORT_RESPONSE=$(curl -s -X POST http://localhost:8080/api/v1/importer/import \
 # Print the actual response
 echo "$IMPORT_RESPONSE"
 
-# Parse the JOBID 
-JOB_ID=$(echo "$IMPORT_RESPONSE" | sed -n 's/.*JOB ID: \([a-f0-9\-]\+\).*/\1/p')
+# Parse the JOBID from header
+JOB_ID=$(echo "$IMPORT_RESPONSE" | grep -i '^X-Job-Id:' | awk '{print $2}' | tr -d '\r')
 
 if [ -z "$JOB_ID" ]; then
   echo "Failed to extract JOB ID"
-  exit 1
+else
+
+  echo "Job ID: $JOB_ID"
+
+  # Wait until import completed, and in the meantime print the status
+  until STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID) | grep -q "COMPLETED"; do
+    echo "$STAT"
+    sleep 1
+  done
 fi
-
-echo "Job ID: $JOB_ID"
-
-# Wait until import completed, and in the meantime print the status
-until STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID) | grep -q "COMPLETED"; do
-  echo "$STAT"
-  sleep 0.5
-done
-
 
 # Wait again for importer readiness
 until curl -s http://localhost:8080/api/v1/importer/hello | grep -q "INDEXER UP"; do
@@ -153,22 +152,20 @@ IMPORT_RESPONSE=$(curl -s -X POST http://localhost:8080/api/v1/importer/import \
 # Print the actual response
 echo "$IMPORT_RESPONSE"
 
-# Parse the JOBID 
-JOB_ID=$(echo "$IMPORT_RESPONSE" | sed -n 's/.*JOB ID: \([a-f0-9\-]\+\).*/\1/p')
-
+# Parse the JOBID from header
+JOB_ID=$(echo "$IMPORT_RESPONSE" | grep -i '^X-Job-Id:' | awk '{print $2}' | tr -d '\r')
 if [ -z "$JOB_ID" ]; then
   echo "Failed to extract JOB ID"
-  exit 1
+else
+
+  echo "Job ID: $JOB_ID"
+
+  # Wait until import completed, and in the meantime print the status
+  until STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID) | grep -q "COMPLETED"; do
+    echo "$STAT"
+    sleep 1
+  done
 fi
-
-echo "Job ID: $JOB_ID"
-
-# Wait until import completed, and in the meantime print the status
-until STAT=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID) | grep -q "COMPLETED"; do
-  echo "$STAT"
-  sleep 0.5
-done
-
 # ------------------------
 # Completion message
 # ------------------------

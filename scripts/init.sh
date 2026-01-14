@@ -142,35 +142,37 @@ done
 # ------------------------
 # Import OWI dataset
 # ------------------------
-echo ""
-echo "Importing... OWI"
-echo ""
+if [ -f "owi.json" ]; then
+  echo ""
+  echo "Importing... OWI"
+  echo ""
 
 
-JOB_ID_2=$(curl -s -D - -o /dev/null \
-  -X POST http://localhost:8080/api/v1/importer/import \
-  -F "file=@owi.json" \
-  -F "indexName=owi" \
-  | grep -i '^X-Job-Id:' | awk '{print $2}' | tr -d '\r')
+  JOB_ID_2=$(curl -s -D - -o /dev/null \
+    -X POST http://localhost:8080/api/v1/importer/import \
+    -F "file=@owi.json" \
+    -F "indexName=owi" \
+    | grep -i '^X-Job-Id:' | awk '{print $2}' | tr -d '\r')
 
-echo "HERE AFTER CURL"
+  echo "HERE AFTER CURL"
 
-if [ -z "$JOB_ID_2" ]; then
-  echo "Failed to extract JOB ID"
-else
+  if [ -z "$JOB_ID_2" ]; then
+    echo "Failed to extract JOB ID"
+  else
 
-  echo "Job ID: $JOB_ID_2"
+    echo "Job ID: $JOB_ID_2"
 
-  # Wait until import completed, and in the meantime print the status
-  while true; do
-    STAT_2=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID_2)
-    echo "$STAT_2"
+    # Wait until import completed, and in the meantime print the status
+    while true; do
+      STAT_2=$(curl -s http://localhost:8080/api/v1/importer/status/$JOB_ID_2)
+      echo "$STAT_2"
 
-    if echo "$STAT_2" | grep -q "COMPLETED"; then
-      break
-    fi
-    sleep 1
-  done
+      if echo "$STAT_2" | grep -q "COMPLETED"; then
+        break
+      fi
+      sleep 1
+    done
+  fi
 fi
 # ------------------------
 # Completion message

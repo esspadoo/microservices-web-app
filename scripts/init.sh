@@ -130,6 +130,7 @@ else
     if echo "$STAT" | grep -q "COMPLETED"; then
       break
     fi
+    sleep 1
   done
 fi
 
@@ -152,6 +153,7 @@ JOB_ID=$(curl -s -D - -o /dev/null \
   -F "indexName=owi" \
   | grep -i '^X-Job-Id:' | awk '{print $2}' | tr -d '\r')
 
+echo "HERE AFTER CURL"
 
 if [ -z "$JOB_ID" ]; then
   echo "Failed to extract JOB ID"
@@ -167,6 +169,7 @@ else
     if echo "$STAT" | grep -q "COMPLETED"; then
       break
     fi
+    sleep 1
   done
 fi
 # ------------------------

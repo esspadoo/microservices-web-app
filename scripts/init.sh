@@ -154,8 +154,6 @@ if [ -f "owi.json" ]; then
     -F "indexName=owi" \
     | grep -i '^X-Job-Id:' | awk '{print $2}' | tr -d '\r')
 
-  echo "HERE AFTER CURL"
-
   if [ -z "$JOB_ID_2" ]; then
     echo "Failed to extract JOB ID"
   else

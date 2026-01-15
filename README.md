@@ -80,6 +80,8 @@ This script:
 
 # OpenWebIndex Data initialization (Optional, not automatized due to authentication constraints: you need a valid account to download OWI's datasets)
 
+##### Since owilix is still in the research and improvement phase, it is unstable and service interruptions are not uncommon. For this reason, a sample dataset is provided, obtained from a 34GB curlie_full dataset and filtered to include only pages catalogued with the "Computer" tag according to the curlie classification (https://curlie.org/en). Further information is provided and explained in the rest of the documentation.
+
 If you want to work also with datasets from **OpenWebIndex**, follow the procedure below instead of the default initialization's one.
 
 ### Steps

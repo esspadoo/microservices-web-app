@@ -12,14 +12,12 @@ import java.nio.file.Paths;
 //write pipe file in out on the main
 /**
  * Utility class for MALLET topic modeling operations.
- * <p>
  * This class provides static methods to:
  * <ul>
  *     <li>Create an {@link InstanceList} from input documents</li>
  *     <li>Train a {@link ParallelTopicModel} on the instances</li>
  *     <li>Run the full workflow including cleaning, reading, training, and saving the model</li>
  * </ul>
- * </p>
  */
 public class MalletApp {
 

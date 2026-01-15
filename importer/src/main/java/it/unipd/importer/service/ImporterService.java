@@ -36,7 +36,7 @@ public class ImporterService {
      *
      * <p>The method updates the job status in {@link #jobStatus} accordingly:
      * "IN_PROGRESS" while running, "COMPLETED" if successful, and
-     * "FAILED: <error message>" if an exception occurs.
+     * "FAILED: &lt;error message&gt; if an exception occurs.
      * The file is deleted after processing.
      *
      * @param file      the NDJSON file containing the documents to index
@@ -62,7 +62,7 @@ public class ImporterService {
      * Retrieves the current status of an import job.
      *
      * @param jobId the unique identifier of the job
-     * @return the status of the job ("IN_PROGRESS", "COMPLETED", "FAILED: <message>")
+     * @return the status of the job ("IN_PROGRESS", "COMPLETED", "FAILED: &gt;message&gt;")
      *         or "UNKNOWN" if the job ID is not found
      */
     public String getJobStatus(String jobId) {

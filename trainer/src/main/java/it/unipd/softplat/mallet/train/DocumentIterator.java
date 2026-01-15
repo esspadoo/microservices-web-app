@@ -10,6 +10,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+/**
+ * Iterates over a stream of JSONL documents, parsing each document into a Mallet {@link Instance}.
+ * Each line in the input stream is expected to be a JSON object containing "url", "title", and "main_content" fields.
+ * Documents with malformed JSON or missing required fields are skipped.
+ */
 public class DocumentIterator implements Iterator<Instance> {
 
     private final Scanner scanner;
@@ -18,6 +23,11 @@ public class DocumentIterator implements Iterator<Instance> {
     // Prefetched next valid instance
     private Instance nextInstance;
 
+    /**
+     * Constructs a new DocumentIterator.
+     *
+     * @param dataInputStream The input stream containing JSONL documents.
+     */
     public DocumentIterator(InputStream dataInputStream) {
         this.scanner = new Scanner(dataInputStream);
         this.mapper = new ObjectMapper();

@@ -66,7 +66,7 @@ git clone https://gitlab.com/giancarlopadoan-group/softplat-project
 Since the project uses **custom Docker images**, all services must be built before execution.
 
 ```bash
-cd softplat-project-main/scripts
+cd softplat-project/scripts
 chmod +x init.sh
 ./init.sh
 ```
@@ -75,12 +75,14 @@ This script:
 - Builds all services
 - Starts the application
 - Retrieves a sample set of articles from **The Guardian API**
+- [OPTIONAL] Retrieves a sample set of articles from **OpenWebIndex**, see below.
 
 ---
 
-# OpenWebIndex Data initialization (Optional, not automatized due to authentication constraints: you need a valid account to download OWI's datasets)
+# Use OpenWebIndex Data 
+### Optional, not automatized due to authentication constraints: you need a valid account to download OWI's datasets)
 
-##### Since owilix is still in the research and improvement phase, it is unstable and service interruptions are not uncommon. For this reason, a sample dataset is provided, obtained from a 34GB curlie_full dataset and filtered to include only pages catalogued with the "Computer" tag according to the curlie classification (https://curlie.org/en). Further information is provided and explained in the rest of the documentation.
+##### Since owilix is still a research project, service interruptions are not uncommon. For this reason, a sample dataset is provided, and can be obtained using the apposite flag (See Optional Flags chapter). The dataset is filtered to include only pages catalogued with the "Computer" tag and according to the curlie classification (https://curlie.org/en). Further information is provided and explained in the rest of the documentation.
 
 If you want to work also with datasets from **OpenWebIndex**, follow the procedure below instead of the default initialization's one.
 
@@ -90,7 +92,7 @@ If you want to work also with datasets from **OpenWebIndex**, follow the procedu
 ```bash
 sudo docker compose -f owi-docker-compose.yml run --rm -it owilix bash
 ```
-**Important:** Remove any existing owilix images before rebuilding.
+**Important:** Remove any existing owilix docker images, if any, before rebuilding.
 
 2. Download a dataset:
 ```bash
@@ -102,7 +104,7 @@ owilix --yes remote pull all/internalID=<DATASET-ID> --threads=10 --language=eng
 
 Select datasets of type **curlie_full**. **With our command a filtering is already performed at download time: you will download only pages in english!**
 
-3. Exit the container after the download completes. You will find your downloaded dataset in the `/softplat-project-main/all_data/raw_data/public/curlie_full` directory.
+3. Exit the container after the download completes. You will find your downloaded dataset in the `/softplat-project/all_data/raw_data/public/curlie_full` directory.
 
 4. Restart the application:
 ```bash
@@ -129,17 +131,22 @@ sudo chmod +x init.sh
   To perform custom filtering you can change this tags accordingly to your needs. This is the official docs page: https://open-platform.theguardian.com/documentation/tag.
 
 
-5. You can see how the import is going by using the dedicated REST call: http://localhost:8080/api/v1/importer/status/{jobId} where {jobId} needs to be replaced with the alpha-numerical value that is returned in the prompt when an import process is executed. 
+5. At the end of the script's execution and the then of the asynchronous import process(es) you will have both Guardian's and Owi's data (of the dataset that you chose) in your instance of the application!
 
-Eg. Import started. Job ID: 1bd8c0de-aac9-47b9-bef0-dba772e91bbf
 
-6. At the end of the script's execution and the then of the asynchronous import process(es) you will have both Guardian's and Owi's data (of the dataset that you chose) in your instance of the application!
-
-### Optional Flags
+## Optional Flags
 Force Guardian crawl:
 ```bash
 ./init.sh --guardian-force
 ```
+---
+
+Force OpenWebIndex sample dataset:
+```bash
+./init.sh --owi-sample
+```
+
+---
 
 Force model update:
 ```bash
@@ -176,7 +183,9 @@ curl -X POST http://localhost:8080/api/v1/importer/import \
   -F "indexName=YOUR_INDEX_NAME"
 ```
 
-3. Wait for the import to complete.
+3. You can see teh import status uing the dedicated REST call: http://localhost:8080/api/v1/importer/status/{jobId} where **{jobId} needs to be replaced** with the alpha-numerical value that is returned in the prompt when an import process is executed. 
+
+Eg. Import started. Job ID: 1bd8c0de-aac9-47b9-bef0-dba772e91bbf
 
 ---
 

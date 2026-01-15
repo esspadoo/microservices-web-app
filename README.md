@@ -96,7 +96,7 @@ sudo docker compose -f owi-docker-compose.yml run --rm -it owilix bash
 ```bash
 owilix --yes remote pull all/internalID=<DATASET-ID> --threads=10 --language=eng
 ```
-**<DATASET-ID> needs to be replaced**. Eg: if you visit the websited pointed below this line you can find a command like this to download one of the available: `owilix remote pull all/internalID=a246f480-cc1f-11f0-9752-f6a03915313d`. In this example `a246f480-cc1f-11f0-9752-f6a03915313d` would be the <DATASET-ID> value.
+**DATASET-ID needs to be replaced**. Eg: if you visit the websited pointed below this line you can find a command like this to download one of the available: `owilix remote pull all/internalID=a246f480-cc1f-11f0-9752-f6a03915313d`. In this example `a246f480-cc1f-11f0-9752-f6a03915313d` would be the <DATASET-ID> value.
 
 *Official web page with available datasets to download*: https://openwebindex.eu/owler/our_datasets  
 

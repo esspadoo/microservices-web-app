@@ -13,6 +13,7 @@ set -euo pipefail
 # ------------------------
 FORCE_GUARDIAN=false # Whether to force Guardian crawler execution
 MODEL_UPDATE=false #  Whether to force ML model re-download
+OWI_SAMPLE=false # Whether download an OWI dataset sample
 
 # ------------------------
 # Parse command-line arguments
@@ -24,6 +25,9 @@ for arg in "$@"; do
       ;;
     --model-update)
       MODEL_UPDATE=true
+      ;;
+    --owi-sample)
+      OWI_SAMPLE=true
       ;;
   esac
 done
@@ -73,6 +77,24 @@ if [ "$FORCE_GUARDIAN" = true ] || [ ! -f "$GUARDIAN_FILE" ]; then
   source "$SCRIPT_DIR/guardianCrawler.sh"
 else
   echo "Skipping guardianCrawler.sh"
+fi
+
+# ------------------------
+# Download a sample OWI dataset 
+# ------------------------
+
+#Run download if flag present
+if [ "$OWI_SAMPLE" = true ]; then
+  echo "Downloading OpenWebIndex sample dataset ..."
+
+  # Download to a temporary file first (safe write)
+  curl -L \
+    https://huggingface.co/datasets/giancarlopadoan/owi_crawled/resolve/main/owi.json \
+    -o ../all_data/owi.json.tmp && \
+
+  # Atomically move into final location
+  mv ../all_data/owi.json.tmp \
+     ../all_data/owi.json
 fi
 
 # ------------------------

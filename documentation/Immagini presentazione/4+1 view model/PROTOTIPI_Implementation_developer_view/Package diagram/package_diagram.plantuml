@@ -1,15 +1,13 @@
 @startuml
-skinparam packageStyle rectangle
-skinparam shadowing false
-skinparam nodesep 60
-skinparam ranksep 60
+skinparam nodesep 120
+skinparam ranksep 80
 
 title Package Diagram - Searcher, Importer & Inferer Modules
 
 package "it.unipd" {
 
     ' --- MODULO SEARCHER ---
-    package "searcher" {
+    package "search" {
         package "it.unipd.search.api" as search_api {
             [SearchController]
         }

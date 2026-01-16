@@ -106,7 +106,7 @@ Select datasets of type **curlie_full**. **With our command a filtering is alrea
 
 3. Exit the container after the download completes. You will find your downloaded dataset in the `/softplat-project/all_data/raw_data/public/curlie_full` directory.
 
-4. Restart the application:
+4. Restart the application. **Before proceeding watch the **--owi-sample** optional flag section:
 ```bash
 cd ./scripts
 sudo chmod +x init.sh
@@ -128,20 +128,20 @@ sudo chmod +x init.sh
     "technology/data-protection"
     "artanddesign/graphic-design"
     "artanddesign/digital-art"
-  To perform custom filtering you can change this tags accordingly to your needs. This is the official docs page: https://open-platform.theguardian.com/documentation/tag.
+  To perform custom filtering you can change this tags accordingly to your needs in the script `.../softplat-project/scripts/guardianCrawler.sh`. This is the official docs page: https://open-platform.theguardian.com/documentation/tag.
 
 
 5. At the end of the script's execution and the then of the asynchronous import process(es) you will have both Guardian's and Owi's data (of the dataset that you chose) in your instance of the application!
 
 
 ## Optional Flags
-Force Guardian crawl:
+Force Guardian crawl. This flag is used to overwrite an existing Guardian's dataset, if the dataset is not present the default behaviour of the init script is to crawl it anyway (even without the flag). **The flag is intended just to update an already existing dataset, not to download it for the first time**:
 ```bash
 ./init.sh --guardian-force
 ```
 ---
 
-Force OpenWebIndex sample dataset:
+Force OpenWebIndex sample dataset. This flag is designed to download a test dataset pre-filtered containing only tags related to "Computers" according to curlie.org classification. **If this flag is not provided you will have to download and (if needed) filter your owi dataset otherwise you will import just Guardian pages.**:
 ```bash
 ./init.sh --owi-sample
 ```

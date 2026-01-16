@@ -71,12 +71,12 @@ DSI --> IC : List<Document>
 deactivate DSI
 
 IC --> SEARCHER : HTTP 200 OK\nJSON List<Document>
-deactivate IC
 
 == Exception propagation ==
 
 opt RuntimeException / IOException
     IC --> SEARCHER : HTTP 500 Internal Server Error
+    deactivate IC
 end
 
 @enduml

@@ -52,11 +52,20 @@ activate Controller
 
 Controller -> Service : indexArticles(file, indexName, jobId)
 activate Service
-Service -> Service : assign job status "IN_PROGRESS"\ngenerate jobId
+
+group Update job metadata
+    Service -> Service : assign job status "IN_PROGRESS"
+    Service -> Service : generate jobId
+end
 
 Service -> Importer : bulkIndexWithContext(file, indexName)
 activate Importer
-Importer -> Importer : check if index exists\ncreate if not
+
+Service --> Controller : ack
+deactivate Service
+
+Controller --> Client : HTTP 200 OK
+deactivate Controller
 
 Importer -> ESClient : indices().exists(indexName)
 activate ESClient
@@ -78,15 +87,13 @@ loop read NDJSON line by line
     ESClient --> Importer : acknowledgement
     deactivate ESClient
 end
-Importer --> Service: void
 
-
+opt Input is NOT NDJSON
+    Importer --> Service : IllegalArgumentException
+    Service --> Controller : propagate exception
+    Controller --> Client : HTTP 400 Bad Request
+end
 deactivate Importer
-Service -> Controller : return "Import started. Job ID: {jobId}"
-deactivate Service
-
-Controller --> Client : HTTP 200 OK
-deactivate Controller
 
 == Check Job Status ==
 Client -> Controller : GET /api/v1/importer/status/{jobId}

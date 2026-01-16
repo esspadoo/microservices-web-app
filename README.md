@@ -1,5 +1,9 @@
 # Software Platforms Project
 
+## Screenshots
+<img src="./documentation/Immagini%20presentazione/screen_proj_1.png" width="800">
+<img src="./documentation/Immagini%20presentazione/screen_proj_2.png" width="800">
+
 ## Overview
 This project was developed as part of the **Software Platforms** course.
 The objective is to design and implement a distributed platform that collects documents from one or more online sources, identifies documents related to **science and technology**, stores them, makes them searchable, and extracts useful representations for expert users.

@@ -1,0 +1,80 @@
+@startuml
+' Forza lo stile dei componenti UML 2
+skinparam componentStyle uml2
+
+title Document Search System - Formal Component Diagram
+
+' --- INFRASTRUTTURA DI ACCESSO ---
+[Nginx Proxy] as NG <<Proxy>> #white
+[Swagger UI] as SW <<Documentation>> #white
+
+' --- SISTEMI DI STORAGE ---
+database "Elasticsearch" as ES <<Database>>
+database "MongoDB" as Mongo <<Database>>
+
+' --- MODULO INFERER ---
+package "it.unipd.inferer" {
+    component "Inferer Engine" as ModInf <<Component>> #fff9ee {
+        [InfererController] as InfCtrl
+        [DocServiceImpl] as DocSrv
+        InfCtrl -down-> DocSrv
+    }
+}
+interface "Inferer API" as IInf
+InfCtrl -up- IInf
+
+' --- MODULO SEARCHER ---
+package "it.unipd.search" {
+    component "Searcher Core" as ModSearch <<Component>> #f9f9f9 {
+        [SearchController] as SeaCtrl
+        [SearchService] as SeaSrv
+        [DocumentService] as DocSrvSearch
+        [InfererClient] as InfCli
+        
+        SeaCtrl -down-> SeaSrv
+        SeaCtrl -down-> DocSrvSearch
+        SeaCtrl -down-> InfCli
+    }
+}
+interface "Search API" as ISearch
+SeaCtrl -up- ISearch
+
+' --- MODULO IMPORTER ---
+package "it.unipd.importer" {
+    component "Data Importer" as ModImp <<Component>> #eef9ff {
+        [ImporterController] as ImpCtrl
+        [ImporterService] as ImpSrv
+        ImpCtrl -down-> ImpSrv
+    }
+}
+interface "Importer API" as IImp
+ImpCtrl -up- IImp
+
+' --- RELAZIONI E INTERFACCE ---
+
+' Accesso tramite Proxy
+NG --( ISearch
+NG --( IImp
+NG --( IInf
+
+' Swagger aggrega le API
+SW --( ISearch : "collects docs"
+SW --( IImp
+SW --( IInf
+
+' Comunicazione interna
+InfCli -( IInf : "HTTP Call"
+
+' Interfacce Database
+interface "Elastic API" as IES
+interface "Mongo API" as IMongo
+
+ES -up- IES
+Mongo -up- IMongo
+
+' Utilizzo DB
+SeaSrv --( IES
+ImpSrv --( IES
+DocSrvSearch --( IMongo
+
+@enduml

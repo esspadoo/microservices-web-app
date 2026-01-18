@@ -1,80 +1,102 @@
 @startuml
-' Forza lo stile dei componenti UML 2
+' Layout impostato per evitare incroci di linee
 skinparam componentStyle uml2
+skinparam nodesep 80
+skinparam ranksep 60
 
-title Document Search System - Formal Component Diagram
+title Document Search System - Formal UML Component Diagram
 
-' --- INFRASTRUTTURA DI ACCESSO ---
-[Nginx Proxy] as NG <<Proxy>> #white
-[Swagger UI] as SW <<Documentation>> #white
+' --- INTERFACCE ---
+interface "Search API" as ISearch
+interface "Importer API" as IImp
+interface "Inferer API" as IInf
+interface "Elastic API" as IES
+interface "Mongo API" as IMongo
 
-' --- SISTEMI DI STORAGE ---
-database "Elasticsearch" as ES <<Database>>
-database "MongoDB" as Mongo <<Database>>
+' --- INFRASTRUTTURA ---
+node "Access Layer" #line.dashed {
+    [Nginx Proxy] as NG <<Proxy>> #white
+    [Swagger UI] as SW <<Documentation>> #white
+}
 
 ' --- MODULO INFERER ---
 package "it.unipd.inferer" {
     component "Inferer Engine" as ModInf <<Component>> #fff9ee {
+        portin "REST In" as pInfIn
         [InfererController] as InfCtrl
         [DocServiceImpl] as DocSrv
+        
+        pInfIn -down- InfCtrl
         InfCtrl -down-> DocSrv
     }
 }
-interface "Inferer API" as IInf
-InfCtrl -up- IInf
 
 ' --- MODULO SEARCHER ---
 package "it.unipd.search" {
     component "Searcher Core" as ModSearch <<Component>> #f9f9f9 {
+        portin "REST In" as pSeaIn
+        portout "DB/Service Out" as pSeaOut
+        
         [SearchController] as SeaCtrl
         [SearchService] as SeaSrv
         [DocumentService] as DocSrvSearch
         [InfererClient] as InfCli
         
+        pSeaIn -down- SeaCtrl
         SeaCtrl -down-> SeaSrv
         SeaCtrl -down-> DocSrvSearch
         SeaCtrl -down-> InfCli
+        
+        SeaSrv -down- pSeaOut
+        DocSrvSearch -down- pSeaOut
+        InfCli -down- pSeaOut
     }
 }
-interface "Search API" as ISearch
-SeaCtrl -up- ISearch
 
 ' --- MODULO IMPORTER ---
 package "it.unipd.importer" {
     component "Data Importer" as ModImp <<Component>> #eef9ff {
+        portin "REST In" as pImpIn
+        portout "DB Out" as pImpOut
+        
         [ImporterController] as ImpCtrl
         [ImporterService] as ImpSrv
+        
+        pImpIn -down- ImpCtrl
         ImpCtrl -down-> ImpSrv
+        ImpSrv -down- pImpOut
     }
 }
-interface "Importer API" as IImp
-ImpCtrl -up- IImp
 
-' --- RELAZIONI E INTERFACCE ---
+' --- STORAGE ---
+database "Elasticsearch" as ES <<Database>>
+database "MongoDB" as Mongo <<Database>>
 
-' Accesso tramite Proxy
+' --- CONNESSIONI E INTERFACCE (Notation: Ball-and-Socket) ---
+
+' Connessioni Entry Point (Semicerchio richiede -> Cerchio fornisce)
 NG --( ISearch
 NG --( IImp
 NG --( IInf
 
-' Swagger aggrega le API
-SW --( ISearch : "collects docs"
+SW --( ISearch
 SW --( IImp
 SW --( IInf
 
-' Comunicazione interna
-InfCli -( IInf : "HTTP Call"
+' Mapping Porte -> Interfacce Fornite (Cerchio)
+pSeaIn -up- ISearch
+pImpIn -up- IImp
+pInfIn -up- IInf
 
-' Interfacce Database
-interface "Elastic API" as IES
-interface "Mongo API" as IMongo
+' Mapping Porte -> Interfacce Richieste (Semicerchio)
+pSeaOut --( IES
+pSeaOut --( IMongo
+pSeaOut --( IInf : "internal call"
 
-ES -up- IES
-Mongo -up- IMongo
+pImpOut --( IES
 
-' Utilizzo DB
-SeaSrv --( IES
-ImpSrv --( IES
-DocSrvSearch --( IMongo
+' Mapping Interfacce Fornite dai Database
+IES -down- ES
+IMongo -down- Mongo
 
 @enduml

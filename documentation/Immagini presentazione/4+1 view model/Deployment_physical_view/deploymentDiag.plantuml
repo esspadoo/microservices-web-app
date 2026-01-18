@@ -1,0 +1,79 @@
+@startuml
+skinparam componentStyle uml2
+skinparam nodesep 100
+skinparam ranksep 100
+
+title Deployment Diagram - Documents Search & Inference System
+
+node "Client Desktop" as client {
+    artifact "Web Browser" <<artifact>>
+}
+
+node "Docker Host (Linux/MacOS)" {
+
+    node "Network: Public" <<Network>> #AliceBlue {
+        node "Nginx" <<Container>> as nginx_cont {
+            artifact "nginx:1.29-alpine" <<image>>
+            component "Reverse Proxy" <<subsystem>> as proxy
+        }
+        
+        node "Swagger-UI" <<Container>> as swagger_cont {
+            artifact "swaggerapi/swagger-ui" <<image>>
+        }
+    }
+
+    node "Network: Internal" <<Network>> #HoneyDew {
+        node "Searcher" <<Container>> as searcher_cont {
+            artifact "searcher.jar" <<Spring Boot App>>
+        }
+        
+        node "Importer" <<Container>> as importer_cont {
+            artifact "importer.jar" <<Spring Boot App>>
+        }
+        
+        node "Inferer" <<Container>> as inferer_cont {
+            artifact "inferer.jar" <<Spring Boot App>>
+        }
+        
+        node "Elasticsearch" <<Container>> as es_cont {
+            artifact "elasticsearch:9.1.8" <<image>>
+        }
+        
+        node "MongoDB" <<Container>> as mongo_cont {
+            artifact "mongo:8.2.2" <<image>>
+        }
+    }
+
+    node "Persistent Storage" {
+        storage "elasticsearch-volume" as es_vol
+        storage "mongodb-volume" as mongo_vol
+    }
+}
+
+' --- Connectivity (Professional Labels) ---
+
+' External Access
+client -- nginx_cont : HTTP/8080
+client -- swagger_cont : HTTP/8081
+
+' API Documentation (OpenAPI)
+swagger_cont ..> searcher_cont : <<fetch>> OpenAPI Spec
+swagger_cont ..> importer_cont : <<fetch>> OpenAPI Spec
+swagger_cont ..> inferer_cont : <<fetch>> OpenAPI Spec
+
+' Request Routing
+proxy --> searcher_cont : <<REST>> Port 8881
+proxy --> importer_cont : <<REST>> Port 8882
+
+' Internal Service Logic
+searcher_cont --> es_cont : <<Search Query>> Port 9200
+searcher_cont --> mongo_cont : <<Cache>> Port 27017
+searcher_cont --> inferer_cont : <<Inference Task>> Port 5050
+
+importer_cont --> es_cont : <<Bulk Indexing>> Port 9200
+
+' Data Persistence
+es_cont -- es_vol : <<mount>>
+mongo_cont -- mongo_vol : <<mount>>
+
+@enduml

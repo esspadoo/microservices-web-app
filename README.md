@@ -60,7 +60,7 @@ Select datasets of type **curlie_full**. **With our command a filtering is alrea
 
 3. Exit the container after the download completes. You will find your downloaded dataset in the `/softplat-project/all_data/raw_data/public/curlie_full` directory.
 
-4. Restart the application. **Before proceeding watch the **--owi-sample** optional flag section:
+4. Restart the application. **Before proceeding watch the **--owi-sample** optional flag section**:
 ```bash
 cd ./scripts
 sudo chmod +x init.sh

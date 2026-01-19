@@ -43,7 +43,7 @@ install_package() {
             if command -v brew >/dev/null 2>&1; then
                 brew install "$PKG"
             else
-                echo "❌ Homebrew not found. Install it at https://brew.sh/"
+                echo "Homebrew not found. Install it at https://brew.sh/"
                 return 1
             fi
             ;;

@@ -40,10 +40,10 @@ This script:
 ### Use CLI to retrieve inferred docs
 Is possible to use the application both via GUI, as explained above, or via CLI, making curl request to the service, using this structure:
 ```bash
-curl -X POST http://localhost:8080/api/v1/searcher/searchDocuments?query={QUERY-PARAM}
+curl http://localhost:8080/api/v1/searcher/searchDocuments?query={QUERY-PARAM}
 ```
 **QUERY-PARAM needs to be replaced**. Eg: an example query to retrieve inferred documents related to artificial intelligence can be:<br/>
-`curl -X POST http://localhost:8080/api/v1/searcher/searchDocuments?query={artificial intelligence}`
+`curl http://localhost:8080/api/v1/searcher/searchDocuments?query={artificial intelligence}`
 where `artificial intelligence` is the QUERY-PARAM.
 
 ---

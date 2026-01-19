@@ -89,7 +89,7 @@ sudo chmod +x init.sh
 
 
 ## Optional Flags
-Force Guardian crawl. This flag is used to overwrite an existing Guardian's dataset, if the dataset is not present the default behaviour of the init script is to crawl it anyway (even without the flag). **The flag is intended just to update an already existing dataset, not to download it for the first time**:
+Force Guardian crawl. This flag is used to overwrite an existing Guardian's dataset, if the dataset is not present the default behaviour of the init script is to crawl it anyway (even without the flag). **The flag is intended just to update an already existing dataset, not to download it for the first time, since the init script take care of that**:
 ```bash
 ./init.sh --guardian-force
 ```
@@ -102,7 +102,7 @@ Force OpenWebIndex sample dataset. This flag is designed to download a test data
 
 ---
 
-Force model update:
+Force model update. This flag is used to overwrite an existing LDA-model, if not present the default behaviour of the init script is to download it from a specific repo anyway (even without the flag). **The flag is intended just to update an already existing model, not to download it for the first time, since the init script take care of that**::
 ```bash
 ./init.sh --model-update
 ```

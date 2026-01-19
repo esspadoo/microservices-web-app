@@ -4,7 +4,7 @@ skinparam componentStyle uml2
 skinparam nodesep 80
 skinparam ranksep 60
 
-title Project's Component Diagram
+title Searcher, importer and inferer's Component Diagram
 
 ' --- INTERFACCE ---
 interface "Search API" as ISearch

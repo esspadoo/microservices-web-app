@@ -1,5 +1,9 @@
+@startuml
+skinparam ActivityFontSize 12
+skinparam ActivityDiamondFontSize 12
+skinparam ArrowColor #2C3E50
 
----
+title Activity Diagram - Searcher and Inferer System 
 
 |#AliceBlue|User/Admin|
 start

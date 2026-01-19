@@ -2,7 +2,7 @@
 set -e #exit if any commands exit with non zero status
 
 GUARDIAN_API_URL="https://content.guardianapis.com/search?tag="
-API_KEY="5eaa4909-873b-4eac-b07c-9ef331376ff8"
+API_KEY="test"
 PAGES=100
 PAGE_SIZE=50
 OUTPUT_FILE="../all_data/guardian.jsonl"

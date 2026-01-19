@@ -4,9 +4,10 @@
 
 ### Prerequisites
 - Docker and Docker Compose
-- Git
+- Git (optional)
 - Unix-based shell environment (Linux/macOS recommended)
-- Python  3+
+- Python  3.7+
+- Homebrew (if curl or jq not installed, macOS only)
 
 ### Clone the Repository
 ```bash

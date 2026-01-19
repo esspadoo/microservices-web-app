@@ -3,7 +3,7 @@ skinparam componentStyle uml2
 skinparam nodesep 100
 skinparam ranksep 100
 
-title Deployment Diagram - Documents Search & Inference System
+title Deployment Diagram - Full project deployment
 
 node "Client Desktop" as client {
     artifact "Web Browser" <<artifact>>

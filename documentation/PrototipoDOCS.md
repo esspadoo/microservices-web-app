@@ -51,28 +51,28 @@ It serves primarily **analysts** and **designers** who need to understand the sy
 ### Process View
 Particularly valuable for **integrators** and **engineers** concerned with system performance, scalability and throughput.
 #### Activity diagrams
-![[searcherInferer_activDiag.png|1000]]
-![[importer_activDiag.png|1000]]
+![[searcherInferer_activDiag.png]]
+![[importer_activDiag.png]]
 #### Sequence diagrams
-![[searcher_sequenceDiagram.png|1000]]
-![[inferer_sequenceDiagram.png|1000]]
-![[importer_sequenceDiagram.png|1000]]
+![[searcher_sequenceDiagram.png]]
+![[inferer_sequenceDiagram.png]]
+![[importer_sequenceDiagram.png]]
 
 ### Implementation View
 It guides **developers** and **project managers** in understanding code structure and facilitating team coordination during software management.
 #### Component diagram
-![[componentDiagram.png|1000]]
+![[componentDiagram.png]]
 #### Package diagram
-![[package_diag.png|1000]]
+![[package_diag.png]]
 
 ### Deployment view
 It shows to **software engineers** **Physical View** how software components are distributed across hardware infrastructure.
-![[deploymentDiag.png|1000]]
+![[deploymentDiag.png]]
 
 ### Use case View
 It uses case diagrams to capture the system's functionality from the end-user perspective, serving as a unifying element that validates the other four views and ensures they collectively satisfy the system's requirements.
 #### Use case diagram
-![[Use_case_diagram.png|800]]
+![[Use_case_diagram.png]]
 
 #### User stories
 The following user stories are written in standard Agile format: **As a … I want … so that …**.
@@ -161,6 +161,15 @@ The Dockerfile used to build the Owilix image is separated from the main project
 
 By isolating the Owilix Dockerfile, the architecture avoids introducing unnecessary dependencies for users who do not require OWI data or who prefer alternative data acquisition workflows. This separation simplifies deployment, reduces build complexity, and aligns with the system’s experimentation-oriented design philosophy. Detailed instructions for using Owilix, when chosen, are provided in the project README.  
 This option ensures modularity and prevents a fixed data ingestion strategy.
+### Data duplication
+In our use case, we decided to use MongoDB only as a cache system to return to the user infered documents and not as the main database system. This choice stems from the nature of the problem we had to address. When studying the nature of Elasticsearch, at first glance one might think that using Elasticsearch as a database is a misuse. Let's clarify the issue. It is true that Elasticsearch is not a relational database, a problem amplified by the indexing and search mechanisms that make Elasticsearch work. The operations that cause the most problems are updates. In Elastic, they are not a single operation:
+1. Read current document _source;
+2. Merge current _source with new document;
+3. Index result of step 2;
+4. Mark original document as deleted. The deletion may not be immediate: it is marked as such, but until Lucene merges the indexes, the document remains.
+Even refreshing to ensure that only the latest documents are displayed is a very costly operation in Elasticsearch, slowing down ongoing update operations. It is precisely this brief but very important concept that led us to our architecture. Our system is designed around an almost append-only data model, since documents are filtered by URL and therefore there can never be two or more identical ones, and since it is a web page search application, it is unlikely that we will need to make changes to the web pages. This does not mean that updates cannot be made in Elasticsearch, only that they should be done sparingly and, in the event of major changes, rely on services (e.g. mongoDB, which is active and ready to use in its container) designed and intended to handle large amounts of data efficiently. 
+**This careful study has enabled us to avoid maintaining a full duplicate copy of indexed documents in MongoDB solely for the purpose of later ingestion into Elasticsearch**, ensuring that we had more resources available for other services and did not have to manage updates to maintain data consistency between services, service failures and all the other issues that can arise with duplicate and redundant data.
+
 
 ---
 

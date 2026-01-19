@@ -36,7 +36,7 @@ The project is evaluated based on:
 
 ## Project Structure
 The following diagram illustrates the system pipeline:
- ![[Grafico_progetto_SP.png]]
+ ![[images/Grafico_progetto_SP.png]]
  Where the **blue figures** represent services instantiated in separate Docker containers, the **yellow ones** represent components that are useful for understanding the work pipeline but can be scripts, files or other similar components. Finally, the **green rectangles** are only logical blocks that serve the sole purpose of making the diagram more understandable even to those who are not familiar with the project and its purpose.
 
 ## 4+1 view model 
@@ -44,9 +44,9 @@ Here a quick recap of what is the 4+1 architectural view model and what is its g
 ### Logical View
 It serves primarily **analysts** and **designers** who need to understand the system's functionality. 
 #### Class diagrams
-![[searcher_classDIag.png]]
- ![[inferer_classDiagram.png]]
-![[importer_classDiagram.png]]
+![[images/4+1_view_model/logical_structural_view/Class_diagram/searcher_classDIag.png]]
+ ![[images/4+1_view_model/logical_structural_view/Class_diagraminferer_classDiagram.png]]
+![[images/4+1_view_model/logical_structural_view/Class_diagramimporter_classDiagram.png]]
 
 ### Process View
 Particularly valuable for **integrators** and **engineers** concerned with system performance, scalability and throughput.

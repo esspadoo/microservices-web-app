@@ -36,7 +36,7 @@ The project is evaluated based on:
 
 ## Project Structure
 The following diagram illustrates the system pipeline:
- ![[images/Grafico_progetto_SP.png]]
+ ![/Grafico_progetto_SP](images/Grafico_progetto_SP.png)
  Where the **blue figures** represent services instantiated in separate Docker containers, the **yellow ones** represent components that are useful for understanding the work pipeline but can be scripts, files or other similar components. Finally, the **green rectangles** are only logical blocks that serve the sole purpose of making the diagram more understandable even to those who are not familiar with the project and its purpose.
 
 ## 4+1 view model 
@@ -44,35 +44,35 @@ Here a quick recap of what is the 4+1 architectural view model and what is its g
 ### Logical View
 It serves primarily **analysts** and **designers** who need to understand the system's functionality. 
 #### Class diagrams
-![[images/4+1_view_model/logical_structural_view/Class_diagram/searcher_classDIag.png]]
- ![[images/4+1_view_model/logical_structural_view/Class_diagraminferer_classDiagram.png]]
-![[images/4+1_view_model/logical_structural_view/Class_diagramimporter_classDiagram.png]]
+![/searcher_classDIag](images/4+1_view_model/logical_structural_view/Class_diagram/searcher_classDIag.png)
+ ![inferer_classDiagram](images/4+1_view_model/logical_structural_view/Class_diagram/inferer_classDiagram.png)
+![importer_classDiagram](images/4+1_view_model/logical_structural_view/Class_diagram/importer_classDiagram.png)
 
 ### Process View
 Particularly valuable for **integrators** and **engineers** concerned with system performance, scalability and throughput.
 #### Activity diagrams
-![[searcherInferer_activDiag.png]]
-![[importer_activDiag.png]]
+![searcherInferer_activDiag.png](images\4+1_view_model\process_behaviour_view\Activity_diagram\searcherInferer_activDiag.png)
+![importer_activDiag.png](images\4+1_view_model\process_behaviour_view\Activity_diagram\importer_activDiag.png)
 #### Sequence diagrams
-![[searcher_sequenceDiagram.png]]
-![[inferer_sequenceDiagram.png]]
-![[importer_sequenceDiagram.png]]
+![searcher_sequenceDiagram.png](images\4+1_view_model\process_behaviour_view\Sequence_diagram\searcher_sequenceDiagram.png)
+![inferer_sequenceDiagram.png](images\4+1_view_model\process_behaviour_view\Sequence_diagram\inferer_sequenceDiagram.png)
+![importer_sequenceDiagram.png](images\4+1_view_model\process_behaviour_view\Sequence_diagram\importer_sequenceDiagram.png)
 
 ### Implementation View
 It guides **developers** and **project managers** in understanding code structure and facilitating team coordination during software management.
 #### Component diagram
-![[componentDiagram.png]]
+![componentDiagram.png](images\4+1_view_model\implementation_developer_view\ComponentDiagram\componentDiagram.png)
 #### Package diagram
-![[package_diag.png]]
+![package_diag.png](images\4+1_view_model\implementation_developer_view\PackageDiagram\package_diag.png)
 
 ### Deployment view
 It shows to **software engineers** **Physical View** how software components are distributed across hardware infrastructure.
-![[deploymentDiag.png]]
+![deploymentDiag.png](images\4+1_view_model\deployment_physical_view\deploymentDiag.png)
 
 ### Use case View
 It uses case diagrams to capture the system's functionality from the end-user perspective, serving as a unifying element that validates the other four views and ensures they collectively satisfy the system's requirements.
 #### Use case diagram
-![[Use_case_diagram.png]]
+![Use_case_diagram.png](images\4+1_view_model\use_case_scenario_view\Use_case_diagram.png)
 
 #### User stories
 The following user stories are written in standard Agile format: **As a … I want … so that …**.
@@ -201,9 +201,9 @@ By comparing ourselves with our colleagues during the course of the project, we 
 - As computer engineers, we know that we often find ourselves performing the same searches multiple times. **To offer our users a better experience**, we have introduced a caching system that allows for almost instantaneous response times after performing a search for the first time.
 - Some of our colleagues mocked us for our simple, clean interface, showing us their polished and aesthetically appealing front ends. When we asked them how they had created those beautiful interfaces, they replied, ‘We used Gemini and React.js.’ After some discussion, we exposed the critical security flaws discovered this week in the library (more at this link https://react.dev/blog/2025/12/03/critical-security-vulnerability-in-react-server-components) and suggested caution until more was known, as the research team does not rule out other similar vulnerabilities. **We decided to keep things simple and functional, avoiding unnecessary frills and remaining faithful to well-established and stable patterns (reverse proxy with static pages)**. We hope that our colleagues have taken the necessary countermeasures to manage the security of users who will use their application. **We really hope so**.
 - Regarding the previous point, we use Nginx, the most popular reverse proxy. **All incoming and outgoing traffic passes through this service, and there is no way to connect to internal services without going through it.** Our colleagues, on the other hand, decided to cut corners by leaving this aspect out, leaving doors open (e.g. binding in docker compose files) and thus (probably) allowing users to access every service, bypassing any encapsulation and compartmentalisation constraints.
->[!tip] Popularity of Nginx in April 2025
->As of April 2025, W3Tech's web server count of all websites ranked Nginx first with 33.8%. Apache was second at 26.4% and Cloudflare Server third at 23.4%. 
->\-[Wikipedia](https://en.wikipedia.org/wiki/Nginx)
+> [!tip]Popularity of Nginx in April 2025**
+> As of April 2025, W3Tech's web server count of all websites ranked Nginx first with 33.8%. Apache was second at 26.4% and Cloudflare Server third at 23.4%. 
+> \- [Wikipedia](https://en.wikipedia.org/wiki/Nginx)
 
 [^1]: Time calculated using an 80Mb/s network and an average computer; times may vary depending on many factors.
 

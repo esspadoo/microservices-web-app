@@ -33,6 +33,21 @@ This script:
 
 ---
 
+# How to use the application
+- Using the GUI, via web-browser connecting at `http://localhost:8080/`
+- Via CLI, as explained below.
+
+### Use CLI to retrieve inferred docs
+Is possible to use the application both via GUI, as explained above, or via CLI, making curl request to the service, using this structure:
+```bash
+curl -X POST http://localhost:8080/api/v1/searcher/searchDocuments?query={QUERY-PARAM}
+```
+**QUERY-PARAM needs to be replaced**. Eg: an example query to retrieve inferred documents related to artificial intelligence can be:<br/>
+`curl -X POST http://localhost:8080/api/v1/searcher/searchDocuments?query={artificial intelligence}`
+where `artificial intelligence` is the QUERY-PARAM.
+
+---
+
 # Use OpenWebIndex Data 
 ### Optional, not automatized due to authentication constraints: you need a valid account to download OWI's datasets)
 
@@ -141,7 +156,10 @@ curl -X POST http://localhost:8080/api/v1/importer/import \
 
 Eg. Import started. Job ID: 1bd8c0de-aac9-47b9-bef0-dba772e91bbf
 
+
 ---
+
+
 
 ## Train a Custom Model
 

@@ -4,6 +4,8 @@ top to bottom direction
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
+title Class Diagram - Inferer module
+
 interface DocService << interface >> {
   + infer(Document): Document
   + inferBatch(List<Document>): List<Document>

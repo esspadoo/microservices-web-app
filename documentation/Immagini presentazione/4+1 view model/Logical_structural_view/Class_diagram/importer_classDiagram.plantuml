@@ -4,6 +4,8 @@ top to bottom direction
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
+title Class Diagram - Importer module
+
 class ElasticConfig {
   + ElasticConfig(): 
   - url: String

@@ -171,5 +171,7 @@ inferer/src/main/resources/
 ```
 
 7. Restart the application.
-
+```bash
+sudo docker compose up -d --build
+```
 ---
